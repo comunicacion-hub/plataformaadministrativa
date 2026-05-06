@@ -526,38 +526,19 @@
 <!-- MODAL: FICHA -->
 <div class="modal-overlay" id="m-ficha">
   <div class="modal wide">
-    <!-- Ficha header con foto -->
-    <div id="f-header" style="border-radius:16px 16px 0 0;overflow:hidden;margin:-28px -28px 0;position:relative;">
-      <!-- Banner de color -->
-      <div id="f-banner" style="height:90px;background:linear-gradient(135deg,#33A8DE,#506CFF);"></div>
-      <!-- Foto circular -->
-      <div style="position:absolute;bottom:-36px;left:24px;">
-        <div id="f-photo-wrap" style="width:76px;height:76px;border-radius:50%;border:3px solid #fff;overflow:hidden;background:linear-gradient(135deg,#33A8DE,#506CFF);display:flex;align-items:center;justify-content:center;box-shadow:0 2px 12px rgba(0,0,0,0.15);">
-          <span id="f-avatar" style="font-size:24px;font-weight:700;color:#fff;">?</span>
+    <div class="modal-head">
+      <div style="display:flex;align-items:center;gap:14px;">
+        <div id="f-photo-wrap" style="width:56px;height:56px;border-radius:50%;overflow:hidden;background:linear-gradient(135deg,#33A8DE,#506CFF);display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 2px 8px rgba(0,0,0,0.12);">
+          <span id="f-avatar" style="font-size:20px;font-weight:700;color:#fff;">?</span>
+        </div>
+        <div>
+          <div class="modal-title" id="f-nombre" style="font-size:18px;">—</div>
+          <div style="font-size:12px;color:var(--text-muted);margin-top:2px;" id="f-meta">—</div>
         </div>
       </div>
-      <!-- Botón cerrar -->
-      <button class="modal-close" onclick="closeModal('m-ficha')" style="position:absolute;top:12px;right:12px;background:rgba(255,255,255,0.25);border-color:rgba(255,255,255,0.3);color:#fff;">✕</button>
-    </div>
-    <!-- Nombre y cargo -->
-    <div style="padding:44px 0 16px;">
-      <div class="modal-title" id="f-nombre" style="font-size:20px;color:var(--text);">—</div>
-      <div style="font-size:13px;color:var(--text-muted);margin-top:3px;" id="f-meta">—</div>
+      <button class="modal-close" onclick="closeModal('m-ficha')">✕</button>
     </div>
     <div class="modal-body" style="display:grid;grid-template-columns:1fr 1fr;gap:14px;" id="f-body"></div>
-    <!-- Subir foto -->
-    <div id="f-upload-area" style="display:none;margin-top:4px;">
-      <div style="font-size:11px;font-weight:700;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.6px;margin-bottom:8px;">Foto de perfil</div>
-      <label for="f-photo-input" style="display:flex;align-items:center;gap:10px;padding:10px 14px;border:1.5px dashed var(--border);border-radius:10px;cursor:pointer;transition:border-color 0.15s;" onmouseover="this.style.borderColor='#33A8DE'" onmouseout="this.style.borderColor='rgba(0,0,0,0.09)'">
-        <span style="font-size:20px;">📷</span>
-        <div>
-          <div style="font-size:13px;font-weight:600;color:var(--text);">Seleccionar foto</div>
-          <div style="font-size:11px;color:var(--text-dim);">JPG o PNG · máx. 2MB</div>
-        </div>
-        <input type="file" id="f-photo-input" accept="image/jpeg,image/png" style="display:none;" onchange="previewAndUploadPhoto(this)">
-      </label>
-      <div id="f-upload-status" style="font-size:12px;color:var(--text-muted);margin-top:6px;display:none;"></div>
-    </div>
     <div class="modal-foot">
       <button class="btn btn-glass btn-sm" onclick="downloadPDF()">PDF</button>
       <button class="btn btn-glass btn-sm" onclick="editCurrentColab()">Editar</button>
@@ -924,28 +905,23 @@ function openFicha(name){
   const idx=colaboradores.indexOf(r);
   const grad=gr[idx%gr.length];
 
-  // Banner y foto
-  const banner=document.getElementById('f-banner');
+  // Foto o iniciales
   const photoWrap=document.getElementById('f-photo-wrap');
-  if(banner) banner.style.background=grad;
-
-  const fotoUrl=r['Foto']||'';
   if(photoWrap){
     photoWrap.style.background=grad;
+    const fotoUrl=r['Foto']||'';
     if(fotoUrl){
-      photoWrap.innerHTML=`<img src="${fotoUrl}" style="width:100%;height:100%;object-fit:cover;" onerror="this.parentElement.innerHTML='<span style=font-size:24px;font-weight:700;color:#fff>${ini(r.Colaborador)}</span>'">`;
+      photoWrap.innerHTML=`<img src="${fotoUrl}" style="width:100%;height:100%;object-fit:cover;" onerror="this.parentElement.innerHTML='<span style=font-size:20px;font-weight:700;color:#fff>${ini(r.Colaborador)}</span>';this.parentElement.style.background='${grad}'">`;
     } else {
-      photoWrap.innerHTML=`<span style="font-size:24px;font-weight:700;color:#fff;">${ini(r.Colaborador)}</span>`;
+      photoWrap.innerHTML=`<span style="font-size:20px;font-weight:700;color:#fff;">${ini(r.Colaborador)}</span>`;
     }
   }
 
-  // Nombre y cargo
   const elNombre=document.getElementById('f-nombre');
   const elMeta=document.getElementById('f-meta');
   if(elNombre) elNombre.textContent=r.Colaborador||'—';
   if(elMeta)   elMeta.textContent=`${r.Cargo||''} · ${r['Programa/Proyecto']||''}`;
 
-  // Campos
   const fields=[
     ['Correo RCR',r['Correo de Redes Con Rostro']],
     ['Teléfono',r['Teléfono principal']||r['Télefono principal']],
@@ -960,14 +936,6 @@ function openFicha(name){
   ].filter(([,v])=>v);
   const fbody=document.getElementById('f-body');
   if(fbody) fbody.innerHTML=fields.map(([l,v])=>`<div class="f-block"><div class="f-lbl">${l}</div><div class="f-val">${x(v)}</div></div>`).join('');
-
-  // Área de subida solo para admin
-  const uploadArea=document.getElementById('f-upload-area');
-  if(uploadArea){
-    uploadArea.style.display=(currentUser&&currentUser.rol==='Admin')?'block':'none';
-    const status=document.getElementById('f-upload-status');
-    if(status) status.style.display='none';
-  }
 
   openModal('m-ficha');
 }
@@ -1047,13 +1015,28 @@ async function uploadToDrive(file, nombreColab){
   } catch(e){ return null; }
 }
 
+// ── SUBIR FOTO DIRECTO A DRIVE ────────────────
+const DRIVE_FOLDER_ID = '17DkSutFnoXTg7NcYjLEHdbqMuRLN8Erd';
+let _cachedToken = null;
+let _tokenExpiry = 0;
+
 async function getGoogleToken(){
+  // Reusar token si aún es válido (expira en 55 min)
+  if(_cachedToken && Date.now() < _tokenExpiry){
+    return _cachedToken;
+  }
   return new Promise(resolve => {
     if(typeof google === 'undefined'){ resolve(null); return; }
     google.accounts.oauth2.initTokenClient({
       client_id: G_CLIENT,
       scope: 'https://www.googleapis.com/auth/drive.file',
-      callback: r => resolve(r.access_token || null)
+      callback: r => {
+        if(r.access_token){
+          _cachedToken = r.access_token;
+          _tokenExpiry = Date.now() + 55 * 60 * 1000; // 55 minutos
+        }
+        resolve(r.access_token || null);
+      }
     }).requestAccessToken({prompt:''});
   });
 }
