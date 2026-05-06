@@ -31,7 +31,7 @@
     --shadow-sm:0 1px 2px rgba(0,0,0,0.06);
   }
   *{margin:0;padding:0;box-sizing:border-box;}
-
+ 
   /* ── BODY — sin overflow:hidden para scroll nativo en móvil ── */
   body{
     font-family:'Outfit',sans-serif;
@@ -39,7 +39,7 @@
     color:var(--text);
     min-height:100vh;
   }
-
+ 
   /* ── BLOBS — reducidos y sin blur extremo ── */
   .blob{
     position:fixed;
@@ -60,9 +60,9 @@
       100%{transform:translate(0,0) scale(1)}
     }
   }
-
+ 
   #app{position:relative;z-index:1;display:flex;height:100vh;width:100%;}
-
+ 
   /* ── SIDEBAR ── */
   .sidebar{width:var(--sidebar-w);min-width:var(--sidebar-w);height:100vh;display:flex;flex-direction:column;padding:24px 14px 20px;gap:2px;background:#fff;border-right:1px solid var(--border);flex-shrink:0;position:sticky;top:0;}
   .sidebar-brand{display:flex;align-items:center;gap:10px;padding:0 10px 20px;}
@@ -84,28 +84,28 @@
   .user-role{font-size:10px;color:var(--text-dim);}
   .logout-btn{background:none;border:none;cursor:pointer;font-size:14px;color:var(--text-dim);transition:color 0.15s;margin-left:auto;}
   .logout-btn:hover{color:#e53e6d;}
-
+ 
   /* ── SYNC BUTTON ── */
   .sync-btn{display:flex;align-items:center;gap:6px;padding:7px 13px;border-radius:var(--radius-sm);background:var(--surface);border:1px solid var(--border);font-family:'Outfit',sans-serif;font-size:12px;font-weight:600;color:var(--text-muted);cursor:pointer;transition:all 0.15s;box-shadow:var(--shadow-sm);}
   .sync-btn:hover{background:var(--surface-hover);color:var(--text);}
   .sync-btn.syncing .sync-icon{animation:spin 0.8s linear infinite;}
   @keyframes spin{to{transform:rotate(360deg)}}
   .sync-icon{display:inline-block;font-size:14px;}
-
+ 
   /* ── MAIN ── */
   .main{flex:1;overflow-y:auto;padding:32px 36px;display:flex;flex-direction:column;gap:26px;min-width:0;background:transparent;}
   .main::-webkit-scrollbar{width:4px;}
   .main::-webkit-scrollbar-thumb{background:var(--border-strong);border-radius:2px;}
-
+ 
   .screen{display:none;flex-direction:column;gap:24px;}
   .screen.active{display:flex;animation:fadeIn 0.22s ease;}
   @keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
-
+ 
   .page-header{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;}
   .page-title{font-size:26px;font-weight:600;letter-spacing:-0.5px;color:var(--text);}
   .page-sub{font-size:13px;color:var(--text-muted);margin-top:3px;}
   .hdr-actions{display:flex;gap:10px;align-items:center;flex-shrink:0;}
-
+ 
   /* ── BUTTONS ── */
   .btn{display:inline-flex;align-items:center;gap:7px;padding:9px 18px;border-radius:var(--radius-sm);font-family:'Outfit',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all 0.15s;white-space:nowrap;background:#fff;border:1.5px solid var(--border);}
   .btn-primary{background:#fff;color:#33A8DE;border:1.5px solid #33A8DE;}
@@ -115,7 +115,7 @@
   .btn-sm{padding:7px 13px;font-size:12px;border-radius:8px;}
   .btn-danger{background:#fff;color:#c91a44;border:1.5px solid rgba(220,38,90,0.35);}
   .btn-danger:hover{background:rgba(220,38,90,0.05);}
-
+ 
   /* ── STATS ── */
   .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;}
   .stat-card{padding:20px 18px;border-radius:var(--radius-md);background:var(--surface);border:1px solid var(--border);box-shadow:var(--shadow-sm);}
@@ -123,7 +123,7 @@
   .stat-label{font-size:12px;color:var(--text-muted);margin-top:4px;}
   .stat-bar{height:3px;border-radius:2px;margin-top:14px;}
   .bar-a{background:var(--grad-a);} .bar-b{background:var(--grad-b);} .bar-c{background:var(--grad-c);} .bar-d{background:var(--grad-d);}
-
+ 
   /* ── FILTERS ── */
   .filters-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
   .search-wrap{position:relative;flex:1;max-width:300px;min-width:160px;}
@@ -133,7 +133,7 @@
   .search-input:focus{border-color:#33A8DE;box-shadow:0 0 0 3px rgba(51,168,222,0.12);}
   .filter-sel{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:9px 13px;color:var(--text-muted);font-family:'Outfit',sans-serif;font-size:13px;outline:none;cursor:pointer;box-shadow:var(--shadow-sm);}
   .filter-sel:focus{border-color:#33A8DE;}
-
+ 
   /* ── TABLE ── */
   .tbl-wrap{border-radius:var(--radius-lg);overflow:hidden;border:1px solid var(--border);box-shadow:var(--shadow);background:var(--surface);}
   .tbl-head{display:grid;grid-template-columns:2.2fr 1.4fr 1.2fr 0.9fr 110px;gap:12px;padding:11px 20px;background:#f8f8fc;border-bottom:1px solid var(--border);font-size:11px;font-weight:700;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.7px;}
@@ -147,13 +147,13 @@
   .icon-btn{background:var(--surface-hover);border:1px solid var(--border);border-radius:7px;padding:4px 10px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:11px;font-weight:600;color:var(--text-muted);transition:all 0.12s;font-family:'Outfit',sans-serif;white-space:nowrap;}
   .icon-btn:hover{background:#e8e8f0;color:var(--text);}
   .icon-btn.del:hover{background:rgba(220,38,90,0.1);border-color:rgba(220,38,90,0.2);color:#c91a44;}
-
+ 
   .avatar{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;color:#fff;}
   .avatar-lg{width:46px;height:46px;font-size:15px;}
   .badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;}
   .badge-on{background:rgba(24,174,151,0.1);color:#0a9e83;border:1px solid rgba(24,174,151,0.2);}
   .badge-off{background:rgba(0,0,0,0.05);color:var(--text-muted);border:1px solid var(--border);}
-
+ 
   /* ── INICIO CARDS ── */
   .inicio-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
   .inicio-card{padding:28px 22px;border-radius:var(--radius-xl);cursor:pointer;transition:all 0.2s;display:flex;flex-direction:column;align-items:flex-start;gap:12px;border:1px solid var(--border);background:var(--surface);box-shadow:var(--shadow-sm);position:relative;overflow:hidden;}
@@ -166,7 +166,7 @@
   .ic-desc{font-size:12px;color:var(--text-muted);line-height:1.5;}
   .ic-arrow{font-size:16px;color:var(--text-dim);margin-top:auto;align-self:flex-end;transition:transform 0.15s;}
   .inicio-card:hover .ic-arrow{transform:translate(3px,-3px);}
-
+ 
   /* ── PANELS ── */
   .panels-wrap{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
   .panel-card{border-radius:var(--radius-lg);border:1px solid var(--border);overflow:hidden;background:var(--surface);box-shadow:var(--shadow-sm);}
@@ -180,7 +180,7 @@
   .scale-track{flex:1;height:5px;background:#e8e8f0;border-radius:3px;overflow:hidden;}
   .scale-fill{height:100%;border-radius:3px;}
   .scale-num{font-size:14px;font-weight:700;min-width:28px;text-align:right;color:var(--text);}
-
+ 
   /* ── SEMAFORO ── */
   .sum-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
   .sum-card{padding:18px 14px;border-radius:var(--radius-md);text-align:center;border:1px solid var(--border);background:var(--surface);box-shadow:var(--shadow-sm);}
@@ -195,7 +195,7 @@
   .sema-items{display:flex;flex-direction:column;gap:8px;}
   .sema-item{display:flex;align-items:center;justify-content:space-between;}
   .sema-lbl{font-size:12px;color:var(--text-muted);}
-
+ 
   /* ── FORM ── */
   .form-grp{display:flex;flex-direction:column;gap:6px;}
   .form-lbl{font-size:12px;font-weight:600;color:var(--text-muted);}
@@ -206,7 +206,7 @@
   .form-row-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;}
   textarea.form-inp{resize:vertical;line-height:1.55;min-height:80px;}
   .form-section{font-size:11px;font-weight:700;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.8px;padding:8px 0 4px;border-bottom:1px solid var(--border);margin-bottom:4px;}
-
+ 
   /* ── MODAL — sin backdrop-filter en móvil para rendimiento ── */
   .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.32);z-index:200;align-items:center;justify-content:center;}
   @media(min-width:769px){
@@ -223,20 +223,20 @@
   .modal-close:hover{background:#e8e8f0;color:var(--text);}
   .modal-body{display:flex;flex-direction:column;gap:12px;}
   .modal-foot{display:flex;gap:10px;justify-content:flex-end;margin-top:4px;}
-
+ 
   /* ── TOAST ── */
   #toast{position:fixed;bottom:24px;right:24px;z-index:999;background:#333;color:#fff;border-radius:var(--radius-sm);padding:12px 20px;font-size:13px;font-weight:500;display:none;box-shadow:0 8px 30px rgba(0,0,0,0.18);animation:tIn 0.22s ease;max-width:320px;}
   #toast.err{background:#c91a44;} #toast.ok{background:#0a9e83;}
   @keyframes tIn{from{transform:translateY(10px);opacity:0}to{transform:translateY(0);opacity:1}}
-
+ 
   .spinner{width:14px;height:14px;border:2px solid rgba(51,168,222,0.25);border-top-color:#33A8DE;border-radius:50%;animation:spin 0.7s linear infinite;display:inline-block;vertical-align:middle;}
-
+ 
   .empty-state{text-align:center;padding:60px 20px;display:flex;flex-direction:column;align-items:center;gap:12px;}
   .empty-state .e-ico{font-size:44px;opacity:0.35;}
   .empty-state p{font-size:14px;color:var(--text-dim);}
-
+ 
   #offline-banner{display:none;position:fixed;top:0;left:0;right:0;z-index:900;background:#c91a44;color:#fff;padding:8px 20px;font-size:13px;font-weight:500;text-align:center;}
-
+ 
   /* ── LOGIN ── */
   #login-screen{position:fixed;inset:0;z-index:500;display:flex;align-items:center;justify-content:center;overflow:hidden;}
   .login-bg{position:absolute;inset:0;background:linear-gradient(135deg,#e8f4fd 0%,#eef0ff 40%,#e8faf7 100%);}
@@ -257,13 +257,13 @@
   .google-btn{width:100%;padding:13px 20px;background:#fff;color:#3c4043;border:1px solid #dadce0;border-radius:12px;font-family:'Outfit',sans-serif;font-size:15px;font-weight:600;cursor:pointer;transition:all 0.15s;display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:0 1px 4px rgba(0,0,0,0.1);}
   .google-btn:hover{background:#f8f8f8;box-shadow:0 3px 12px rgba(0,0,0,0.12);transform:translateY(-1px);}
   .login-hint{font-size:11px;color:var(--text-dim);text-align:center;line-height:1.7;margin-top:18px;}
-
+ 
   /* ── GRAD TEXTS ── */
   .grad-b-text{background:var(--grad-b);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
   .grad-c-text{background:var(--grad-c);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
   .grad-d-text{background:var(--grad-d);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
   .grad-a-text{background:var(--grad-a);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
-
+ 
   /* ── MOBILE ── */
   @media(max-width:768px){
     .sidebar{display:none;}
@@ -289,14 +289,14 @@
 </style>
 </head>
 <body>
-
+ 
 <!-- Blobs: menos blur, sin animación en móvil -->
 <div class="blob" style="width:500px;height:500px;background:radial-gradient(#33A8DE,#506CFF);top:-150px;left:-150px;animation-duration:14s;"></div>
 <div class="blob" style="width:400px;height:400px;background:radial-gradient(#18AE97,#0BC3FF);top:40%;right:-120px;animation-duration:17s;animation-delay:-5s;"></div>
 <div class="blob" style="width:350px;height:350px;background:radial-gradient(#F5AD21,#9FDA60);bottom:-80px;left:35%;animation-duration:20s;animation-delay:-9s;"></div>
-
+ 
 <div id="offline-banner">Sin conexión — los cambios se guardarán al recuperar el internet</div>
-
+ 
 <!-- LOGIN -->
 <div id="login-screen">
   <div class="login-bg"></div>
@@ -324,7 +324,7 @@
     <div class="login-hint">Solo cuentas <strong>@redesconrostro.org</strong> autorizadas pueden acceder.<br>El administrador gestiona los permisos desde la plataforma.</div>
   </div>
 </div>
-
+ 
 <!-- APP -->
 <div id="app" style="display:none;">
   <nav class="sidebar">
@@ -344,9 +344,9 @@
       <button class="logout-btn" onclick="doLogout()" title="Cerrar sesión">↩️</button>
     </div>
   </nav>
-
+ 
   <main class="main">
-
+ 
     <!-- INICIO -->
     <div class="screen active" id="screen-inicio">
       <div class="page-header">
@@ -373,7 +373,7 @@
         <div class="inicio-card ic-c" onclick="go('semaforo')"><div class="ic-title">Semáforo</div><div class="ic-desc">Visualiza la autopercepción mensual del equipo</div><div class="ic-arrow">↗</div></div>
       </div>
     </div>
-
+ 
     <!-- COLABORADORES -->
     <div class="screen" id="screen-colaboradores">
       <div class="page-header">
@@ -406,7 +406,7 @@
         <div id="colab-body"><div class="empty-state"><span class="spinner"></span><p>Cargando...</p></div></div>
       </div>
     </div>
-
+ 
     <!-- SEGUIMIENTO -->
     <div class="screen" id="screen-seguimiento">
       <div class="page-header">
@@ -423,7 +423,7 @@
         <div class="empty-state" style="grid-column:span 2;"><div class="e-ico">💬</div><p>Selecciona un colaborador para ver sus registros</p></div>
       </div>
     </div>
-
+ 
     <!-- SEMÁFORO -->
     <div class="screen" id="screen-semaforo">
       <div class="page-header">
@@ -446,24 +446,24 @@
       </div>
       <div class="sema-grid" id="sema-grid"><div class="empty-state"><span class="spinner"></span><p>Cargando...</p></div></div>
     </div>
-
+ 
   </main>
 </div>
-
+ 
 <div id="mobile-nav">
   <div class="mob-nav-item active" id="mob-inicio"        onclick="go('inicio')">        <span>🏠</span>Inicio</div>
   <div class="mob-nav-item"        id="mob-colaboradores" onclick="go('colaboradores')"> <span>👥</span>Colabs</div>
   <div class="mob-nav-item"        id="mob-seguimiento"   onclick="go('seguimiento')">   <span>💬</span>Bienestar</div>
   <div class="mob-nav-item"        id="mob-semaforo"      onclick="go('semaforo')">      <span>🚦</span>Semáforo</div>
 </div>
-
+ 
 <!-- MODAL: COLABORADOR -->
 <div class="modal-overlay" id="m-colab">
   <div class="modal xl">
     <div class="modal-head"><div class="modal-title" id="m-colab-title">Nuevo colaborador</div><button class="modal-close" onclick="closeModal('m-colab')">✕</button></div>
     <div class="modal-body">
       <div class="form-section">Información general</div>
-
+ 
       <!-- Foto de perfil -->
       <div style="display:flex;align-items:center;gap:20px;padding:4px 0 8px;">
         <div id="c-photo-preview" style="width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,#33A8DE,#506CFF);display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;color:#fff;flex-shrink:0;overflow:hidden;border:2px solid var(--border);">
@@ -474,6 +474,7 @@
             📷 Seleccionar foto
             <input type="file" id="c-photo-input" accept="image/jpeg,image/png" style="display:none;" onchange="previewColabPhoto(this)">
           </label>
+          <button id="c-photo-delete-btn" onclick="deleteColabPhoto()" style="display:none;margin-left:8px;padding:8px 14px;border:1.5px solid rgba(220,38,90,0.3);border-radius:var(--radius-sm);background:#fff;color:#c91a44;font-family:'Outfit',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all 0.15s;" onmouseover="this.style.background='rgba(220,38,90,0.05)'" onmouseout="this.style.background='#fff'">Eliminar foto</button>
           <div style="font-size:11px;color:var(--text-dim);margin-top:5px;">JPG o PNG · máx. 2MB · opcional</div>
           <div id="c-photo-status" style="font-size:12px;margin-top:4px;display:none;"></div>
         </div>
@@ -522,7 +523,7 @@
     </div>
   </div>
 </div>
-
+ 
 <!-- MODAL: FICHA -->
 <div class="modal-overlay" id="m-ficha">
   <div class="modal wide">
@@ -546,7 +547,7 @@
     </div>
   </div>
 </div>
-
+ 
 <!-- MODAL: SEGUIMIENTO -->
 <div class="modal-overlay" id="m-seg">
   <div class="modal xl">
@@ -619,7 +620,7 @@
     </div>
   </div>
 </div>
-
+ 
 <!-- MODAL: USUARIO -->
 <div class="modal-overlay" id="m-usuario">
   <div class="modal">
@@ -635,7 +636,7 @@
     </div>
   </div>
 </div>
-
+ 
 <!-- MODAL: CONFIRMAR -->
 <div class="modal-overlay" id="m-confirm">
   <div class="modal" style="width:380px;">
@@ -647,9 +648,9 @@
     </div>
   </div>
 </div>
-
+ 
 <div id="toast"></div>
-
+ 
 <script>
 const SCRIPT_URL  = 'https://script.google.com/macros/s/AKfycbxL33t-EIu0PBHASxecXNpBrK2bj0nFRmjXKU-VLa_yaodIzXuvkihFXcBQKt2x33RAdA/exec';
 const G_CLIENT    = '783730193199-d7nhahv3ou4rmps7nrpoop5cpor079ej.apps.googleusercontent.com';
@@ -659,9 +660,9 @@ const SESSION_KEY = 'rcr_session';
 // ── FIX: caché de datos en localStorage para carga inmediata ──
 const CACHE_KEY   = 'rcr_data_cache';
 const CACHE_TTL   = 5 * 60 * 1000; // 5 minutos
-
+ 
 let currentUser=null, colaboradores=[], seguimientos=[], semaforo=[], editingColab=null, pendingDel=null;
-
+ 
 // ── CACHE ──────────────────────────────────────
 function saveCache(data){
   try{localStorage.setItem(CACHE_KEY,JSON.stringify({ts:Date.now(),...data}));}catch(e){}
@@ -673,12 +674,12 @@ function loadCache(){
     return c;
   }catch(e){return null;}
 }
-
+ 
 // ── SESSION PERSISTENCE ────────────────────────
 function saveSession(user){try{sessionStorage.setItem(SESSION_KEY,JSON.stringify(user));}catch(e){}}
 function loadSession(){try{const s=sessionStorage.getItem(SESSION_KEY);return s?JSON.parse(s):null;}catch(e){return null;}}
 function clearSession(){try{sessionStorage.removeItem(SESSION_KEY);}catch(e){}}
-
+ 
 // ── GOOGLE LOGIN ───────────────────────────────
 function startGoogleLogin(){
   if(typeof google==='undefined'){toast('Cargando Google... intenta de nuevo en un segundo',true);return;}
@@ -693,18 +694,18 @@ function startGoogleLogin(){
     }
   });
 }
-
+ 
 async function handleCredential(resp){
   try{
     const p=JSON.parse(atob(resp.credential.split('.')[1]));
     const email=p.email||'',name=p.name||email,pic=p.picture||'';
     if(!email.endsWith('@'+DOMAIN)){toast('Solo cuentas @'+DOMAIN+' pueden acceder',true);return;}
-
+ 
     if(email===ADMIN_EMAIL){
       currentUser={email,nombre:name,rol:'Admin',picture:pic};
       saveSession(currentUser);enterApp();return;
     }
-
+ 
     let rol='Visualizador';
     try{
       const controller=new AbortController();
@@ -719,12 +720,12 @@ async function handleCredential(resp){
     }catch(e){
       toast('No se pudo verificar tu cuenta. Intenta de nuevo.',true);return;
     }
-
+ 
     currentUser={email,nombre:name,rol,picture:pic};
     saveSession(currentUser);enterApp();
   }catch(e){toast('Error al procesar la cuenta de Google',true);}
 }
-
+ 
 function enterApp(){
   const{nombre,rol,picture}=currentUser;
   const fn=nombre.split(' ')[0];
@@ -739,14 +740,14 @@ function enterApp(){
   document.getElementById('app').style.display='flex';
   initApp();
 }
-
+ 
 function doLogout(){
   currentUser=null;clearSession();
   if(typeof google!=='undefined')google.accounts.id.disableAutoSelect();
   document.getElementById('app').style.display='none';
   document.getElementById('login-screen').style.display='flex';
 }
-
+ 
 // ── AUTO-LOGIN ─────────────────────────────────
 window.addEventListener('load',()=>{
   const saved=loadSession();
@@ -761,7 +762,7 @@ window.addEventListener('load',()=>{
     },300);
   }
 });
-
+ 
 // ── API ────────────────────────────────────────
 async function api(p){
   const u=new URL(SCRIPT_URL);
@@ -775,7 +776,7 @@ async function apiPost(body){
   if(!r.ok)throw new Error('HTTP '+r.status);
   return r.json();
 }
-
+ 
 // ── OFFLINE + SYNC ─────────────────────────────
 window.addEventListener('online', ()=>{document.getElementById('offline-banner').style.display='none';syncQ();});
 window.addEventListener('offline',()=>{document.getElementById('offline-banner').style.display='block';});
@@ -791,7 +792,7 @@ function enqueue(i){
   q.push(i);
   localStorage.setItem('rcr_q',JSON.stringify(q));
 }
-
+ 
 async function syncAll(){
   const btn=document.getElementById('sync-btn');
   btn.classList.add('syncing');
@@ -802,13 +803,13 @@ async function syncAll(){
   btn.innerHTML='<span class="sync-icon">🔄</span> Sincronizar';
   toast('✅ Datos actualizados','','ok');
 }
-
+ 
 // ── INIT — carga caché primero, luego actualiza en fondo ──
 function initApp(){
   const d=new Date();
   document.getElementById('today-date').textContent=d.toLocaleDateString('es-EC',{weekday:'long',year:'numeric',month:'long',day:'numeric'}).replace(/^\w/,c=>c.toUpperCase());
   document.getElementById('ms-fecha').value=d.toISOString().split('T')[0];
-
+ 
   // FIX: usar caché si existe para carga inmediata
   const cache=loadCache();
   if(cache){
@@ -824,7 +825,7 @@ function initApp(){
     loadColabs(false);loadSegs(false);loadSema(false);
   }
 }
-
+ 
 // ── COLABORADORES ──────────────────────────────
 async function loadColabs(forceFresh=false){
   try{
@@ -833,7 +834,7 @@ async function loadColabs(forceFresh=false){
   }catch(e){if(!colaboradores.length)colaboradores=[];}
   renderColabs();updateStats();fillSegColabSel();
 }
-
+ 
 function renderColabs(){
   let d=colaboradores;
   const q=(document.getElementById('f-nombre')?.value||'').toLowerCase();
@@ -876,7 +877,7 @@ function renderColabs(){
   body.innerHTML='';
   body.appendChild(frag);
 }
-
+ 
 function abrirNuevoColab(){
   editingColab=null;
   document.getElementById('m-colab-title').textContent='Nuevo colaborador';
@@ -886,6 +887,8 @@ function abrirNuevoColab(){
   preview.style.background='linear-gradient(135deg,#33A8DE,#506CFF)';
   document.getElementById('c-photo-input').value='';
   document.getElementById('c-photo-status').style.display='none';
+  const delBtn=document.getElementById('c-photo-delete-btn');
+  if(delBtn) delBtn.style.display='none';
   document.getElementById('m-colab-title').textContent='Nuevo colaborador';
   ['c-nombre','c-ced','c-tel1','c-tel2','c-ercr','c-eper','c-dom','c-nac','c-finicio','c-ffin'].forEach(id=>{
     const e=document.getElementById(id);if(e)e.value='';
@@ -895,16 +898,16 @@ function abrirNuevoColab(){
   document.getElementById('c-est').value='Activo';
   openModal('m-colab');
 }
-
+ 
 function openFicha(name){
   const r=colaboradores.find(z=>z.Colaborador===name);
   if(!r)return;
   editingColab=name;
-
+ 
   const gr=['linear-gradient(135deg,#33A8DE,#506CFF)','linear-gradient(135deg,#18AE97,#0BC3FF)','linear-gradient(135deg,#F5AD21,#9FDA60)','linear-gradient(135deg,#F82D72,#FF85FF)','linear-gradient(135deg,#FF751F,#FF376F)'];
   const idx=colaboradores.indexOf(r);
   const grad=gr[idx%gr.length];
-
+ 
   // Foto o iniciales
   const photoWrap=document.getElementById('f-photo-wrap');
   if(photoWrap){
@@ -916,12 +919,12 @@ function openFicha(name){
       photoWrap.innerHTML=`<span style="font-size:20px;font-weight:700;color:#fff;">${ini(r.Colaborador)}</span>`;
     }
   }
-
+ 
   const elNombre=document.getElementById('f-nombre');
   const elMeta=document.getElementById('f-meta');
   if(elNombre) elNombre.textContent=r.Colaborador||'—';
   if(elMeta)   elMeta.textContent=`${r.Cargo||''} · ${r['Programa/Proyecto']||''}`;
-
+ 
   const fields=[
     ['Correo RCR',r['Correo de Redes Con Rostro']],
     ['Teléfono',r['Teléfono principal']||r['Télefono principal']],
@@ -936,15 +939,15 @@ function openFicha(name){
   ].filter(([,v])=>v);
   const fbody=document.getElementById('f-body');
   if(fbody) fbody.innerHTML=fields.map(([l,v])=>`<div class="f-block"><div class="f-lbl">${l}</div><div class="f-val">${x(v)}</div></div>`).join('');
-
+ 
   openModal('m-ficha');
 }
-
+ 
 function editColab(name){
   const r=colaboradores.find(z=>z.Colaborador===name)||{};
   editingColab=name;
   document.getElementById('m-colab-title').textContent='Editar colaborador';
-
+ 
   // Mostrar foto actual en preview
   const preview=document.getElementById('c-photo-preview');
   const fotoUrl=r['Foto']||'';
@@ -958,6 +961,8 @@ function editColab(name){
   }
   document.getElementById('c-photo-input').value='';
   document.getElementById('c-photo-status').style.display='none';
+  const delBtn=document.getElementById('c-photo-delete-btn');
+  if(delBtn) delBtn.style.display=fotoUrl?'inline-flex':'none';
   document.getElementById('c-nombre').value=r.Colaborador||'';
   document.getElementById('c-cargo').value=r.Cargo||'';
   document.getElementById('c-prog').value=r['Programa/Proyecto']||'';
@@ -974,25 +979,62 @@ function editColab(name){
   document.getElementById('c-ffin').value=r['Fecha de finalización']||'';
   openModal('m-colab');
 }
-
+ 
 function editCurrentColab(){closeModal('m-ficha');editColab(editingColab);}
-
+ 
 // ── SUBIR FOTO DIRECTO A DRIVE ────────────────
 const DRIVE_FOLDER_ID = '17DkSutFnoXTg7NcYjLEHdbqMuRLN8Erd';
-
+ 
+// ── ELIMINAR FOTO ─────────────────────────────
+async function deleteColabPhoto(){
+  if(!editingColab) return;
+  const idx=colaboradores.findIndex(r=>r.Colaborador===editingColab);
+  if(idx<0) return;
+ 
+  // Reset preview
+  const preview=document.getElementById('c-photo-preview');
+  const gr=['linear-gradient(135deg,#33A8DE,#506CFF)','linear-gradient(135deg,#18AE97,#0BC3FF)','linear-gradient(135deg,#F5AD21,#9FDA60)','linear-gradient(135deg,#F82D72,#FF85FF)','linear-gradient(135deg,#FF751F,#FF376F)'];
+  preview.style.background=gr[idx%gr.length];
+  preview.innerHTML=`<span id="c-photo-initials">${ini(editingColab)}</span>`;
+  document.getElementById('c-photo-delete-btn').style.display='none';
+  document.getElementById('c-photo-input').value='';
+ 
+  // Eliminar de Drive
+  const token=await getGoogleToken();
+  if(token){
+    const safeName=editingColab.replace(/[^a-zA-Z0-9]/g,'_')+'_foto';
+    const q=`'${DRIVE_FOLDER_ID}' in parents and name = '${safeName}' and trashed = false`;
+    const searchRes=await fetch(
+      `https://www.googleapis.com/drive/v3/files?q=${encodeURIComponent(q)}&fields=files(id)`,
+      {headers:{Authorization:'Bearer '+token}}
+    );
+    const searchData=await searchRes.json();
+    if(searchData.files) searchData.files.forEach(f=>
+      fetch(`https://www.googleapis.com/drive/v3/files/${f.id}`,{method:'DELETE',headers:{Authorization:'Bearer '+token}})
+    );
+  }
+ 
+  // Limpiar en memoria y Sheet
+  colaboradores[idx]['Foto']='';
+  saveCache({colaboradores,seguimientos,semaforo});
+  renderColabs();
+  apiPost({action:'updateRow',sheet:'Colaboradores',data:{'Foto':''},identifier:editingColab}).catch(()=>{});
+  toast('Foto eliminada','','ok');
+}
+ 
 async function uploadToDrive(file, nombreColab){
   // Obtener token de Google del usuario logueado
   const tokenClient = await getGoogleToken();
   if(!tokenClient){ toast('Sesión expirada — vuelve a iniciar sesión',true); return null; }
-
+ 
   // Metadata del archivo
   const metadata = { name: nombreColab + '_foto', parents: [DRIVE_FOLDER_ID] };
-
+ 
   // Crear FormData multipart
   const form = new FormData();
   form.append('metadata', new Blob([JSON.stringify(metadata)], {type:'application/json'}));
   form.append('file', file);
-
+ 
   try {
     const res = await fetch(
       'https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id',
@@ -1000,7 +1042,7 @@ async function uploadToDrive(file, nombreColab){
     );
     const data = await res.json();
     if(!data.id) return null;
-
+ 
     // Hacer público
     await fetch(
       `https://www.googleapis.com/drive/v3/files/${data.id}/permissions`,
@@ -1010,15 +1052,15 @@ async function uploadToDrive(file, nombreColab){
         body: JSON.stringify({ role:'reader', type:'anyone' })
       }
     );
-
+ 
     return 'https://drive.google.com/thumbnail?id=' + data.id + '&sz=w400';
   } catch(e){ return null; }
 }
-
+ 
 // ── SUBIR FOTO DIRECTO A DRIVE ────────────────
 let _cachedToken = null;
 let _tokenExpiry = 0;
-
+ 
 async function getGoogleToken(){
   // Reusar token si aún es válido (expira en 55 min)
   if(_cachedToken && Date.now() < _tokenExpiry){
@@ -1039,18 +1081,18 @@ async function getGoogleToken(){
     }).requestAccessToken({prompt:''});
   });
 }
-
+ 
 // Desde la ficha
 async function previewAndUploadPhoto(input){
   const file = input.files[0];
   if(!file) return;
   const status = document.getElementById('f-upload-status');
   status.style.display='block'; status.textContent='Subiendo foto...'; status.style.color='var(--text-muted)';
-
+ 
   // Preview inmediato
   const previewUrl = URL.createObjectURL(file);
   document.getElementById('f-photo-wrap').innerHTML = `<img src="${previewUrl}" style="width:100%;height:100%;object-fit:cover;">`;
-
+ 
   const url = await uploadToDrive(file, editingColab);
   if(url){
     // Guardar en Sheet via Apps Script
@@ -1065,7 +1107,7 @@ async function previewAndUploadPhoto(input){
     status.textContent='Error al subir la foto'; status.style.color='#c91a44';
   }
 }
-
+ 
 // ── PREVIEW FOTO EN FORMULARIO ────────────────
 function previewColabPhoto(input){
   const file = input.files[0];
@@ -1073,15 +1115,15 @@ function previewColabPhoto(input){
   const url = URL.createObjectURL(file);
   document.getElementById('c-photo-preview').innerHTML = `<img src="${url}" style="width:100%;height:100%;object-fit:cover;">`;
 }
-
+ 
 async function saveColab(){
   const nombre=document.getElementById('c-nombre').value.trim();
   if(!nombre){toast('El nombre es obligatorio',true);return;}
-
+ 
   // FIX: guardar isEdit ANTES de resetear editingColab
   const isEdit=!!editingColab;
   const prevNombre=editingColab;
-
+ 
   const data={
     Colaborador:nombre,
     Cargo:document.getElementById('c-cargo').value,
@@ -1098,10 +1140,10 @@ async function saveColab(){
     'Fecha de inicio':document.getElementById('c-finicio').value,
     'Fecha de finalización':document.getElementById('c-ffin').value,
   };
-
+ 
   closeModal('m-colab');
   editingColab=null;
-
+ 
   if(isEdit){
     const i=colaboradores.findIndex(z=>z.Colaborador===prevNombre);
     if(i>=0)colaboradores[i]={...colaboradores[i],...data};
@@ -1111,11 +1153,11 @@ async function saveColab(){
   renderColabs();fillSegColabSel();updateStats();
   toast(isEdit?'Colaborador actualizado':'Colaborador creado','','ok');
   saveCache({colaboradores,seguimientos,semaforo});
-
+ 
   const body={action:isEdit?'updateRow':'createRow',sheet:'Colaboradores',data};
   if(isEdit)body.identifier=prevNombre;
   apiPost(body).catch(()=>enqueue(body));
-
+ 
   // Subir foto si se seleccionó una
   const photoInput=document.getElementById('c-photo-input');
   if(photoInput&&photoInput.files&&photoInput.files[0]){
@@ -1132,14 +1174,14 @@ async function saveColab(){
     });
   }
 }
-
+ 
 // ── SEGUIMIENTO ────────────────────────────────
 async function loadSegs(){
   try{const r=await api({action:'getAll',sheet:'Seguimiento'});seguimientos=r.success?(r.data||[]):[];}
   catch(e){seguimientos=[];}
   fillSegColabSel();updateStats();
 }
-
+ 
 function fillSegColabSel(){
   const names=colaboradores.length
     ? colaboradores.map(r=>r.Colaborador).filter(Boolean)
@@ -1149,7 +1191,7 @@ function fillSegColabSel(){
   document.getElementById('seg-colab').innerHTML='<option value="">— Selecciona colaborador —</option>'+names.map(n=>`<option>${n}</option>`).join('');
   document.getElementById('ms-colab').innerHTML=opts;
 }
-
+ 
 function loadPanels(){
   const name=document.getElementById('seg-colab').value;
   const panels=document.getElementById('seg-panels');
@@ -1194,7 +1236,7 @@ function loadPanels(){
     <div class="panel-card"><div class="panel-head"><span>Panel izquierdo</span><select class="panel-sel" id="pl-sel" onchange="document.getElementById('pl-body').innerHTML=window._pb(+this.value)">${opts(0)}</select></div><div class="panel-body" id="pl-body">${pb(0)}</div></div>
     <div class="panel-card"><div class="panel-head"><span>Panel derecho</span><select class="panel-sel" id="pr-sel" onchange="document.getElementById('pr-body').innerHTML=window._pb(+this.value)"${recs.length<2?' disabled':''}>${opts(Math.min(1,recs.length-1))}</select></div><div class="panel-body" id="pr-body">${recs.length>1?pb(1):'<div class="empty-state"><p>Solo hay un registro</p></div>'}</div></div>`;
 }
-
+ 
 async function saveSeg(){
   const colab=document.getElementById('ms-colab').value,fecha=document.getElementById('ms-fecha').value;
   if(!colab||!fecha){toast('Colaborador y fecha son obligatorios',true);return;}
@@ -1237,7 +1279,7 @@ async function saveSeg(){
   const body={action:'createRow',sheet:'Seguimiento',data};
   apiPost(body).catch(()=>enqueue(body));
 }
-
+ 
 function editSeg(rowId){
   const r=seguimientos.find(s=>String(s.RowID)===String(rowId));
   if(!r){toast('Registro no encontrado',true);return;}
@@ -1274,7 +1316,7 @@ function editSeg(rowId){
   if(saveBtn){saveBtn.textContent='Actualizar';saveBtn.onclick=()=>updateSeg(rowId);}
   openModal('m-seg');
 }
-
+ 
 async function updateSeg(rowId){
   const colab=document.getElementById('ms-colab').value,fecha=document.getElementById('ms-fecha').value;
   if(!colab||!fecha){toast('Colaborador y fecha son obligatorios',true);return;}
@@ -1319,14 +1361,14 @@ async function updateSeg(rowId){
   const body={action:'updateRow',sheet:'Seguimiento',data,identifier:rowId};
   apiPost(body).catch(()=>enqueue(body));
 }
-
+ 
 // ── SEMÁFORO ───────────────────────────────────
 async function loadSema(){
   try{const r=await api({action:'getAll',sheet:'Semáforo'});semaforo=r.success?(r.data||[]):[];}
   catch(e){semaforo=[];}
   renderSema();updateStats();
 }
-
+ 
 function renderSema(){
   let d=semaforo;
   const q=(document.getElementById('sm-nombre')?.value||'').toLowerCase();
@@ -1378,14 +1420,14 @@ function renderSema(){
     });
   }
 }
-
+ 
 function clearSema(){
   document.getElementById('sm-nombre').value='';
   document.getElementById('sm-equipo').value='';
   document.getElementById('sm-mes').value='';
   renderSema();
 }
-
+ 
 // ── USUARIOS ───────────────────────────────────
 async function saveUsuario(){
   const nombre=document.getElementById('u-nombre').value.trim(),email=document.getElementById('u-email').value.trim(),rol=document.getElementById('u-rol').value;
@@ -1395,7 +1437,7 @@ async function saveUsuario(){
   toast('Usuario creado','','ok');
   apiPost({action:'createRow',sheet:'Usuarios',data:{Nombre:nombre,Correo:email,Rol:rol,Activo:'TRUE'}}).catch(()=>{});
 }
-
+ 
 // ── DELETE ─────────────────────────────────────
 function confirmDel(sheet,id,field){
   pendingDel={sheet,id,field};
@@ -1415,7 +1457,7 @@ async function executeDel(){
   saveCache({colaboradores,seguimientos,semaforo});
   apiPost({action:'deleteRow',sheet,rowId:id,field}).catch(()=>{});
 }
-
+ 
 // ── STATS ──────────────────────────────────────
 function updateStats(){
   document.getElementById('s-colabs').textContent=colaboradores.length;
@@ -1432,7 +1474,7 @@ function updateStats(){
   const sinRespuesta=activos-[...new Set(semaforo.map(r=>r.Colaborador))].length;
   document.getElementById('s-alert').textContent=Math.max(0,sinRespuesta);
 }
-
+ 
 // ── NAV / MODAL ────────────────────────────────
 function go(s){
   document.querySelectorAll('.screen').forEach(e=>e.classList.remove('active'));
@@ -1445,7 +1487,7 @@ function go(s){
 function openModal(id){document.getElementById(id)?.classList.add('open');}
 function closeModal(id){document.getElementById(id)?.classList.remove('open');}
 document.querySelectorAll('.modal-overlay').forEach(el=>el.addEventListener('click',function(e){if(e.target===this)this.classList.remove('open');}));
-
+ 
 // ── TOAST ──────────────────────────────────────
 let tTimer;
 function toast(msg,isErr=false,type=''){
@@ -1454,7 +1496,7 @@ function toast(msg,isErr=false,type=''){
   el.style.display='block';clearTimeout(tTimer);
   tTimer=setTimeout(()=>{el.style.display='none';},3200);
 }
-
+ 
 // ── UTILS ──────────────────────────────────────
 function x(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 function ini(n){return(n||'?').split(' ').slice(0,2).map(w=>w[0]||'').join('').toUpperCase();}
