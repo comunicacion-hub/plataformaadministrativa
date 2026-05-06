@@ -1002,16 +1002,18 @@ async function deleteColabPhoto(){
   // Eliminar de Drive
   const token=await getGoogleToken();
   if(token){
-    const safeName=editingColab.replace(/[^a-zA-Z0-9]/g,'_')+'_foto';
-    const q=`'${DRIVE_FOLDER_ID}' in parents and name = '${safeName}' and trashed = false`;
+    const normalize = s => s.toLowerCase().replace(/[^a-z0-9]/g,'');
+    const colabNorm = normalize(editingColab);
+    const q=`'${DRIVE_FOLDER_ID}' in parents and trashed = false`;
     const searchRes=await fetch(
-      `https://www.googleapis.com/drive/v3/files?q=${encodeURIComponent(q)}&fields=files(id)`,
+      `https://www.googleapis.com/drive/v3/files?q=${encodeURIComponent(q)}&fields=files(id,name)`,
       {headers:{Authorization:'Bearer '+token}}
     );
     const searchData=await searchRes.json();
-    if(searchData.files) searchData.files.forEach(f=>
-      fetch(`https://www.googleapis.com/drive/v3/files/${f.id}`,{method:'DELETE',headers:{Authorization:'Bearer '+token}})
-    );
+    if(searchData.files){
+      const toDelete=searchData.files.filter(f=>normalize(f.name).startsWith(colabNorm));
+      toDelete.forEach(f=>fetch(`https://www.googleapis.com/drive/v3/files/${f.id}`,{method:'DELETE',headers:{Authorization:'Bearer '+token}}));
+    }
   }
 
   // Limpiar en memoria y Sheet
@@ -1023,24 +1025,41 @@ async function deleteColabPhoto(){
 }
 
 async function uploadToDrive(file, nombreColab){
-  // Obtener token de Google del usuario logueado
-  const tokenClient = await getGoogleToken();
-  if(!tokenClient){ toast('Sesión expirada — vuelve a iniciar sesión',true); return null; }
+  const token = await getGoogleToken();
+  if(!token){ toast('Sesión expirada — vuelve a iniciar sesión',true); return null; }
 
-  // Metadata del archivo
-  const metadata = { name: nombreColab + '_foto', parents: [DRIVE_FOLDER_ID] };
-
-  // Crear FormData multipart
-  const form = new FormData();
-  form.append('metadata', new Blob([JSON.stringify(metadata)], {type:'application/json'}));
-  form.append('file', file);
+  const safeName = nombreColab.replace(/[^a-zA-Z0-9]/g,'_') + '_foto';
+  const normalize = s => s.toLowerCase().replace(/[^a-z0-9]/g,'');
+  const colabNorm = normalize(nombreColab);
 
   try {
-    const res = await fetch(
-      'https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id',
-      { method:'POST', headers:{ Authorization:'Bearer '+tokenClient }, body:form }
+    // Listar todos los archivos de la carpeta y eliminar los del mismo colaborador
+    const q = `'${DRIVE_FOLDER_ID}' in parents and trashed = false`;
+    const searchRes = await fetch(
+      `https://www.googleapis.com/drive/v3/files?q=${encodeURIComponent(q)}&fields=files(id,name)`,
+      { headers:{ Authorization:'Bearer '+token } }
     );
-    const data = await res.json();
+    const searchData = await searchRes.json();
+    if(searchData.files){
+      const toDelete = searchData.files.filter(f => normalize(f.name).startsWith(colabNorm));
+      await Promise.all(toDelete.map(f =>
+        fetch(`https://www.googleapis.com/drive/v3/files/${f.id}`,
+          { method:'DELETE', headers:{ Authorization:'Bearer '+token } }
+        )
+      ));
+    }
+
+    // Subir nueva foto
+    const metadata = { name: safeName, parents: [DRIVE_FOLDER_ID] };
+    const form = new FormData();
+    form.append('metadata', new Blob([JSON.stringify(metadata)], {type:'application/json'}));
+    form.append('file', file);
+
+    const uploadRes = await fetch(
+      'https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id',
+      { method:'POST', headers:{ Authorization:'Bearer '+token }, body:form }
+    );
+    const data = await uploadRes.json();
     if(!data.id) return null;
 
     // Hacer público
@@ -1048,7 +1067,7 @@ async function uploadToDrive(file, nombreColab){
       `https://www.googleapis.com/drive/v3/files/${data.id}/permissions`,
       {
         method:'POST',
-        headers:{ Authorization:'Bearer '+tokenClient, 'Content-Type':'application/json' },
+        headers:{ Authorization:'Bearer '+token, 'Content-Type':'application/json' },
         body: JSON.stringify({ role:'reader', type:'anyone' })
       }
     );
