@@ -1089,7 +1089,7 @@ async function getGoogleToken(){
     if(typeof google === 'undefined'){ resolve(null); return; }
     google.accounts.oauth2.initTokenClient({
       client_id: G_CLIENT,
-      scope: 'https://www.googleapis.com/auth/drive.file',
+      scope: 'https://www.googleapis.com/auth/drive',
       callback: r => {
         if(r.access_token){
           _cachedToken = r.access_token;
