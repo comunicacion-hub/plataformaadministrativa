@@ -265,6 +265,10 @@
   .grad-a-text{background:var(--grad-a);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
 
   /* ── MOBILE ── */
+  .drag-row{cursor:grab;transition:background 0.15s;}
+  .drag-row:active{cursor:grabbing;}
+  .drag-row.dragging{opacity:0.4;background:#f0f4ff;}
+  .drag-row.drag-over{border-top:2px solid #33A8DE;}
   @media(max-width:768px){
     .sidebar{display:none;}
     #mobile-nav{display:flex;position:fixed;bottom:0;left:0;right:0;z-index:100;background:rgba(255,255,255,0.97);border-top:1px solid var(--border);padding:8px 0 12px;justify-content:space-around;}
@@ -504,14 +508,12 @@
   <div class="mob-nav-item"        id="mob-semaforo"      onclick="go('semaforo')">      <span>🚦</span>Semáforo</div>
 </div>
 
-<!-- MODAL: COLABORADOR -->
+<!-- MODAL: COLABORADOR (dinámico) -->
 <div class="modal-overlay" id="m-colab">
   <div class="modal xl">
     <div class="modal-head"><div class="modal-title" id="m-colab-title">Nuevo colaborador</div><button class="modal-close" onclick="closeModal('m-colab')">✕</button></div>
-    <div class="modal-body">
-      <div class="form-section">Información general</div>
-
-      <!-- Foto de perfil -->
+    <div class="modal-body" id="m-colab-body">
+      <!-- Foto de perfil (siempre fija) -->
       <div style="display:flex;align-items:center;gap:20px;padding:4px 0 8px;">
         <div id="c-photo-preview" style="width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,#33A8DE,#506CFF);display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;color:#fff;flex-shrink:0;overflow:hidden;border:2px solid var(--border);">
           <span id="c-photo-initials">?</span>
@@ -521,53 +523,20 @@
             📷 Seleccionar foto
             <input type="file" id="c-photo-input" accept="image/jpeg,image/png" style="display:none;" onchange="previewColabPhoto(this)">
           </label>
-          <button id="c-photo-delete-btn" onclick="deleteColabPhoto()" style="display:none;margin-left:8px;padding:8px 14px;border:1.5px solid rgba(220,38,90,0.3);border-radius:var(--radius-sm);background:#fff;color:#c91a44;font-family:'Outfit',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all 0.15s;" onmouseover="this.style.background='rgba(220,38,90,0.05)'" onmouseout="this.style.background='#fff'">Eliminar foto</button>
-          <div style="font-size:11px;color:var(--text-dim);margin-top:5px;">JPG o PNG · máx. 2MB · opcional</div>
+          <button id="c-photo-delete-btn" onclick="deleteColabPhoto()" style="display:none;margin-left:8px;padding:8px 14px;border:1.5px solid rgba(220,38,90,0.3);border-radius:var(--radius-sm);background:#fff;color:#c91a44;font-family:'Outfit',sans-serif;font-size:13px;font-weight:600;cursor:pointer;" onmouseover="this.style.background='rgba(220,38,90,0.05)'" onmouseout="this.style.background='#fff'">Eliminar foto</button>
+          <div style="font-size:11px;color:var(--text-dim);margin-top:5px;">JPG o PNG · opcional</div>
           <div id="c-photo-status" style="font-size:12px;margin-top:4px;display:none;"></div>
         </div>
       </div>
-      <div class="form-grp"><label class="form-lbl">Nombre completo *</label><input class="form-inp" id="c-nombre" placeholder="Ej. Laura Pérez" oninput="const el=document.getElementById('c-photo-initials');if(el)el.textContent=ini(this.value)||'?'"></div>
-      <div class="form-row">
-        <div class="form-grp"><label class="form-lbl">Cargo</label>
-          <select class="form-inp" id="c-cargo">
-            <option value="">Seleccionar...</option>
-            <option>Coordinador</option><option>Gestor de Proyectos</option>
-            <option>Directora/Director</option><option>Socio</option>
-            <option>Profesional de la Salud</option><option>Otros</option>
-          </select>
-        </div>
-        <div class="form-grp"><label class="form-lbl">Programa / Proyecto</label>
-          <select class="form-inp" id="c-prog">
-            <option value="">Seleccionar...</option>
-            <option>General</option><option>ReCircula</option>
-            <option>Vidrio Mejor Planeta</option><option>Juntos Por La Vida</option><option>Otros</option>
-          </select>
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="form-grp"><label class="form-lbl">Fecha de nacimiento</label><input class="form-inp" id="c-nac" type="date"></div>
-        <div class="form-grp"><label class="form-lbl">Documento de identidad</label><input class="form-inp" id="c-ced" placeholder="1712345678"></div>
-      </div>
-      <div class="form-row">
-        <div class="form-grp"><label class="form-lbl">Fecha de inicio</label><input class="form-inp" id="c-finicio" type="date"></div>
-        <div class="form-grp"><label class="form-lbl">Fecha de finalización</label><input class="form-inp" id="c-ffin" type="date"></div>
-      </div>
-      <div class="form-section">Contacto</div>
-      <div class="form-row">
-        <div class="form-grp"><label class="form-lbl">Teléfono principal</label><input class="form-inp" id="c-tel1" placeholder="+593 99 000 0000"></div>
-        <div class="form-grp"><label class="form-lbl">Teléfono secundario</label><input class="form-inp" id="c-tel2" placeholder="Opcional"></div>
-      </div>
-      <div class="form-row">
-        <div class="form-grp"><label class="form-lbl">Correo de Redes Con Rostro</label><input class="form-inp" id="c-ercr" placeholder="nombre@redesconrostro.org"></div>
-        <div class="form-grp"><label class="form-lbl">Correo personal</label><input class="form-inp" id="c-eper" placeholder="Opcional"></div>
-      </div>
-      <div class="form-grp"><label class="form-lbl">Domicilio</label><input class="form-inp" id="c-dom" placeholder="Ciudad, Provincia"></div>
-      <div class="form-grp"><label class="form-lbl">Estado</label><select class="form-inp" id="c-est"><option>Activo</option><option>Inactivo</option></select></div>
+      <!-- Campos dinámicos se insertan aquí -->
+      <div id="c-dynamic-fields"><div class="empty-state"><span class="spinner spinner-dark"></span></div></div>
     </div>
     <div class="modal-foot">
       <button class="btn btn-glass" onclick="closeModal('m-colab')">Cancelar</button>
       <button class="btn btn-primary" id="c-save-btn" onclick="saveColab()">Guardar</button>
     </div>
+  </div>
+</div>
   </div>
 </div>
 
@@ -725,6 +694,8 @@
     </div>
   </div>
 </div>
+<!-- MODAL: CONFIRMAR -->
+<div class="modal-overlay" id="m-confirm">
   <div class="modal" style="width:380px;">
     <div class="modal-head"><div class="modal-title">Confirmar eliminación</div><button class="modal-close" onclick="closeModal('m-confirm')">✕</button></div>
     <p style="font-size:14px;color:var(--text-muted);line-height:1.6;" id="confirm-msg"></p>
@@ -896,15 +867,13 @@ function initApp(){
   const d=new Date();
   document.getElementById('today-date').textContent=d.toLocaleDateString('es-EC',{weekday:'long',year:'numeric',month:'long',day:'numeric'}).replace(/^\w/,c=>c.toUpperCase());
   document.getElementById('ms-fecha').value=d.toISOString().split('T')[0];
-
-  // FIX: usar caché si existe para carga inmediata
+  loadColabHeaders(); // cargar columnas dinámicas
   const cache=loadCache();
   if(cache){
     if(cache.colaboradores){colaboradores=cache.colaboradores;renderColabs();fillSegColabSel();}
     if(cache.seguimientos){seguimientos=cache.seguimientos;}
     if(cache.semaforo){semaforo=cache.semaforo;renderSema();}
     updateStats();
-    // Luego actualizar en segundo plano sin bloquear la UI
     Promise.all([loadColabs(false),loadSegs(false),loadSema(false)]).then(()=>{
       saveCache({colaboradores,seguimientos,semaforo});
     });
@@ -968,7 +937,6 @@ function renderColabs(){
 function abrirNuevoColab(){
   editingColab=null;
   document.getElementById('m-colab-title').textContent='Nuevo colaborador';
-  // Reset foto
   const preview=document.getElementById('c-photo-preview');
   preview.innerHTML='<span id="c-photo-initials">?</span>';
   preview.style.background='linear-gradient(135deg,#33A8DE,#506CFF)';
@@ -976,13 +944,29 @@ function abrirNuevoColab(){
   document.getElementById('c-photo-status').style.display='none';
   const delBtn=document.getElementById('c-photo-delete-btn');
   if(delBtn) delBtn.style.display='none';
-  document.getElementById('m-colab-title').textContent='Nuevo colaborador';
-  ['c-nombre','c-ced','c-tel1','c-tel2','c-ercr','c-eper','c-dom','c-nac','c-finicio','c-ffin'].forEach(id=>{
-    const e=document.getElementById(id);if(e)e.value='';
-  });
-  document.getElementById('c-cargo').value='';
-  document.getElementById('c-prog').value='';
-  document.getElementById('c-est').value='Activo';
+  renderColabForm({});
+  openModal('m-colab');
+}
+
+function editColab(name){
+  const r=colaboradores.find(z=>z.Colaborador===name)||{};
+  editingColab=name;
+  document.getElementById('m-colab-title').textContent='Editar colaborador';
+  const preview=document.getElementById('c-photo-preview');
+  const fotoUrl=r['Foto']||'';
+  if(fotoUrl){
+    preview.innerHTML=`<img src="${fotoUrl}" style="width:100%;height:100%;object-fit:cover;" onerror="this.parentElement.innerHTML='<span>${ini(r.Colaborador)}</span>'">`;
+  } else {
+    const gr=['linear-gradient(135deg,#33A8DE,#506CFF)','linear-gradient(135deg,#18AE97,#0BC3FF)','linear-gradient(135deg,#F5AD21,#9FDA60)','linear-gradient(135deg,#F82D72,#FF85FF)','linear-gradient(135deg,#FF751F,#FF376F)'];
+    const idx=colaboradores.indexOf(r);
+    preview.style.background=gr[idx%gr.length];
+    preview.innerHTML=`<span id="c-photo-initials">${ini(r.Colaborador)}</span>`;
+  }
+  document.getElementById('c-photo-input').value='';
+  document.getElementById('c-photo-status').style.display='none';
+  const delBtn=document.getElementById('c-photo-delete-btn');
+  if(delBtn) delBtn.style.display=fotoUrl?'inline-flex':'none';
+  renderColabForm(r);
   openModal('m-colab');
 }
 
@@ -1012,21 +996,24 @@ function openFicha(name){
   if(elNombre) elNombre.textContent=r.Colaborador||'—';
   if(elMeta)   elMeta.textContent=`${r.Cargo||''} · ${r['Programa/Proyecto']||''}`;
 
-  const fields=[
-    ['Correo RCR',r['Correo de Redes Con Rostro']],
-    ['Teléfono',r['Teléfono principal']||r['Télefono principal']],
-    ['Correo personal',r['Correo personal']],
-    ['Tel. secundario',r['Teléfono secundario']],
-    ['Nacimiento',r['Fecha de nacimiento']],
-    ['Inicio en RCR',r['Fecha de inicio']],
-    ['Finalización',r['Fecha de finalización']],
-    ['Cédula',r['Documento de identidad']],
-    ['Domicilio',r.Domicilio],
-    ['Estado',r.Estado],
-  ].filter(([,v])=>v);
+  // Campos — dinámicos si hay headers, fijos si no
+  const skip=['Foto'];
+  let fields=[];
+  if(colabHeaders.length){
+    fields=colabHeaders.filter(h=>!skip.includes(h.name)&&r[h.name]&&r[h.name]!=='').map(h=>[h.name,r[h.name]]);
+  } else {
+    fields=[
+      ['Correo RCR',r['Correo de Redes Con Rostro']],
+      ['Teléfono',r['Teléfono principal']||r['Télefono principal']],
+      ['Correo personal',r['Correo personal']],
+      ['Cédula',r['Documento de identidad']],
+      ['Domicilio',r.Domicilio],
+      ['Estado',r.Estado],
+    ];
+  }
+  fields=fields.filter(([,v])=>v);
   const fbody=document.getElementById('f-body');
   if(fbody) fbody.innerHTML=fields.map(([l,v])=>`<div class="f-block"><div class="f-lbl">${l}</div><div class="f-val">${x(v)}</div></div>`).join('');
-
   openModal('m-ficha');
 }
 
@@ -1046,24 +1033,7 @@ function editColab(name){
     preview.style.background=gr[idx%gr.length];
     preview.innerHTML=`<span id="c-photo-initials">${ini(r.Colaborador)}</span>`;
   }
-  document.getElementById('c-photo-input').value='';
-  document.getElementById('c-photo-status').style.display='none';
-  const delBtn=document.getElementById('c-photo-delete-btn');
-  if(delBtn) delBtn.style.display=fotoUrl?'inline-flex':'none';
-  document.getElementById('c-nombre').value=r.Colaborador||'';
-  document.getElementById('c-cargo').value=r.Cargo||'';
-  document.getElementById('c-prog').value=r['Programa/Proyecto']||'';
-  document.getElementById('c-ced').value=r['Documento de identidad']||'';
-  // FIX: normalizar campo teléfono
-  document.getElementById('c-tel1').value=r['Teléfono principal']||r['Télefono principal']||'';
-  document.getElementById('c-tel2').value=r['Teléfono secundario']||'';
-  document.getElementById('c-ercr').value=r['Correo de Redes Con Rostro']||'';
-  document.getElementById('c-eper').value=r['Correo personal']||'';
-  document.getElementById('c-dom').value=r.Domicilio||'';
-  document.getElementById('c-est').value=r.Estado||'Activo';
-  document.getElementById('c-nac').value=r['Fecha de nacimiento']||'';
-  document.getElementById('c-finicio').value=r['Fecha de inicio']||'';
-  document.getElementById('c-ffin').value=r['Fecha de finalización']||'';
+  renderColabForm(r);
   openModal('m-colab');
 }
 
@@ -1223,29 +1193,14 @@ function previewColabPhoto(input){
 }
 
 async function saveColab(){
-  const nombre=document.getElementById('c-nombre').value.trim();
+  // Obtener datos del formulario dinámico
+  const formData = getColabFormData();
+  const nombre = (formData['Colaborador']||'').trim();
   if(!nombre){toast('El nombre es obligatorio',true);return;}
 
-  // FIX: guardar isEdit ANTES de resetear editingColab
-  const isEdit=!!editingColab;
-  const prevNombre=editingColab;
-
-  const data={
-    Colaborador:nombre,
-    Cargo:document.getElementById('c-cargo').value,
-    'Programa/Proyecto':document.getElementById('c-prog').value,
-    'Fecha de nacimiento':document.getElementById('c-nac').value,
-    'Documento de identidad':document.getElementById('c-ced').value,
-    // FIX: guardar siempre con nombre consistente (sin acento en é)
-    'Teléfono principal':document.getElementById('c-tel1').value,
-    'Teléfono secundario':document.getElementById('c-tel2').value,
-    'Correo de Redes Con Rostro':document.getElementById('c-ercr').value,
-    'Correo personal':document.getElementById('c-eper').value,
-    Domicilio:document.getElementById('c-dom').value,
-    Estado:document.getElementById('c-est').value,
-    'Fecha de inicio':document.getElementById('c-finicio').value,
-    'Fecha de finalización':document.getElementById('c-ffin').value,
-  };
+  const isEdit    = !!editingColab;
+  const prevNombre= editingColab;
+  const data      = {...formData, Colaborador: nombre};
 
   closeModal('m-colab');
   editingColab=null;
@@ -1581,7 +1536,71 @@ function updateStats(){
   document.getElementById('s-alert').textContent=Math.max(0,sinRespuesta);
 }
 
-// ── CONFIGURACIÓN ─────────────────────────────
+// ── COLUMNAS DINÁMICAS DE COLABORADORES ───────
+let colabHeaders = [];
+
+async function loadColabHeaders(){
+  try{
+    const res = await api({action:'getHeaders', sheet:'Colaboradores'});
+    if(res.success) colabHeaders = res.data||[];
+  } catch(e){ colabHeaders=[]; }
+}
+
+function renderColabForm(record={}){
+  const skip = ['Colaborador','Foto']; // campos manejados por separado
+  const container = document.getElementById('c-dynamic-fields');
+  if(!colabHeaders.length){
+    // Fallback a campos fijos si no hay headers
+    container.innerHTML = `
+      <div class="form-grp"><label class="form-lbl">Nombre completo *</label><input class="form-inp" data-col="Colaborador" placeholder="Ej. Laura Pérez" oninput="const el=document.getElementById('c-photo-initials');if(el)el.textContent=ini(this.value)||'?'" value="${x(record['Colaborador']||'')}"></div>
+      <div class="form-grp"><label class="form-lbl">Estado</label><select class="form-inp" data-col="Estado"><option ${record['Estado']==='Activo'?'selected':''}>Activo</option><option ${record['Estado']==='Inactivo'?'selected':''}>Inactivo</option></select></div>`;
+    return;
+  }
+
+  // Nombre siempre primero
+  let html = `<div class="form-grp"><label class="form-lbl">Nombre completo *</label><input class="form-inp" data-col="Colaborador" placeholder="Ej. Laura Pérez" oninput="const el=document.getElementById('c-photo-initials');if(el)el.textContent=ini(this.value)||'?'" value="${x(record['Colaborador']||'')}"></div>`;
+
+  // Renderizar en pares (2 columnas)
+  const fields = colabHeaders.filter(h => !skip.includes(h.name));
+  let i = 0;
+  while(i < fields.length){
+    const f1 = fields[i];
+    const f2 = fields[i+1];
+    if(f2){
+      html += `<div class="form-row">${fieldHtml(f1,record)}${fieldHtml(f2,record)}</div>`;
+      i+=2;
+    } else {
+      html += fieldHtml(f1,record);
+      i++;
+    }
+  }
+  container.innerHTML = html;
+}
+
+function fieldHtml(f, record={}){
+  const val = x(record[f.name]||'');
+  const lbl = `<label class="form-lbl">${x(f.name)}</label>`;
+  let inp = '';
+  if(f.type==='fecha'){
+    inp = `<input class="form-inp" type="date" data-col="${x(f.name)}" value="${val}">`;
+  } else if(f.type==='numero'){
+    inp = `<input class="form-inp" type="number" data-col="${x(f.name)}" value="${val}" placeholder="0">`;
+  } else if(f.type==='desplegable'||f.type==='multiple'){
+    const opts = (f.options||[]).map(o=>`<option ${val===x(o)?'selected':''}>${x(o)}</option>`).join('');
+    inp = `<select class="form-inp" data-col="${x(f.name)}"><option value="">Seleccionar...</option>${opts}</select>`;
+  } else {
+    inp = `<input class="form-inp" data-col="${x(f.name)}" value="${val}" placeholder="${x(f.name)}">`;
+  }
+  return `<div class="form-grp">${lbl}${inp}</div>`;
+}
+
+function getColabFormData(){
+  const data = {};
+  document.querySelectorAll('#m-colab-body [data-col]').forEach(el=>{
+    data[el.getAttribute('data-col')] = el.value||'';
+  });
+  return data;
+}
 let cfgCurrentSheet='',cfgColumns=[],cfgEditingCol=null,cfgUsers=[];
 
 function switchConfigTab(tab){
@@ -1610,12 +1629,13 @@ function renderCfgColumns(){
   if(!cfgColumns.length){wrap.innerHTML='<div class="empty-state"><div class="e-ico">📋</div><p>No hay columnas en esta hoja</p></div>';return;}
   const tl={texto:'Texto',numero:'Número',fecha:'Fecha',desplegable:'Desplegable',multiple:'Opción múltiple'};
   const tc={texto:'#33A8DE',numero:'#506CFF',fecha:'#18AE97',desplegable:'#F5AD21',multiple:'#F82D72'};
-  wrap.innerHTML=`<div style="border-radius:var(--radius-lg);overflow:hidden;border:1px solid var(--border);background:var(--surface);box-shadow:var(--shadow);">
-    <div style="display:grid;grid-template-columns:2fr 1fr 2fr 100px;gap:12px;padding:11px 20px;background:#f8f8fc;border-bottom:1px solid var(--border);font-size:11px;font-weight:700;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.7px;">
-      <div>Columna</div><div>Tipo</div><div>Opciones</div><div></div>
+  wrap.innerHTML=`<div id="cfg-cols-list" style="border-radius:var(--radius-lg);overflow:hidden;border:1px solid var(--border);background:var(--surface);box-shadow:var(--shadow);">
+    <div style="display:grid;grid-template-columns:32px 2fr 1fr 2fr 100px;gap:12px;padding:11px 20px;background:#f8f8fc;border-bottom:1px solid var(--border);font-size:11px;font-weight:700;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.7px;">
+      <div></div><div>Columna</div><div>Tipo</div><div>Opciones</div><div></div>
     </div>
     ${cfgColumns.map((col,i)=>`
-    <div style="display:grid;grid-template-columns:2fr 1fr 2fr 100px;gap:12px;padding:13px 20px;border-bottom:${i<cfgColumns.length-1?'1px solid rgba(0,0,0,0.05)':'none'};align-items:center;">
+    <div class="drag-row" draggable="true" data-idx="${i}" style="display:grid;grid-template-columns:32px 2fr 1fr 2fr 100px;gap:12px;padding:13px 20px;border-bottom:${i<cfgColumns.length-1?'1px solid rgba(0,0,0,0.05)':'none'};align-items:center;">
+      <div style="color:var(--text-dim);font-size:18px;cursor:grab;user-select:none;">⠿</div>
       <div style="font-size:14px;font-weight:500;color:var(--text);">${x(col.name)}</div>
       <div><span style="display:inline-flex;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;background:${tc[col.type]||'#33A8DE'}18;color:${tc[col.type]||'#33A8DE'};border:1px solid ${tc[col.type]||'#33A8DE'}33;">${tl[col.type]||'Texto'}</span></div>
       <div style="font-size:12px;color:var(--text-muted);">${col.options&&col.options.length?col.options.slice(0,3).join(', ')+(col.options.length>3?' +'+(col.options.length-3)+' más':''):'—'}</div>
@@ -1625,6 +1645,46 @@ function renderCfgColumns(){
       </div>
     </div>`).join('')}
   </div>`;
+  initDragDrop();
+}
+
+function initDragDrop(){
+  const list = document.getElementById('cfg-cols-list');
+  if(!list) return;
+  let dragIdx = null;
+  list.querySelectorAll('.drag-row').forEach(row=>{
+    row.addEventListener('dragstart', e=>{
+      dragIdx = parseInt(row.dataset.idx);
+      row.classList.add('dragging');
+      e.dataTransfer.effectAllowed='move';
+    });
+    row.addEventListener('dragend', ()=> row.classList.remove('dragging'));
+    row.addEventListener('dragover', e=>{
+      e.preventDefault();
+      list.querySelectorAll('.drag-row').forEach(r=>r.classList.remove('drag-over'));
+      row.classList.add('drag-over');
+    });
+    row.addEventListener('drop', async e=>{
+      e.preventDefault();
+      row.classList.remove('drag-over');
+      const dropIdx = parseInt(row.dataset.idx);
+      if(dragIdx===null||dragIdx===dropIdx) return;
+      // Reordenar localmente
+      const moved = cfgColumns.splice(dragIdx,1)[0];
+      cfgColumns.splice(dropIdx,0,moved);
+      renderCfgColumns();
+      // Guardar en Sheet
+      const status=document.getElementById('cfg-saving');
+      status.style.display='inline';
+      try{
+        const res=await apiPost({action:'reorderColumns',sheet:cfgCurrentSheet,order:cfgColumns.map(c=>c.name)});
+        if(res.success) toast('Orden guardado','','ok');
+        else throw new Error();
+      }catch(e){ toast('Error al guardar orden',true); }
+      status.style.display='none';
+      dragIdx=null;
+    });
+  });
 }
 
 function editColumn(idx){
