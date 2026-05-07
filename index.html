@@ -341,6 +341,7 @@
     <div class="nav-item"        id="nav-colaboradores" onclick="go('colaboradores')"> <span class="nav-icon">👥</span> Colaboradores</div>
     <div class="nav-item"        id="nav-seguimiento"   onclick="go('seguimiento')">   <span class="nav-icon">💬</span> Bienestar</div>
     <div class="nav-item"        id="nav-semaforo"      onclick="go('semaforo')">      <span class="nav-icon">🚦</span> Semáforo</div>
+    <div class="nav-item"        id="nav-accesos"       onclick="go('accesos')">       <span class="nav-icon">🔗</span> Accesos</div>
     <div class="nav-item"        id="nav-config"        onclick="go('config')" style="display:none;"> <span class="nav-icon">⚙️</span> Configuración</div>
     <div class="sidebar-spacer"></div>
     <div class="user-chip">
@@ -498,6 +499,27 @@
       </div>
     </div>
 
+    <!-- ACCESOS -->
+    <div class="screen" id="screen-accesos">
+      <div class="page-header">
+        <div><div class="page-title">Tablero de Accesos</div><div class="page-sub">Links y recursos del equipo RCR</div></div>
+        <div class="hdr-actions">
+          <button class="btn btn-glass btn-sm" onclick="loadAccesos()">🔄 Sincronizar</button>
+          <button class="btn btn-primary btn-sm" id="btn-nuevo-acceso" style="display:none;" onclick="abrirNuevoAcceso()">+ Agregar link</button>
+        </div>
+      </div>
+
+      <!-- Filtro por categoría -->
+      <div class="filters-row" id="accesos-filtros" style="display:none;">
+        <div style="display:flex;gap:8px;flex-wrap:wrap;" id="accesos-cats"></div>
+      </div>
+
+      <!-- Grid de links -->
+      <div id="accesos-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px;">
+        <div class="empty-state"><span class="spinner spinner-dark"></span><p>Cargando accesos...</p></div>
+      </div>
+    </div>
+
   </main>
 </div>
 
@@ -506,6 +528,7 @@
   <div class="mob-nav-item"        id="mob-colaboradores" onclick="go('colaboradores')"> <span>👥</span>Colabs</div>
   <div class="mob-nav-item"        id="mob-seguimiento"   onclick="go('seguimiento')">   <span>💬</span>Bienestar</div>
   <div class="mob-nav-item"        id="mob-semaforo"      onclick="go('semaforo')">      <span>🚦</span>Semáforo</div>
+  <div class="mob-nav-item"        id="mob-accesos"       onclick="go('accesos')">       <span>🔗</span>Accesos</div>
 </div>
 
 <!-- MODAL: COLABORADOR (dinámico) -->
@@ -706,6 +729,50 @@
   </div>
 </div>
 
+<!-- MODAL: ACCESO -->
+<div class="modal-overlay" id="m-acceso">
+  <div class="modal">
+    <div class="modal-head"><div class="modal-title" id="m-acceso-title">Nuevo acceso</div><button class="modal-close" onclick="closeModal('m-acceso')">✕</button></div>
+    <div class="modal-body">
+      <div class="form-row">
+        <div class="form-grp" style="flex:0 0 64px;">
+          <label class="form-lbl">Emoji</label>
+          <input class="form-inp" id="a-emoji" placeholder="🔗" style="font-size:22px;text-align:center;" maxlength="2">
+        </div>
+        <div class="form-grp" style="flex:1;">
+          <label class="form-lbl">Nombre *</label>
+          <input class="form-inp" id="a-nombre" placeholder="Ej. Drive RCR">
+        </div>
+      </div>
+      <div class="form-grp"><label class="form-lbl">URL *</label><input class="form-inp" id="a-url" type="url" placeholder="https://..."></div>
+      <div class="form-row">
+        <div class="form-grp">
+          <label class="form-lbl">Categoría</label>
+          <select class="form-inp" id="a-cat">
+            <option value="">Sin categoría</option>
+            <option>Herramientas</option>
+            <option>Documentos</option>
+            <option>Redes sociales</option>
+            <option>Comunicación</option>
+            <option>Otros</option>
+          </select>
+        </div>
+        <div class="form-grp">
+          <label class="form-lbl">Visible para</label>
+          <select class="form-inp" id="a-visible">
+            <option value="Todos">Todos</option>
+            <option value="Solo admin">Solo admin</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-glass" onclick="closeModal('m-acceso')">Cancelar</button>
+      <button class="btn btn-primary" id="a-save-btn" onclick="saveAcceso()">Guardar</button>
+    </div>
+  </div>
+</div>
+
 <div id="toast"></div>
 
 <script>
@@ -793,7 +860,11 @@ function enterApp(){
   const av=document.getElementById('user-avatar');
   if(picture){av.innerHTML=`<img src="${picture}" alt="${fn}">`;}
   else{av.textContent=ini(nombre);}
-  if(rol==='Admin'){document.getElementById('admin-actions').style.display='flex';document.getElementById('nav-config').style.display='flex';}
+  if(rol==='Admin'){
+    document.getElementById('admin-actions').style.display='flex';
+    document.getElementById('nav-config').style.display='flex';
+    document.getElementById('btn-nuevo-acceso').style.display='inline-flex';
+  }
   document.getElementById('login-screen').style.display='none';
   document.getElementById('app').style.display='flex';
   initApp();
@@ -1601,6 +1672,116 @@ function getColabFormData(){
   });
   return data;
 }
+// ── ACCESOS ────────────────────────────────────
+let accesos=[],accesoEditingId=null,accesoCatFilter='';
+
+async function loadAccesos(){
+  const grid=document.getElementById('accesos-grid');
+  grid.innerHTML='<div class="empty-state"><span class="spinner spinner-dark"></span><p>Cargando...</p></div>';
+  try{const res=await api({action:'getAll',sheet:'Accesos'});accesos=res.success?(res.data||[]):[];}
+  catch(e){accesos=[];}
+  renderAccesos();
+}
+
+function renderAccesos(){
+  const isAdmin=currentUser?.rol==='Admin';
+  const grid=document.getElementById('accesos-grid');
+  const filtros=document.getElementById('accesos-filtros');
+  const catsDiv=document.getElementById('accesos-cats');
+  let visible=accesos.filter(a=>a.Activo!=='FALSE'&&(isAdmin||a['Visible para']==='Todos'));
+  const cats=[...new Set(visible.map(a=>a.Categoría).filter(Boolean))];
+  if(cats.length>1){
+    filtros.style.display='flex';
+    catsDiv.innerHTML=`<button onclick="accesoCatFilter='';renderAccesos()" style="padding:6px 14px;border-radius:20px;border:1.5px solid ${!accesoCatFilter?'#33A8DE':'var(--border)'};background:${!accesoCatFilter?'rgba(51,168,222,0.08)':'#fff'};color:${!accesoCatFilter?'#33A8DE':'var(--text-muted)'};font-family:'Outfit',sans-serif;font-size:12px;font-weight:600;cursor:pointer;">Todos</button>
+    ${cats.map(c=>`<button onclick="accesoCatFilter='${c}';renderAccesos()" style="padding:6px 14px;border-radius:20px;border:1.5px solid ${accesoCatFilter===c?'#33A8DE':'var(--border)'};background:${accesoCatFilter===c?'rgba(51,168,222,0.08)':'#fff'};color:${accesoCatFilter===c?'#33A8DE':'var(--text-muted)'};font-family:'Outfit',sans-serif;font-size:12px;font-weight:600;cursor:pointer;">${c}</button>`).join('')}`;
+  } else { filtros.style.display='none'; }
+  if(accesoCatFilter) visible=visible.filter(a=>a.Categoría===accesoCatFilter);
+  if(!visible.length){grid.innerHTML='<div class="empty-state" style="grid-column:1/-1;"><div class="e-ico">🔗</div><p>No hay accesos disponibles</p></div>';return;}
+  const grupos={};
+  visible.forEach(a=>{const cat=a.Categoría||'Sin categoría';if(!grupos[cat])grupos[cat]=[];grupos[cat].push(a);});
+  const colors=['#33A8DE','#18AE97','#F5AD21','#F82D72','#506CFF','#FF751F'];
+  let html='';
+  Object.entries(grupos).forEach(([cat,items],gi)=>{
+    const color=colors[gi%colors.length];
+    html+=`<div style="grid-column:1/-1;font-size:11px;font-weight:700;color:var(--text-dim);text-transform:uppercase;letter-spacing:1px;margin-top:${gi>0?'8px':'0'};">${cat}</div>`;
+    items.forEach(a=>{
+      const soloAdmin=a['Visible para']==='Solo admin';
+      html+=`<div style="padding:18px;border-radius:var(--radius-md);background:#fff;border:1px solid var(--border);box-shadow:var(--shadow-sm);transition:all 0.18s;cursor:pointer;position:relative;overflow:hidden;"
+        onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='var(--shadow)'"
+        onmouseout="this.style.transform='';this.style.boxShadow='var(--shadow-sm)'"
+        onclick="window.open('${a.URL}','_blank')">
+        <div style="position:absolute;top:0;left:0;right:0;height:3px;background:${color};"></div>
+        ${soloAdmin?`<span style="position:absolute;top:10px;right:10px;font-size:9px;font-weight:700;padding:2px 7px;border-radius:10px;background:rgba(80,108,255,0.1);color:#506CFF;">ADMIN</span>`:''}
+        <div style="font-size:28px;margin-bottom:10px;">${a.Emoji||'🔗'}</div>
+        <div style="font-size:14px;font-weight:600;color:var(--text);margin-bottom:4px;">${x(a.Nombre||'—')}</div>
+        <div style="font-size:11px;color:var(--text-dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${x(a.URL||'')}</div>
+        ${isAdmin?`<div style="display:flex;gap:6px;margin-top:12px;" onclick="event.stopPropagation()">
+          <button class="icon-btn" onclick="editAcceso('${x(a.ID)}')">✏️</button>
+          <button class="icon-btn del" onclick="confirmDelAcceso('${x(a.ID)}','${x(a.Nombre)}')">🗑️</button>
+        </div>`:''}
+      </div>`;
+    });
+  });
+  grid.innerHTML=html;
+}
+
+function abrirNuevoAcceso(){
+  accesoEditingId=null;
+  document.getElementById('m-acceso-title').textContent='Nuevo acceso';
+  ['a-emoji','a-nombre','a-url'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('a-cat').value='';
+  document.getElementById('a-visible').value='Todos';
+  openModal('m-acceso');
+}
+
+function editAcceso(id){
+  const a=accesos.find(r=>r.ID===id);if(!a)return;
+  accesoEditingId=id;
+  document.getElementById('m-acceso-title').textContent='Editar acceso';
+  document.getElementById('a-emoji').value=a.Emoji||'';
+  document.getElementById('a-nombre').value=a.Nombre||'';
+  document.getElementById('a-url').value=a.URL||'';
+  document.getElementById('a-cat').value=a.Categoría||'';
+  document.getElementById('a-visible').value=a['Visible para']||'Todos';
+  openModal('m-acceso');
+}
+
+async function saveAcceso(){
+  const nombre=document.getElementById('a-nombre').value.trim();
+  const url=document.getElementById('a-url').value.trim();
+  if(!nombre||!url){toast('Nombre y URL son obligatorios',true);return;}
+  const btn=document.getElementById('a-save-btn');btn.disabled=true;
+  const data={
+    Nombre:nombre,URL:url,
+    Emoji:document.getElementById('a-emoji').value||'🔗',
+    Categoría:document.getElementById('a-cat').value,
+    'Visible para':document.getElementById('a-visible').value,
+    Activo:'TRUE','Creado por':currentUser?.email||'',
+    Fecha:new Date().toLocaleDateString('es-EC'),
+  };
+  const isEdit=!!accesoEditingId;
+  if(isEdit){data.ID=accesoEditingId;const idx=accesos.findIndex(r=>r.ID===accesoEditingId);if(idx>=0)accesos[idx]={...accesos[idx],...data};}
+  else{data.ID='local_'+Date.now();accesos.push(data);}
+  closeModal('m-acceso');renderAccesos();
+  toast(isEdit?'Acceso actualizado':'Acceso creado','','ok');
+  const body={action:isEdit?'updateRow':'createRow',sheet:'Accesos',data};
+  if(isEdit)body.identifier=accesoEditingId;
+  apiPost(body).catch(()=>enqueue(body));
+  btn.disabled=false;
+}
+
+function confirmDelAcceso(id,nombre){
+  pendingDel={sheet:'Accesos',id,field:'ID'};
+  document.getElementById('confirm-msg').textContent=`¿Eliminar el acceso "${nombre}"?`;
+  document.getElementById('confirm-ok').onclick=()=>{
+    accesos=accesos.filter(a=>a.ID!==id);
+    closeModal('m-confirm');renderAccesos();toast('Acceso eliminado');
+    apiPost({action:'deleteRow',sheet:'Accesos',rowId:id,field:'ID'}).catch(()=>{});
+    pendingDel=null;
+  };
+  openModal('m-confirm');
+}
+
 let cfgCurrentSheet='',cfgColumns=[],cfgEditingCol=null,cfgUsers=[];
 
 function switchConfigTab(tab){
@@ -1774,6 +1955,7 @@ function go(s){
   document.getElementById('screen-'+s)?.classList.add('active');
   document.getElementById('nav-'+s)?.classList.add('active');
   document.getElementById('mob-'+s)?.classList.add('active');
+  if(s==='accesos') loadAccesos();
 }
 function openModal(id){document.getElementById(id)?.classList.add('open');}
 function closeModal(id){document.getElementById(id)?.classList.remove('open');}
