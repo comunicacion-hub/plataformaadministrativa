@@ -420,7 +420,7 @@
         <div class="hdr-actions">
           <button class="btn btn-glass btn-sm" onclick="syncAll()">🔄 Sincronizar</button>
           <button class="btn btn-glass btn-sm" onclick="generarPDFSeguimiento(document.getElementById('seg-colab').value)">PDF</button>
-          <button class="btn btn-primary btn-sm" onclick="openModal('m-seg')">+ Nuevo registro</button>
+          <button class="btn btn-primary btn-sm" onclick="renderSegForm();openModal('m-seg')">+ Nuevo registro</button>
         </div>
       </div>
       <div class="filters-row">
@@ -470,11 +470,7 @@
       <div id="config-columnas">
         <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap;">
           <select class="filter-sel" id="cfg-sheet-sel" onchange="loadSheetColumns(this.value)" style="min-width:180px;">
-            <option value="">Seleccionar hoja...</option>
-            <option value="Colaboradores">Colaboradores</option>
-            <option value="Seguimiento">Seguimiento</option>
-            <option value="Semáforo">Semáforo</option>
-            <option value="Usuarios">Usuarios</option>
+            <option value="">Cargando hojas...</option>
           </select>
           <button class="btn btn-primary btn-sm" onclick="cfgEditingCol=null;document.getElementById('m-col-title').textContent='Nueva columna';document.getElementById('col-nombre').value='';document.getElementById('col-tipo').value='texto';document.getElementById('col-options').value='';toggleColOptions();openModal('m-nueva-col')" id="btn-nueva-col" style="display:none;">+ Nueva columna</button>
           <span id="cfg-saving" style="font-size:12px;color:var(--text-muted);display:none;">Guardando...</span>
@@ -590,68 +586,15 @@
 <!-- MODAL: SEGUIMIENTO -->
 <div class="modal-overlay" id="m-seg">
   <div class="modal xl">
-    <div class="modal-head"><div class="modal-title">Nuevo registro de bienestar</div><button class="modal-close" onclick="closeModal('m-seg')">✕</button></div>
+    <div class="modal-head"><div class="modal-title" id="m-seg-title">Nuevo registro de bienestar</div><button class="modal-close" onclick="closeModal('m-seg')">✕</button></div>
     <div class="modal-body">
+      <!-- Campos fijos: colaborador y fecha -->
       <div class="form-row">
         <div class="form-grp"><label class="form-lbl">Colaborador *</label><select class="form-inp" id="ms-colab"></select></div>
         <div class="form-grp"><label class="form-lbl">Fecha *</label><input class="form-inp" id="ms-fecha" type="date"></div>
       </div>
-      <div class="form-row">
-        <div class="form-grp"><label class="form-lbl">Seguimiento</label>
-          <select class="form-inp" id="ms-seguimiento">
-            <option>Primero</option><option>Segundo</option><option>Tercero</option>
-          </select>
-        </div>
-        <div class="form-grp"><label class="form-lbl">Nivel de satisfacción laboral (1-10)</label>
-          <input class="form-inp" type="number" id="ms-satisfaccion" min="1" max="10" placeholder="1-10">
-        </div>
-      </div>
-      <div class="form-section">Apertura personal</div>
-      <div class="form-grp"><label class="form-lbl">¿Cómo inicias este semestre a nivel personal y laboral?</label><textarea class="form-inp" id="ms-inicio" rows="2"></textarea></div>
-      <div class="form-grp"><label class="form-lbl">Asuntos personales / familiares / salud que debamos considerar</label><textarea class="form-inp" id="ms-asuntos" rows="2"></textarea></div>
-      <div class="form-grp"><label class="form-lbl">Metas laborales</label><textarea class="form-inp" id="ms-metas" rows="2"></textarea></div>
-      <div class="form-grp"><label class="form-lbl">Retos laborales</label><textarea class="form-inp" id="ms-retos" rows="2"></textarea></div>
-      <div class="form-section">Desempeño</div>
-      <div class="form-grp"><label class="form-lbl">¿Qué está dificultando más tu desempeño actualmente?</label><textarea class="form-inp" id="ms-dificultad" rows="2"></textarea></div>
-      <div class="form-row">
-        <div class="form-grp"><label class="form-lbl">¿Qué hace que estés en ese número y no más bajo?</label><textarea class="form-inp" id="ms-porque" rows="2"></textarea></div>
-        <div class="form-grp"><label class="form-lbl">¿Qué necesitarías para subir 1 punto?</label><textarea class="form-inp" id="ms-subir" rows="2"></textarea></div>
-      </div>
-      <div class="form-section">Dimensiones del clima laboral (1-10)</div>
-      <div class="form-row-3">
-        <div class="form-grp"><label class="form-lbl">Clima laboral con todo el equipo RCR</label><input class="form-inp" type="number" id="ms-clima" min="1" max="10" placeholder="1-10"></div>
-        <div class="form-grp"><label class="form-lbl">Relación con liderazgo</label><input class="form-inp" type="number" id="ms-liderazgo" min="1" max="10" placeholder="1-10"></div>
-        <div class="form-grp"><label class="form-lbl">Trabajo en equipo</label><input class="form-inp" type="number" id="ms-equipo" min="1" max="10" placeholder="1-10"></div>
-      </div>
-      <div class="form-row-3">
-        <div class="form-grp"><label class="form-lbl">Reconocimiento</label><input class="form-inp" type="number" id="ms-reconocimiento" min="1" max="10" placeholder="1-10"></div>
-        <div class="form-grp"><label class="form-lbl">Desarrollo profesional</label><input class="form-inp" type="number" id="ms-desarrollo" min="1" max="10" placeholder="1-10"></div>
-        <div class="form-grp"><label class="form-lbl">Carga laboral</label><input class="form-inp" type="number" id="ms-carga" min="1" max="10" placeholder="1-10"></div>
-      </div>
-      <div class="form-row-3">
-        <div class="form-grp"><label class="form-lbl">Autonomía</label><input class="form-inp" type="number" id="ms-autonomia" min="1" max="10" placeholder="1-10"></div>
-        <div class="form-grp"><label class="form-lbl">Sentido / Propósito</label><input class="form-inp" type="number" id="ms-sentido" min="1" max="10" placeholder="1-10"></div>
-        <div class="form-grp"><label class="form-lbl">Profundizar en la dimensión más baja</label><textarea class="form-inp" id="ms-profundizar" rows="1"></textarea></div>
-      </div>
-      <div class="form-section">Habilidades de interacción</div>
-      <div class="form-row-3">
-        <div class="form-grp"><label class="form-lbl">Manejo emocional</label><input class="form-inp" type="number" id="ms-emocional" min="1" max="10" placeholder="1-10"></div>
-        <div class="form-grp"><label class="form-lbl">Escucha</label><input class="form-inp" type="number" id="ms-escucha" min="1" max="10" placeholder="1-10"></div>
-        <div class="form-grp"><label class="form-lbl">Empatía</label><input class="form-inp" type="number" id="ms-empatia" min="1" max="10" placeholder="1-10"></div>
-      </div>
-      <div class="form-row">
-        <div class="form-grp"><label class="form-lbl">Comunicación asertiva</label><input class="form-inp" type="number" id="ms-comunicacion" min="1" max="10" placeholder="1-10"></div>
-        <div class="form-grp"><label class="form-lbl">¿Cuál fortalecer este semestre?</label><textarea class="form-inp" id="ms-fortalecer" rows="1"></textarea></div>
-      </div>
-      <div class="form-section">Comunicación interna</div>
-      <div class="form-row-3">
-        <div class="form-grp"><label class="form-lbl">Claridad de la comunicación interna</label><input class="form-inp" type="number" id="ms-claridad" min="1" max="10" placeholder="1-10"></div>
-        <div class="form-grp"><label class="form-lbl">¿Revisas canales internos regularmente?</label>
-          <select class="form-inp" id="ms-canales"><option value="">Seleccionar...</option><option>Sí</option><option>No</option></select>
-        </div>
-        <div class="form-grp"><label class="form-lbl">Nivel de interés en contenidos</label><input class="form-inp" type="number" id="ms-interes" min="1" max="10" placeholder="1-10"></div>
-      </div>
-      <div class="form-grp"><label class="form-lbl">¿Qué deberíamos mejorar como equipo en comunicación?</label><textarea class="form-inp" id="ms-mejorar" rows="2"></textarea></div>
+      <!-- Campos dinámicos del Sheet -->
+      <div id="ms-dynamic-fields"><div class="empty-state"><span class="spinner spinner-dark"></span></div></div>
     </div>
     <div class="modal-foot">
       <button class="btn btn-glass" onclick="closeModal('m-seg')">Cancelar</button>
@@ -1370,46 +1313,22 @@ function loadPanels(){
 }
 
 async function saveSeg(){
-  const colab=document.getElementById('ms-colab').value,fecha=document.getElementById('ms-fecha').value;
+  const colab=document.getElementById('ms-colab').value;
+  const fecha=document.getElementById('ms-fecha').value;
   if(!colab||!fecha){toast('Colaborador y fecha son obligatorios',true);return;}
-  const data={
-    Colaborador:colab,Seguimiento:document.getElementById('ms-seguimiento').value,Fecha:fecha,
-    'Nivel de satisfacción laboral (1–10)':document.getElementById('ms-satisfaccion').value,
-    '¿Cómo inicias este semestre a nivel personal y laboral?':document.getElementById('ms-inicio').value,
-    'Asuntos personales / familiares / salud que debamos considerar':document.getElementById('ms-asuntos').value,
-    'Metas laborales':document.getElementById('ms-metas').value,
-    'Retos laborales':document.getElementById('ms-retos').value,
-    '¿Qué está dificultando más tu desempeño actualmente?':document.getElementById('ms-dificultad').value,
-    '¿Qué hace que estés en ese número y no más bajo?':document.getElementById('ms-porque').value,
-    '¿Qué necesitarías para subir 1 punto?':document.getElementById('ms-subir').value,
-    'Clima laboral con todo el equipo RCR':document.getElementById('ms-clima').value,
-    'Relación con liderazgo':document.getElementById('ms-liderazgo').value,
-    'Trabajo en equipo con su equipo':document.getElementById('ms-equipo').value,
-    'Reconocimiento':document.getElementById('ms-reconocimiento').value,
-    'Desarrollo profesional':document.getElementById('ms-desarrollo').value,
-    'Carga laboral':document.getElementById('ms-carga').value,
-    'Autonomía':document.getElementById('ms-autonomia').value,
-    'Sentido/propósito':document.getElementById('ms-sentido').value,
-    'Profundizar solo en la dimensión más baja':document.getElementById('ms-profundizar').value,
-    'Manejo emocional':document.getElementById('ms-emocional').value,
-    'Escucha':document.getElementById('ms-escucha').value,
-    'Empatía':document.getElementById('ms-empatia').value,
-    'Comunicación asertiva':document.getElementById('ms-comunicacion').value,
-    '¿Cuál deberías fortalecer este semestre para mejorar tu impacto?':document.getElementById('ms-fortalecer').value,
-    'Claridad de la comunicación interna':document.getElementById('ms-claridad').value,
-    '¿Revisas canales internos regularmente?':document.getElementById('ms-canales').value,
-    'Nivel de interés en contenidos':document.getElementById('ms-interes').value,
-    '¿Qué deberíamos mejorar como equipo en comunicación?':document.getElementById('ms-mejorar').value,
-  };
-  seguimientos.push({...data,RowID:'local_'+Date.now()});
+
+  // Obtener datos dinámicos del formulario
+  const dynData = getSegFormData();
+  const data = {Colaborador:colab, Fecha:fecha, ...dynData};
+
+  seguimientos.push({...data, RowID:'local_'+Date.now()});
   closeModal('m-seg');
   updateStats();
   document.getElementById('seg-colab').value=colab;
   loadPanels();
   toast('Registro guardado','','ok');
   saveCache({colaboradores,seguimientos,semaforo});
-  const body={action:'createRow',sheet:'Seguimiento',data};
-  apiPost(body).catch(()=>enqueue(body));
+  apiPost({action:'createRow',sheet:'Seguimiento',data}).catch(()=>enqueue({action:'createRow',sheet:'Seguimiento',data}));
 }
 
 function editSeg(rowId){
@@ -1607,14 +1526,19 @@ function updateStats(){
   document.getElementById('s-alert').textContent=Math.max(0,sinRespuesta);
 }
 
-// ── COLUMNAS DINÁMICAS DE COLABORADORES ───────
+// ── COLUMNAS DINÁMICAS ────────────────────────
 let colabHeaders = [];
+let segHeaders   = [];
 
 async function loadColabHeaders(){
   try{
-    const res = await api({action:'getHeaders', sheet:'Colaboradores'});
-    if(res.success) colabHeaders = res.data||[];
-  } catch(e){ colabHeaders=[]; }
+    const [rc, rs] = await Promise.all([
+      api({action:'getHeaders', sheet:'Colaboradores'}),
+      api({action:'getHeaders', sheet:'Seguimiento'})
+    ]);
+    if(rc.success) colabHeaders = rc.data||[];
+    if(rs.success) segHeaders   = rs.data||[];
+  } catch(e){ colabHeaders=[]; segHeaders=[]; }
 }
 
 function renderColabForm(record={}){
@@ -1669,6 +1593,32 @@ function getColabFormData(){
   const data = {};
   document.querySelectorAll('#m-colab-body [data-col]').forEach(el=>{
     data[el.getAttribute('data-col')] = el.value||'';
+  });
+  return data;
+}
+
+function renderSegForm(record={}){
+  const skip = ['RowID','Colaborador','Fecha'];
+  const container = document.getElementById('ms-dynamic-fields');
+  if(!segHeaders.length){
+    container.innerHTML='<div class="empty-state"><div class="e-ico">📋</div><p>No se pudieron cargar los campos. Sincroniza e intenta de nuevo.</p></div>';
+    return;
+  }
+  const fields = segHeaders.filter(h=>!skip.includes(h.name));
+  let html='';
+  let i=0;
+  while(i<fields.length){
+    const f1=fields[i], f2=fields[i+1];
+    if(f2){ html+=`<div class="form-row">${fieldHtml(f1,record)}${fieldHtml(f2,record)}</div>`; i+=2; }
+    else { html+=fieldHtml(f1,record); i++; }
+  }
+  container.innerHTML=html;
+}
+
+function getSegFormData(){
+  const data={};
+  document.querySelectorAll('#m-seg [data-col]').forEach(el=>{
+    data[el.getAttribute('data-col')]=el.value||'';
   });
   return data;
 }
@@ -1780,6 +1730,17 @@ function confirmDelAcceso(id,nombre){
     pendingDel=null;
   };
   openModal('m-confirm');
+}
+
+async function loadConfigSheets(){
+  try{
+    const res = await api({action:'getSheets'});
+    if(res.success){
+      const sel = document.getElementById('cfg-sheet-sel');
+      sel.innerHTML = '<option value="">Seleccionar hoja...</option>' +
+        res.data.map(s=>`<option value="${x(s)}">${x(s)}</option>`).join('');
+    }
+  } catch(e){ console.error('Error cargando hojas',e); }
 }
 
 let cfgCurrentSheet='',cfgColumns=[],cfgEditingCol=null,cfgUsers=[];
@@ -1956,6 +1917,7 @@ function go(s){
   document.getElementById('nav-'+s)?.classList.add('active');
   document.getElementById('mob-'+s)?.classList.add('active');
   if(s==='accesos') loadAccesos();
+  if(s==='config') loadConfigSheets();
 }
 function openModal(id){document.getElementById(id)?.classList.add('open');}
 function closeModal(id){document.getElementById(id)?.classList.remove('open');}
