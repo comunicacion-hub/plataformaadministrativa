@@ -440,7 +440,8 @@
         </div>
       </div>
       <div class="filters-row">
-        <div class="search-wrap"><span class="search-icon">🔍</span><input class="search-input" type="text" placeholder="Buscar colaborador..." id="sm-nombre" oninput="renderSema()"></div>
+        <div class="search-wrap"><span class="search-icon">🔍</span><input class="search-input" type="text" placeholder="Buscar colaborador..." id="sm-nombre" oninput="renderSema();updateSemaBtnVer()"></div>
+        <button class="btn btn-primary btn-sm" id="btn-ver-sema" style="display:none;" onclick="openSemaModal()">📋 Ver formulario</button>
         <select class="filter-sel" id="sm-equipo" onchange="renderSema()"><option value="">Todos los equipos</option><option>General</option><option>ReCircula</option><option>Vidrio Mejor Planeta</option><option>Juntos Por La Vida</option><option>Otros</option></select>
         <select class="filter-sel" id="sm-mes" onchange="renderSema()"><option value="">Todos los meses</option></select>
         <button class="btn btn-glass btn-sm" onclick="clearSema()">Ver todos</button>
@@ -547,8 +548,38 @@
           <div id="c-photo-status" style="font-size:12px;margin-top:4px;display:none;"></div>
         </div>
       </div>
-      <!-- Campos dinámicos se insertan aquí -->
-      <div id="c-dynamic-fields"><div class="empty-state"><span class="spinner spinner-dark"></span></div></div>
+      <!-- Campos fijos Colaboradores -->
+      <div id="c-dynamic-fields">
+        <div class="form-grp"><label class="form-lbl">Nombre completo *</label><input class="form-inp" data-col="Colaborador" placeholder="Ej. Laura Pérez" oninput="const el=document.getElementById('c-photo-initials');if(el)el.textContent=ini(this.value)||'?'" value=""></div>
+        <div class="form-row">
+          <div class="form-grp"><label class="form-lbl">Cargo</label><select class="form-inp" data-col="Cargo"><option value="">Seleccionar...</option><option>Coordinador</option><option>Gestor de Proyectos</option><option>Directora/Director</option><option>Socio</option><option>Profesional de la Salud</option><option>Otros</option></select></div>
+          <div class="form-grp"><label class="form-lbl">Programa/Proyecto</label><select class="form-inp" data-col="Programa/Proyecto"><option value="">Seleccionar...</option><option>General</option><option>ReCircula</option><option>Vidrio Mejor Planeta</option><option>Juntos Por La Vida</option><option>Dirección Creativa</option><option>Contabilidad y Transparencia</option><option>Bienestar Organizacional</option><option>Otros</option></select></div>
+        </div>
+        <div class="form-row">
+          <div class="form-grp"><label class="form-lbl">Fecha de nacimiento</label><input class="form-inp" type="date" data-col="Fecha de nacimiento"></div>
+          <div class="form-grp"><label class="form-lbl">Fecha de inicio</label><input class="form-inp" type="date" data-col="Fecha de inicio"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-grp"><label class="form-lbl">Fecha de finalización</label><input class="form-inp" type="date" data-col="Fecha de finalización"></div>
+          <div class="form-grp"><label class="form-lbl">Documento de identidad</label><input class="form-inp" data-col="Documento de identidad" placeholder="Ej. 0912345678"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-grp"><label class="form-lbl">Teléfono principal</label><input class="form-inp" data-col="Teléfono principal" placeholder="Ej. 0987654321"></div>
+          <div class="form-grp"><label class="form-lbl">Teléfono secundario</label><input class="form-inp" data-col="Teléfono secundario" placeholder="Opcional"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-grp"><label class="form-lbl">Correo de Redes Con Rostro</label><input class="form-inp" type="email" data-col="Correo de Redes Con Rostro" placeholder="nombre@redesconrostro.org"></div>
+          <div class="form-grp"><label class="form-lbl">Correo personal</label><input class="form-inp" type="email" data-col="Correo personal" placeholder="correo@gmail.com"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-grp"><label class="form-lbl">Domicilio</label><input class="form-inp" data-col="Domicilio" placeholder="Ciudad, barrio"></div>
+          <div class="form-grp"><label class="form-lbl">Estado</label><select class="form-inp" data-col="Estado"><option value="">Seleccionar...</option><option>Activo</option><option>Inactivo</option></select></div>
+        </div>
+        <div class="form-row">
+          <div class="form-grp"><label class="form-lbl">Talla de chaleco</label><select class="form-inp" data-col="Talla de chaleco"><option value="">Seleccionar...</option><option>XS</option><option>S</option><option>M</option><option>L</option><option>XL</option><option>XXL</option></select></div>
+          <div class="form-grp"><label class="form-lbl">Talla de camiseta</label><select class="form-inp" data-col="Talla de camiseta"><option value="">Seleccionar...</option><option>XS</option><option>S</option><option>M</option><option>L</option><option>XL</option><option>XXL</option></select></div>
+        </div>
+      </div>
     </div>
     <div class="modal-foot">
       <button class="btn btn-glass" onclick="closeModal('m-colab')">Cancelar</button>
@@ -593,8 +624,61 @@
         <div class="form-grp"><label class="form-lbl">Colaborador *</label><select class="form-inp" id="ms-colab"></select></div>
         <div class="form-grp"><label class="form-lbl">Fecha *</label><input class="form-inp" id="ms-fecha" type="date"></div>
       </div>
-      <!-- Campos dinámicos del Sheet -->
-      <div id="ms-dynamic-fields"><div class="empty-state"><span class="spinner spinner-dark"></span></div></div>
+      <!-- Campos fijos Seguimiento -->
+      <div id="ms-dynamic-fields">
+        <div class="form-row">
+          <div class="form-grp"><label class="form-lbl">Seguimiento</label><select class="form-inp" data-col="Seguimiento"><option value="">Seleccionar...</option><option>Primero</option><option>Segundo</option><option>Tercero</option></select></div>
+        </div>
+        <div class="form-grp"><label class="form-lbl">¿Cómo inicias este semestre a nivel personal y laboral?</label><textarea class="form-inp" data-col="¿Cómo inicias este semestre a nivel personal y laboral?" rows="2" placeholder="Escribe aquí..."></textarea></div>
+        <div class="form-grp"><label class="form-lbl">Asuntos personales / familiares / salud que debamos considerar</label><textarea class="form-inp" data-col="Asuntos personales / familiares / salud que debamos considerar" rows="2" placeholder="Opcional"></textarea></div>
+        <div class="form-row">
+          <div class="form-grp"><label class="form-lbl">Metas laborales</label><textarea class="form-inp" data-col="Metas laborales" rows="2" placeholder="Escribe aquí..."></textarea></div>
+          <div class="form-grp"><label class="form-lbl">Retos laborales</label><textarea class="form-inp" data-col="Retos laborales" rows="2" placeholder="Escribe aquí..."></textarea></div>
+        </div>
+        <div class="form-grp"><label class="form-lbl">Nivel de satisfacción laboral (1–10)</label><input class="form-inp" type="number" min="1" max="10" data-col="Nivel de satisfacción laboral (1–10)" placeholder="1 al 10"></div>
+        <div class="form-grp"><label class="form-lbl">¿Qué está dificultando más tu desempeño actualmente?</label><textarea class="form-inp" data-col="¿Qué está dificultando más tu desempeño actualmente?" rows="2" placeholder="Escribe aquí..."></textarea></div>
+        <div class="form-row">
+          <div class="form-grp"><label class="form-lbl">¿Qué hace que estés en ese número y no más bajo?</label><textarea class="form-inp" data-col="¿Qué hace que estés en ese número y no más bajo?" rows="2"></textarea></div>
+          <div class="form-grp"><label class="form-lbl">¿Qué necesitarías para subir 1 punto?</label><textarea class="form-inp" data-col="¿Qué necesitarías para subir 1 punto?" rows="2"></textarea></div>
+        </div>
+        <div style="font-size:11px;font-weight:700;color:var(--text-dim);text-transform:uppercase;letter-spacing:.7px;margin:8px 0 4px;">Dimensiones (1–10)</div>
+        <div class="form-row">
+          <div class="form-grp"><label class="form-lbl">Clima laboral con todo el equipo RCR</label><input class="form-inp" type="number" min="1" max="10" data-col="Clima laboral con todo el equipo RCR" placeholder="1-10"></div>
+          <div class="form-grp"><label class="form-lbl">Relación con liderazgo</label><input class="form-inp" type="number" min="1" max="10" data-col="Relación con liderazgo" placeholder="1-10"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-grp"><label class="form-lbl">Trabajo en equipo con su equipo</label><input class="form-inp" type="number" min="1" max="10" data-col="Trabajo en equipo con su equipo" placeholder="1-10"></div>
+          <div class="form-grp"><label class="form-lbl">Reconocimiento</label><input class="form-inp" type="number" min="1" max="10" data-col="Reconocimiento" placeholder="1-10"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-grp"><label class="form-lbl">Desarrollo profesional</label><input class="form-inp" type="number" min="1" max="10" data-col="Desarrollo profesional" placeholder="1-10"></div>
+          <div class="form-grp"><label class="form-lbl">Carga laboral</label><input class="form-inp" type="number" min="1" max="10" data-col="Carga laboral" placeholder="1-10"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-grp"><label class="form-lbl">Autonomía</label><input class="form-inp" type="number" min="1" max="10" data-col="Autonomía" placeholder="1-10"></div>
+          <div class="form-grp"><label class="form-lbl">Sentido/propósito</label><input class="form-inp" type="number" min="1" max="10" data-col="Sentido/propósito" placeholder="1-10"></div>
+        </div>
+        <div class="form-grp"><label class="form-lbl">Profundizar solo en la dimensión más baja</label><textarea class="form-inp" data-col="Profundizar solo en la dimensión más baja" rows="2"></textarea></div>
+        <div style="font-size:11px;font-weight:700;color:var(--text-dim);text-transform:uppercase;letter-spacing:.7px;margin:8px 0 4px;">Habilidades blandas (1–10)</div>
+        <div class="form-row">
+          <div class="form-grp"><label class="form-lbl">Manejo emocional</label><input class="form-inp" type="number" min="1" max="10" data-col="Manejo emocional" placeholder="1-10"></div>
+          <div class="form-grp"><label class="form-lbl">Escucha</label><input class="form-inp" type="number" min="1" max="10" data-col="Escucha" placeholder="1-10"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-grp"><label class="form-lbl">Empatía</label><input class="form-inp" type="number" min="1" max="10" data-col="Empatía" placeholder="1-10"></div>
+          <div class="form-grp"><label class="form-lbl">Comunicación asertiva</label><input class="form-inp" type="number" min="1" max="10" data-col="Comunicación asertiva" placeholder="1-10"></div>
+        </div>
+        <div class="form-grp"><label class="form-lbl">¿Cuál deberías fortalecer este semestre para mejorar tu impacto?</label><textarea class="form-inp" data-col="¿Cuál deberías fortalecer este semestre para mejorar tu impacto?" rows="2"></textarea></div>
+        <div style="font-size:11px;font-weight:700;color:var(--text-dim);text-transform:uppercase;letter-spacing:.7px;margin:8px 0 4px;">Comunicación interna</div>
+        <div class="form-row">
+          <div class="form-grp"><label class="form-lbl">Claridad de la comunicación interna</label><input class="form-inp" type="number" min="1" max="10" data-col="Claridad de la comunicación interna" placeholder="1-10"></div>
+          <div class="form-grp"><label class="form-lbl">¿Revisas canales internos regularmente?</label><select class="form-inp" data-col="¿Revisas canales internos regularmente?"><option value="">Seleccionar...</option><option>Sí</option><option>No</option></select></div>
+        </div>
+        <div class="form-row">
+          <div class="form-grp"><label class="form-lbl">Nivel de interés en contenidos</label><input class="form-inp" type="number" min="1" max="10" data-col="Nivel de interés en contenidos" placeholder="1-10"></div>
+        </div>
+        <div class="form-grp"><label class="form-lbl">¿Qué deberíamos mejorar como equipo en comunicación?</label><textarea class="form-inp" data-col="¿Qué deberíamos mejorar como equipo en comunicación?" rows="2"></textarea></div>
+      </div>
     </div>
     <div class="modal-foot">
       <button class="btn btn-glass" onclick="closeModal('m-seg')">Cancelar</button>
@@ -1559,63 +1643,31 @@ let colabHeaders = [];
 let segHeaders   = [];
 
 async function loadColabHeaders(){
-  try{
-    const [rc, rs] = await Promise.all([
-      api({action:'getHeaders', sheet:'Colaboradores'}),
-      api({action:'getHeaders', sheet:'Seguimiento'})
-    ]);
-    if(rc.success) colabHeaders = rc.data||[];
-    if(rs.success) segHeaders   = rs.data||[];
-  } catch(e){ colabHeaders=[]; segHeaders=[]; }
+  // Columnas ahora son fijas — no necesita cargar del servidor
+  colabHeaders = [];
+  segHeaders   = [];
 }
 
 function renderColabForm(record={}){
-  const skip = ['Colaborador','Foto']; // campos manejados por separado
+  // Llenar valores en los campos fijos del modal
   const container = document.getElementById('c-dynamic-fields');
-  if(!colabHeaders.length){
-    // Fallback a campos fijos si no hay headers
-    container.innerHTML = `
-      <div class="form-grp"><label class="form-lbl">Nombre completo *</label><input class="form-inp" data-col="Colaborador" placeholder="Ej. Laura Pérez" oninput="const el=document.getElementById('c-photo-initials');if(el)el.textContent=ini(this.value)||'?'" value="${x(record['Colaborador']||'')}"></div>
-      <div class="form-grp"><label class="form-lbl">Estado</label><select class="form-inp" data-col="Estado"><option ${record['Estado']==='Activo'?'selected':''}>Activo</option><option ${record['Estado']==='Inactivo'?'selected':''}>Inactivo</option></select></div>`;
-    return;
-  }
-
-  // Nombre siempre primero
-  let html = `<div class="form-grp"><label class="form-lbl">Nombre completo *</label><input class="form-inp" data-col="Colaborador" placeholder="Ej. Laura Pérez" oninput="const el=document.getElementById('c-photo-initials');if(el)el.textContent=ini(this.value)||'?'" value="${x(record['Colaborador']||'')}"></div>`;
-
-  // Renderizar en pares (2 columnas)
-  const fields = colabHeaders.filter(h => !skip.includes(h.name));
-  let i = 0;
-  while(i < fields.length){
-    const f1 = fields[i];
-    const f2 = fields[i+1];
-    if(f2){
-      html += `<div class="form-row">${fieldHtml(f1,record)}${fieldHtml(f2,record)}</div>`;
-      i+=2;
+  container.querySelectorAll('[data-col]').forEach(el=>{
+    const col = el.getAttribute('data-col');
+    const val = record[col]||'';
+    if(el.tagName==='SELECT'){
+      // Buscar la opción que coincida
+      const opt=[...el.options].find(o=>o.value===val||o.text===val);
+      el.value = opt?val:'';
     } else {
-      html += fieldHtml(f1,record);
-      i++;
+      el.value = val;
     }
-  }
-  container.innerHTML = html;
+  });
+  // Iniciales en la foto
+  const ini_el = document.getElementById('c-photo-initials');
+  if(ini_el) ini_el.textContent = ini(record['Colaborador']||'')||'?';
 }
 
-function fieldHtml(f, record={}){
-  const val = x(record[f.name]||'');
-  const lbl = `<label class="form-lbl">${x(f.name)}</label>`;
-  let inp = '';
-  if(f.type==='fecha'){
-    inp = `<input class="form-inp" type="date" data-col="${x(f.name)}" value="${val}">`;
-  } else if(f.type==='numero'){
-    inp = `<input class="form-inp" type="number" data-col="${x(f.name)}" value="${val}" placeholder="0">`;
-  } else if(f.type==='desplegable'||f.type==='multiple'){
-    const opts = (f.options||[]).map(o=>`<option ${val===x(o)?'selected':''}>${x(o)}</option>`).join('');
-    inp = `<select class="form-inp" data-col="${x(f.name)}"><option value="">Seleccionar...</option>${opts}</select>`;
-  } else {
-    inp = `<input class="form-inp" data-col="${x(f.name)}" value="${val}" placeholder="${x(f.name)}">`;
-  }
-  return `<div class="form-grp">${lbl}${inp}</div>`;
-}
+function fieldHtml(f, record={}){ return ''; } // no se usa, se mantiene por compatibilidad
 
 function getColabFormData(){
   const data = {};
@@ -1626,21 +1678,18 @@ function getColabFormData(){
 }
 
 function renderSegForm(record={}){
-  const skip = ['RowID','Colaborador','Fecha'];
+  // Llenar valores en los campos fijos del modal de seguimiento
   const container = document.getElementById('ms-dynamic-fields');
-  if(!segHeaders.length){
-    container.innerHTML='<div class="empty-state"><div class="e-ico">📋</div><p>No se pudieron cargar los campos. Sincroniza e intenta de nuevo.</p></div>';
-    return;
-  }
-  const fields = segHeaders.filter(h=>!skip.includes(h.name));
-  let html='';
-  let i=0;
-  while(i<fields.length){
-    const f1=fields[i], f2=fields[i+1];
-    if(f2){ html+=`<div class="form-row">${fieldHtml(f1,record)}${fieldHtml(f2,record)}</div>`; i+=2; }
-    else { html+=fieldHtml(f1,record); i++; }
-  }
-  container.innerHTML=html;
+  container.querySelectorAll('[data-col]').forEach(el=>{
+    const col = el.getAttribute('data-col');
+    const val = record[col]||'';
+    if(el.tagName==='SELECT'){
+      const opt=[...el.options].find(o=>o.value===val||o.text===val);
+      el.value = opt?val:'';
+    } else {
+      el.value = val;
+    }
+  });
 }
 
 function getSegFormData(){
@@ -1650,6 +1699,7 @@ function getSegFormData(){
   });
   return data;
 }
+
 // ── ACCESOS ────────────────────────────────────
 let accesos=[],accesoEditingId=null,accesoCatFilter='';
 
@@ -2279,6 +2329,73 @@ async function generarPDFConsolidado(filtroEquipo=''){
   doc.save('Consolidado_RCR_'+new Date().toISOString().split('T')[0]+'.pdf');
   toast('PDF descargado','','ok');
 }
+
+
+// ── SEMÁFORO MODAL ─────────────────────────────
+function updateSemaBtnVer(){
+  const q=(document.getElementById('sm-nombre')?.value||'').trim();
+  const btn=document.getElementById('btn-ver-sema');
+  const colab=colaboradores.find(c=>(c.Colaborador||'').toLowerCase()===q.toLowerCase());
+  if(q&&colab){btn.style.display='inline-flex';btn.dataset.nombre=colab.Colaborador;}
+  else{btn.style.display='none';}
+}
+
+function openSemaModal(){
+  const nombre=document.getElementById('btn-ver-sema').dataset.nombre;
+  if(!nombre)return;
+  const colab=colaboradores.find(c=>c.Colaborador===nombre)||{};
+  document.getElementById('m-sema-nombre').textContent=nombre;
+  document.getElementById('m-sema-prog').textContent=colab['Programa/Proyecto']||'';
+  // Poblar selector de meses con los que tiene ese colaborador
+  const meses=[...new Set(semaforo.filter(s=>s.Colaborador===nombre).map(s=>s.Mes).filter(Boolean))].sort();
+  const sel=document.getElementById('m-sema-mes');
+  sel.innerHTML='<option value="">Todos los meses</option>'+meses.map(m=>`<option>${m}</option>`).join('');
+  // Seleccionar el mes más reciente por defecto
+  if(meses.length)sel.value=meses[meses.length-1];
+  renderSemaModal();
+  openModal('m-sema');
+}
+
+function renderSemaModal(){
+  const nombre=document.getElementById('m-sema-nombre').textContent;
+  const mes=document.getElementById('m-sema-mes').value;
+  let registros=semaforo.filter(s=>s.Colaborador===nombre);
+  if(mes)registros=registros.filter(s=>s.Mes===mes);
+  const body=document.getElementById('m-sema-body');
+  if(!registros.length){
+    body.innerHTML=`<div class="empty-state" style="padding:24px 0;"><div class="e-ico">🚦</div><p>Sin respuestas${mes?' para '+mes:''}</p></div>`;
+    return;
+  }
+  const flds=[
+    ['Carga y ritmo de trabajo','Carga y ritmo de trabajo'],
+    ['Clima y relaciones','Clima y relaciones'],
+    ['Estado emocional y energía','Estado emocional y energía'],
+    ['Liderazgo y apoyo','Liderazgo y apoyo'],
+  ];
+  const colVal=v=>{
+    if(!v)return'';
+    if(v.includes('🔴'))return'color:#c91a44;';
+    if(v.includes('🟡'))return'color:#c98a00;';
+    return'color:#0a9e83;';
+  };
+  body.innerHTML=registros.map(r=>`
+    <div style="margin-bottom:20px;padding-bottom:20px;border-bottom:1px solid var(--border);">
+      <div style="font-size:12px;font-weight:700;color:var(--text-dim);text-transform:uppercase;letter-spacing:.6px;margin-bottom:12px;">${r.Mes||'—'}</div>
+      ${flds.map(([l,k])=>r[k]?`
+        <div class="sema-item" style="margin-bottom:8px;">
+          <span class="sema-lbl">${l}</span>
+          <span style="font-size:13px;font-weight:600;${colVal(r[k])}">${r[k]}</span>
+        </div>`:''
+      ).join('')}
+      ${r['¿Cómo te sentiste este mes? ']||r['¿Cómo te sentiste este mes?']?`
+        <div style="margin-top:12px;padding:12px;background:var(--surface-hover);border-radius:var(--radius-sm);">
+          <div style="font-size:11px;font-weight:700;color:var(--text-dim);text-transform:uppercase;letter-spacing:.6px;margin-bottom:6px;">¿Cómo te sentiste este mes?</div>
+          <div style="font-size:13px;color:var(--text);">${r['¿Cómo te sentiste este mes? ']||r['¿Cómo te sentiste este mes?']}</div>
+        </div>`:''}
+    </div>
+  `).join('');
+}
+
 </script>
 </body>
 </html>
