@@ -837,16 +837,36 @@ window.addEventListener('load',()=>{
 
 // ── API ────────────────────────────────────────
 async function api(p){
-  const u=new URL(SCRIPT_URL);
-  Object.entries(p).forEach(([k,v])=>u.searchParams.set(k,v));
-  const r=await fetch(u.toString());
-  if(!r.ok)throw new Error('HTTP '+r.status);
-  return r.json();
+  try {
+    const u=new URL(SCRIPT_URL);
+    Object.entries(p).forEach(([k,v])=>u.searchParams.set(k,v));
+    const r=await fetch(u.toString());
+    if(!r.ok){
+      console.error(`API error: ${r.status} ${r.statusText} para acción ${p.action} en sheet ${p.sheet}`);
+      throw new Error('HTTP '+r.status);
+    }
+    const json = await r.json();
+    if(!json.success && p.action !== 'getAll'){
+      console.warn(`API warning: ${json.message || 'Sin detalles'}`);
+    }
+    return json;
+  } catch(e){
+    console.error('Error en api():', e, 'Parámetros:', p);
+    throw e;
+  }
 }
 async function apiPost(body){
-  const r=await fetch(SCRIPT_URL,{method:'POST',body:JSON.stringify(body)});
-  if(!r.ok)throw new Error('HTTP '+r.status);
-  return r.json();
+  try {
+    const r=await fetch(SCRIPT_URL,{method:'POST',body:JSON.stringify(body)});
+    if(!r.ok){
+      console.error(`POST error: ${r.status} ${r.statusText}`);
+      throw new Error('HTTP '+r.status);
+    }
+    return r.json();
+  } catch(e){
+    console.error('Error en apiPost():', e);
+    throw e;
+  }
 }
 
 // ── OFFLINE + SYNC ─────────────────────────────
@@ -877,11 +897,19 @@ async function syncAll(){
 }
 
 // ── INIT — carga caché primero, luego actualiza en fondo ──
-function initApp(){
+async function initApp(){
   const d=new Date();
   document.getElementById('today-date').textContent=d.toLocaleDateString('es-EC',{weekday:'long',year:'numeric',month:'long',day:'numeric'}).replace(/^\w/,c=>c.toUpperCase());
   document.getElementById('ms-fecha').value=d.toISOString().split('T')[0];
-  loadColabHeaders(); // cargar columnas dinámicas
+  
+  // ESPERAR a que carguen los headers dinámicos
+  try {
+    await loadColabHeaders();
+  } catch(e) {
+    console.error('Error cargando headers:', e);
+    toast('⚠️ Error cargando estructura de datos','','warn');
+  }
+  
   const cache=loadCache();
   if(cache){
     if(cache.colaboradores){colaboradores=cache.colaboradores;renderColabs();fillSegColabSel();}
