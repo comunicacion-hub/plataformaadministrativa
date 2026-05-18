@@ -1122,22 +1122,21 @@ function openFicha(name){
   if(elNombre) elNombre.textContent=r.Colaborador||'—';
   if(elMeta)   elMeta.textContent=`${r.Cargo||''} · ${r['Programa/Proyecto']||''}`;
 
-  // Campos — dinámicos si hay headers, fijos si no
-  const skip=['Foto'];
-  let fields=[];
-  if(colabHeaders.length){
-    fields=colabHeaders.filter(h=>!skip.includes(h.name)&&r[h.name]&&r[h.name]!=='').map(h=>[h.name,r[h.name]]);
-  } else {
-    fields=[
-      ['Correo RCR',r['Correo de Redes Con Rostro']],
-      ['Teléfono',r['Teléfono principal']||r['Télefono principal']],
-      ['Correo personal',r['Correo personal']],
-      ['Cédula',r['Documento de identidad']],
-      ['Domicilio',r.Domicilio],
-      ['Estado',r.Estado],
-    ];
-  }
-  fields=fields.filter(([,v])=>v);
+  // Campos fijos de la ficha
+  const fields=[
+    ['Correo RCR',             r['Correo de Redes Con Rostro']],
+    ['Correo personal',        r['Correo personal']],
+    ['Teléfono principal',     r['Teléfono principal']],
+    ['Teléfono secundario',    r['Teléfono secundario']],
+    ['Documento de identidad', r['Documento de identidad']],
+    ['Domicilio',              r['Domicilio']],
+    ['Fecha de nacimiento',    r['Fecha de nacimiento']],
+    ['Fecha de inicio',        r['Fecha de inicio']],
+    ['Fecha de finalización',  r['Fecha de finalización']],
+    ['Estado',                 r['Estado']],
+    ['Talla de chaleco',       r['Talla de chaleco']],
+    ['Talla de camiseta',      r['Talla de camiseta']],
+  ].filter(([,v])=>v);
   const fbody=document.getElementById('f-body');
   if(fbody) fbody.innerHTML=fields.map(([l,v])=>`<div class="f-block"><div class="f-lbl">${l}</div><div class="f-val">${x(v)}</div></div>`).join('');
   openModal('m-ficha');
