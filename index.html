@@ -599,7 +599,7 @@
           <span id="f-avatar" style="font-size:20px;font-weight:700;color:#fff;">?</span>
         </div>
         <div>
-          <div class="modal-title" id="f-nombre" style="font-size:18px;">—</div>
+          <div class="modal-title" id="f-nombre-titulo" style="font-size:18px;">—</div>
           <div style="font-size:12px;color:var(--text-muted);margin-top:2px;" id="f-meta">—</div>
         </div>
       </div>
@@ -1117,9 +1117,9 @@ function openFicha(name){
     }
   }
 
-  const elNombre=document.getElementById('f-nombre');
-  const elMeta=document.getElementById('f-meta');
-  if(elNombre) elNombre.textContent=r.Colaborador||'—';
+  const elNombre=document.getElementById('f-nombre-titulo');
+const elMeta=document.getElementById('f-meta');
+if(elNombre) elNombre.textContent=r.Colaborador||'—';
   if(elMeta)   elMeta.textContent=`${r.Cargo||''} · ${r['Programa/Proyecto']||''}`;
 
   // Campos fijos de la ficha
