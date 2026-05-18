@@ -800,6 +800,25 @@
   </div>
 </div>
 
+
+<!-- MODAL: FICHA DE SEGUIMIENTO -->
+<div class="modal-overlay" id="m-ficha-seg">
+  <div class="modal wide">
+    <div class="modal-head">
+      <div>
+        <div class="modal-title" id="mfs-nombre">—</div>
+        <div style="font-size:12px;color:var(--text-muted);margin-top:2px;" id="mfs-meta"></div>
+      </div>
+      <button class="modal-close" onclick="closeModal('m-ficha-seg')">✕</button>
+    </div>
+    <div class="modal-body" id="mfs-body"></div>
+    <div class="modal-foot">
+      <button class="btn btn-glass btn-sm" id="mfs-pdf-btn" onclick="">PDF</button>
+      <button class="btn btn-glass" onclick="closeModal('m-ficha-seg')">Cerrar</button>
+    </div>
+  </div>
+</div>
+
 <div id="toast"></div>
 
 <script>
@@ -1413,7 +1432,7 @@ function loadPanels(){
     });
     const textFields=[['Inicio del semestre','¿Cómo inicias este semestre a nivel personal y laboral?'],['Asuntos personales','Asuntos personales / familiares / salud que debamos considerar'],['Metas laborales','Metas laborales'],['Retos laborales','Retos laborales']];
     textFields.forEach(([l,k])=>{if(r[k])html+=`<div class="f-block"><div class="f-lbl">${l}</div><div class="f-val">${x(r[k])}</div></div>`;});
-    html+=`<div style="display:flex;gap:8px;margin-top:4px;"><button class="btn btn-glass btn-sm" onclick="editSeg('${r.RowID}')">Editar</button><button class="btn btn-glass btn-sm" onclick="generarPDFSeguimiento('${name}')">PDF</button><button class="btn btn-danger btn-sm" onclick="confirmDel('Seguimiento','${r.RowID}','RowID')">Eliminar</button></div>`;
+    html+=`<div style="display:flex;gap:8px;margin-top:4px;flex-wrap:wrap;"><button class="btn btn-primary btn-sm" onclick="openFichaSeg('${name}','${r.RowID}')">Ver ficha</button><button class="btn btn-glass btn-sm" onclick="editSeg('${r.RowID}')">Editar</button><button class="btn btn-glass btn-sm" onclick="generarPDFSeguimiento('${name}')">PDF</button><button class="btn btn-danger btn-sm" onclick="confirmDel('Seguimiento','${r.RowID}','RowID')">Eliminar</button></div>`;
     return html;
   }
   window._pb=pb;
@@ -2393,6 +2412,74 @@ function renderSemaModal(){
         </div>`:''}
     </div>
   `).join('');
+}
+
+
+// ── FICHA DE SEGUIMIENTO ───────────────────────
+function openFichaSeg(nombre, rowId){
+  const r = seguimientos.find(s => s.RowID === rowId || (s.Colaborador === nombre && s.RowID === rowId));
+  if(!r) return;
+  const colab = colaboradores.find(c => c.Colaborador === nombre) || {};
+
+  document.getElementById('mfs-nombre').textContent = nombre;
+  document.getElementById('mfs-meta').textContent = (r.Seguimiento || '') + (r.Fecha ? ' · ' + fmtDate(r.Fecha) : '') + (colab['Programa/Proyecto'] ? ' · ' + colab['Programa/Proyecto'] : '');
+  document.getElementById('mfs-pdf-btn').setAttribute('onclick', `generarPDFSeguimiento('${nombre}')`);
+
+  const escalas = [
+    ['Satisfacción laboral',        'Nivel de satisfacción laboral (1–10)'],
+    ['Clima laboral',               'Clima laboral con todo el equipo RCR'],
+    ['Relación con liderazgo',      'Relación con liderazgo'],
+    ['Trabajo en equipo',           'Trabajo en equipo con su equipo'],
+    ['Reconocimiento',              'Reconocimiento'],
+    ['Desarrollo profesional',      'Desarrollo profesional'],
+    ['Carga laboral',               'Carga laboral'],
+    ['Autonomía',                   'Autonomía'],
+    ['Sentido/propósito',           'Sentido/propósito'],
+    ['Manejo emocional',            'Manejo emocional'],
+    ['Escucha',                     'Escucha'],
+    ['Empatía',                     'Empatía'],
+    ['Comunicación asertiva',       'Comunicación asertiva'],
+    ['Claridad comunicación',       'Claridad de la comunicación interna'],
+    ['Interés en contenidos',       'Nivel de interés en contenidos'],
+  ];
+
+  const textos = [
+    ['¿Cómo inicias este semestre?',          '¿Cómo inicias este semestre a nivel personal y laboral?'],
+    ['Asuntos personales',                    'Asuntos personales / familiares / salud que debamos considerar'],
+    ['Metas laborales',                       'Metas laborales'],
+    ['Retos laborales',                       'Retos laborales'],
+    ['¿Qué está dificultando tu desempeño?',  '¿Qué está dificultando más tu desempeño actualmente?'],
+    ['¿Qué te mantiene en ese número?',       '¿Qué hace que estés en ese número y no más bajo?'],
+    ['¿Qué necesitas para subir 1 punto?',    '¿Qué necesitarías para subir 1 punto?'],
+    ['Dimensión más baja',                    'Profundizar solo en la dimensión más baja'],
+    ['Habilidad a fortalecer',                '¿Cuál deberías fortalecer este semestre para mejorar tu impacto?'],
+    ['¿Revisas canales internos?',            '¿Revisas canales internos regularmente?'],
+    ['¿Qué mejorar en comunicación?',         '¿Qué deberíamos mejorar como equipo en comunicación?'],
+  ];
+
+  const c1='#33A8DE', c2='#506CFF';
+  let html = '';
+
+  // Escalas numéricas
+  const escVals = escalas.filter(([,k]) => r[k] && r[k] !== '');
+  if(escVals.length){
+    html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;">';
+    escVals.forEach(([l,k]) => {
+      const n = parseFloat(r[k]) || 0;
+      html += `<div class="f-block"><div class="f-lbl">${l}</div><div class="scale-row"><div class="scale-track"><div class="scale-fill" style="width:${n*10}%;background:linear-gradient(90deg,${c1},${c2});"></div></div><div class="scale-num">${n}/10</div></div></div>`;
+    });
+    html += '</div>';
+  }
+
+  // Campos de texto
+  textos.forEach(([l,k]) => {
+    if(r[k] && r[k] !== '') {
+      html += `<div class="f-block" style="margin-bottom:12px;"><div class="f-lbl">${l}</div><div class="f-val">${x(r[k])}</div></div>`;
+    }
+  });
+
+  document.getElementById('mfs-body').innerHTML = html || '<div class="empty-state"><p>Sin datos para este registro</p></div>';
+  openModal('m-ficha-seg');
 }
 
 </script>
