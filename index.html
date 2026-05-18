@@ -2031,7 +2031,20 @@ function toast(msg,isErr=false,type=''){
 // ── UTILS ──────────────────────────────────────
 function x(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 function ini(n){return(n||'?').split(' ').slice(0,2).map(w=>w[0]||'').join('').toUpperCase();}
-function fmtDate(d){try{return new Date(d+'T12:00:00').toLocaleDateString('es-EC',{day:'numeric',month:'short',year:'numeric'});}catch(e){return d;}}
+function fmtDate(d){
+  if(!d||d===''||d==='undefined')return '';
+  // Si es número (serial de Excel): convertir
+  const n=parseFloat(d);
+  if(!isNaN(n)&&n>1000){
+    const date=new Date(Math.round((n-25569)*86400*1000));
+    return date.toLocaleDateString('es-EC',{day:'numeric',month:'short',year:'numeric'});
+  }
+  try{
+    const date=new Date(d.includes('T')?d:d+'T12:00:00');
+    if(isNaN(date.getTime()))return d;
+    return date.toLocaleDateString('es-EC',{day:'numeric',month:'short',year:'numeric'});
+  }catch(e){return d;}
+}
 // ── GENERADOR DE PDF ──────────────────────────
 function downloadPDF(tipo, data){
   if(tipo==='ficha') generarPDFFicha(data);
@@ -2417,7 +2430,7 @@ function renderSemaModal(){
 
 // ── FICHA DE SEGUIMIENTO ───────────────────────
 function openFichaSeg(nombre, rowId){
-  const r = seguimientos.find(s => s.RowID === rowId || (s.Colaborador === nombre && s.RowID === rowId));
+  const r = seguimientos.find(s => s.RowID === rowId);
   if(!r) return;
   const colab = colaboradores.find(c => c.Colaborador === nombre) || {};
 
@@ -2425,58 +2438,70 @@ function openFichaSeg(nombre, rowId){
   document.getElementById('mfs-meta').textContent = (r.Seguimiento || '') + (r.Fecha ? ' · ' + fmtDate(r.Fecha) : '') + (colab['Programa/Proyecto'] ? ' · ' + colab['Programa/Proyecto'] : '');
   document.getElementById('mfs-pdf-btn').setAttribute('onclick', `generarPDFSeguimiento('${nombre}')`);
 
-  const escalas = [
-    ['Satisfacción laboral',        'Nivel de satisfacción laboral (1–10)'],
-    ['Clima laboral',               'Clima laboral con todo el equipo RCR'],
-    ['Relación con liderazgo',      'Relación con liderazgo'],
-    ['Trabajo en equipo',           'Trabajo en equipo con su equipo'],
-    ['Reconocimiento',              'Reconocimiento'],
-    ['Desarrollo profesional',      'Desarrollo profesional'],
-    ['Carga laboral',               'Carga laboral'],
-    ['Autonomía',                   'Autonomía'],
-    ['Sentido/propósito',           'Sentido/propósito'],
-    ['Manejo emocional',            'Manejo emocional'],
-    ['Escucha',                     'Escucha'],
-    ['Empatía',                     'Empatía'],
-    ['Comunicación asertiva',       'Comunicación asertiva'],
-    ['Claridad comunicación',       'Claridad de la comunicación interna'],
-    ['Interés en contenidos',       'Nivel de interés en contenidos'],
-  ];
-
-  const textos = [
-    ['¿Cómo inicias este semestre?',          '¿Cómo inicias este semestre a nivel personal y laboral?'],
-    ['Asuntos personales',                    'Asuntos personales / familiares / salud que debamos considerar'],
-    ['Metas laborales',                       'Metas laborales'],
-    ['Retos laborales',                       'Retos laborales'],
-    ['¿Qué está dificultando tu desempeño?',  '¿Qué está dificultando más tu desempeño actualmente?'],
-    ['¿Qué te mantiene en ese número?',       '¿Qué hace que estés en ese número y no más bajo?'],
-    ['¿Qué necesitas para subir 1 punto?',    '¿Qué necesitarías para subir 1 punto?'],
-    ['Dimensión más baja',                    'Profundizar solo en la dimensión más baja'],
-    ['Habilidad a fortalecer',                '¿Cuál deberías fortalecer este semestre para mejorar tu impacto?'],
-    ['¿Revisas canales internos?',            '¿Revisas canales internos regularmente?'],
-    ['¿Qué mejorar en comunicación?',         '¿Qué deberíamos mejorar como equipo en comunicación?'],
-  ];
-
   const c1='#33A8DE', c2='#506CFF';
+  const escala = (l,k) => {
+    if(!r[k]||r[k]==='') return '';
+    const n=parseFloat(r[k])||0;
+    return `<div class="f-block"><div class="f-lbl">${l}</div><div class="scale-row"><div class="scale-track"><div class="scale-fill" style="width:${n*10}%;background:linear-gradient(90deg,${c1},${c2});"></div></div><div class="scale-num">${n}/10</div></div></div>`;
+  };
+  const texto = (l,k) => {
+    if(!r[k]||r[k]==='') return '';
+    return `<div class="f-block" style="margin-bottom:12px;"><div class="f-lbl">${l}</div><div class="f-val">${x(r[k])}</div></div>`;
+  };
+  const separador = (l) => `<div style="font-size:10px;font-weight:700;color:var(--text-dim);text-transform:uppercase;letter-spacing:.7px;margin:16px 0 8px;">${l}</div>`;
+
   let html = '';
 
-  // Escalas numéricas
-  const escVals = escalas.filter(([,k]) => r[k] && r[k] !== '');
-  if(escVals.length){
-    html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;">';
-    escVals.forEach(([l,k]) => {
-      const n = parseFloat(r[k]) || 0;
-      html += `<div class="f-block"><div class="f-lbl">${l}</div><div class="scale-row"><div class="scale-track"><div class="scale-fill" style="width:${n*10}%;background:linear-gradient(90deg,${c1},${c2});"></div></div><div class="scale-num">${n}/10</div></div></div>`;
-    });
-    html += '</div>';
+  // Orden exacto del Sheet
+  html += texto('¿Cómo inicias este semestre?', '¿Cómo inicias este semestre a nivel personal y laboral?');
+  html += texto('Asuntos personales / familiares / salud', 'Asuntos personales / familiares / salud que debamos considerar');
+  html += texto('Metas laborales', 'Metas laborales');
+  html += texto('Retos laborales', 'Retos laborales');
+  html += escala('Satisfacción laboral (1–10)', 'Nivel de satisfacción laboral (1–10)');
+  html += texto('¿Qué está dificultando tu desempeño?', '¿Qué está dificultando más tu desempeño actualmente?');
+  html += texto('¿Qué te mantiene en ese número?', '¿Qué hace que estés en ese número y no más bajo?');
+  html += texto('¿Qué necesitas para subir 1 punto?', '¿Qué necesitarías para subir 1 punto?');
+
+  const dimFields = [
+    escala('Clima laboral con todo el equipo RCR', 'Clima laboral con todo el equipo RCR'),
+    escala('Relación con liderazgo', 'Relación con liderazgo'),
+    escala('Trabajo en equipo', 'Trabajo en equipo con su equipo'),
+    escala('Reconocimiento', 'Reconocimiento'),
+    escala('Desarrollo profesional', 'Desarrollo profesional'),
+    escala('Carga laboral', 'Carga laboral'),
+    escala('Autonomía', 'Autonomía'),
+    escala('Sentido/propósito', 'Sentido/propósito'),
+  ].filter(Boolean);
+  if(dimFields.length){
+    html += separador('Dimensiones organizacionales');
+    html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">' + dimFields.join('') + '</div>';
   }
 
-  // Campos de texto
-  textos.forEach(([l,k]) => {
-    if(r[k] && r[k] !== '') {
-      html += `<div class="f-block" style="margin-bottom:12px;"><div class="f-lbl">${l}</div><div class="f-val">${x(r[k])}</div></div>`;
-    }
-  });
+  html += texto('Profundizar en la dimensión más baja', 'Profundizar solo en la dimensión más baja');
+
+  const habilFields = [
+    escala('Manejo emocional', 'Manejo emocional'),
+    escala('Escucha', 'Escucha'),
+    escala('Empatía', 'Empatía'),
+    escala('Comunicación asertiva', 'Comunicación asertiva'),
+  ].filter(Boolean);
+  if(habilFields.length){
+    html += separador('Habilidades blandas');
+    html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">' + habilFields.join('') + '</div>';
+  }
+
+  html += texto('¿Cuál habilidad fortalecer?', '¿Cuál deberías fortalecer este semestre para mejorar tu impacto?');
+
+  const comFields = [
+    escala('Claridad de la comunicación interna', 'Claridad de la comunicación interna'),
+    escala('Interés en contenidos', 'Nivel de interés en contenidos'),
+  ].filter(Boolean);
+  if(comFields.length){
+    html += separador('Comunicación interna');
+    html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">' + comFields.join('') + '</div>';
+  }
+  html += texto('¿Revisas canales internos?', '¿Revisas canales internos regularmente?');
+  html += texto('¿Qué mejorar en comunicación?', '¿Qué deberíamos mejorar como equipo en comunicación?');
 
   document.getElementById('mfs-body').innerHTML = html || '<div class="empty-state"><p>Sin datos para este registro</p></div>';
   openModal('m-ficha-seg');
