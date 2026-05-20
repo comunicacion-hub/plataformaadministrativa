@@ -126,17 +126,16 @@
 
   /* ── FILTERS ── */
   .filters-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
-  .search-wrap{position:relative;flex:1;max-width:300px;min-width:140px;}
+  .search-wrap{position:relative;flex:1;max-width:300px;min-width:160px;}
   .search-icon{position:absolute;left:11px;top:50%;transform:translateY(-50%);font-size:13px;color:var(--text-dim);pointer-events:none;}
   .search-input{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:9px 14px 9px 33px;color:var(--text);font-family:'Outfit',sans-serif;font-size:13px;outline:none;transition:all 0.15s;box-shadow:var(--shadow-sm);}
   .search-input::placeholder{color:var(--text-dim);}
   .search-input:focus{border-color:#33A8DE;box-shadow:0 0 0 3px rgba(51,168,222,0.12);}
-  .filter-sel{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:9px 13px;color:var(--text-muted);font-family:'Outfit',sans-serif;font-size:13px;outline:none;cursor:pointer;box-shadow:var(--shadow-sm);min-height:40px;}
+  .filter-sel{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:9px 13px;color:var(--text-muted);font-family:'Outfit',sans-serif;font-size:13px;outline:none;cursor:pointer;box-shadow:var(--shadow-sm);}
   .filter-sel:focus{border-color:#33A8DE;}
 
   /* ── TABLE ── */
   .tbl-wrap{border-radius:var(--radius-lg);overflow:hidden;border:1px solid var(--border);box-shadow:var(--shadow);background:var(--surface);}
-  @media(max-width:768px){.tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;}}
   .tbl-head{display:grid;grid-template-columns:2.2fr 1.4fr 1.2fr 0.9fr 110px;gap:12px;padding:11px 20px;background:#f8f8fc;border-bottom:1px solid var(--border);font-size:11px;font-weight:700;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.7px;}
   .tbl-row{display:grid;grid-template-columns:2.2fr 1.4fr 1.2fr 0.9fr 110px;gap:12px;padding:13px 20px;border-bottom:1px solid rgba(0,0,0,0.05);align-items:center;transition:background 0.12s;cursor:pointer;}
   .tbl-row:hover{background:#fafafa;}
@@ -214,8 +213,7 @@
     .modal-overlay{backdrop-filter:blur(4px);} /* blur solo en desktop */
   }
   .modal-overlay.open{display:flex;}
-  .modal{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-xl);padding:28px;width:520px;max-width:95vw;max-height:90vh;overflow-y:auto;display:flex;flex-direction:column;gap:18px;box-shadow:0 20px 60px rgba(0,0,0,0.14);animation:mIn 0.18s ease;scroll-behavior:smooth;}
-@media(max-width:768px){.modal{padding:20px;}}
+  .modal{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-xl);padding:28px;width:520px;max-width:95vw;max-height:90vh;overflow-y:auto;display:flex;flex-direction:column;gap:18px;box-shadow:0 20px 60px rgba(0,0,0,0.14);animation:mIn 0.18s ease;}
   .modal.wide{width:580px;}
   .modal.xl{width:680px;}
   @keyframes mIn{from{transform:scale(.96);opacity:0}to{transform:scale(1);opacity:1}}
@@ -232,9 +230,6 @@
   @keyframes tIn{from{transform:translateY(10px);opacity:0}to{transform:translateY(0);opacity:1}}
 
   .spinner{width:14px;height:14px;border:2px solid rgba(51,168,222,0.25);border-top-color:#33A8DE;border-radius:50%;animation:spin 0.7s linear infinite;display:inline-block;vertical-align:middle;}
-.spinner-dark{border-color:rgba(160,160,176,0.3);border-top-color:var(--text-dim);}
-.skeleton{background:linear-gradient(90deg,#f0f0f5 25%,#e8e8f0 50%,#f0f0f5 75%);background-size:200% 100%;animation:skel 1.2s ease-in-out infinite;}
-@keyframes skel{0%{background-position:200% 0}100%{background-position:-200% 0}}
 
   .empty-state{text-align:center;padding:60px 20px;display:flex;flex-direction:column;align-items:center;gap:12px;}
   .empty-state .e-ico{font-size:44px;opacity:0.35;}
@@ -291,13 +286,9 @@
     .sum-row{grid-template-columns:1fr 1fr;}
     .page-title{font-size:22px;}
     .form-row-3{grid-template-columns:1fr 1fr;}
+    /* En móvil mostrar acciones sin hover (tap-friendly) */
     .row-acts{opacity:1;}
-    .filters-row{gap:8px;}
-    .search-wrap{flex:1 1 100%;min-width:100%;max-width:none;}
-    .filter-sel{flex:1 1 calc(50% - 4px);min-width:calc(50% - 4px);}
-    .icon-btn{padding:8px 12px;font-size:12px;min-height:36px;}
-    .tbl-row{min-height:48px;}
-    .modal{max-height:85vh;}
+  }
   @media(min-width:769px){#mobile-nav{display:none;}}
 </style>
 </head>
@@ -400,7 +391,7 @@
         </div>
       </div>
       <div class="filters-row">
-        <div class="search-wrap"><span class="search-icon">🔍</span><input class="search-input" type="text" placeholder="Buscar por nombre..." id="f-nombre" oninput="debounceRenderColabs()"></div>
+        <div class="search-wrap"><span class="search-icon">🔍</span><input class="search-input" type="text" placeholder="Buscar por nombre..." id="f-nombre" oninput="renderColabs()"></div>
         <select class="filter-sel" id="f-cargo" onchange="renderColabs()">
           <option value="">Todos los cargos</option>
           <option>Coordinador</option><option>Gestor de Proyectos</option>
@@ -845,14 +836,7 @@ let currentUser=null, colaboradores=[], seguimientos=[], semaforo=[], editingCol
 
 // ── CACHE ──────────────────────────────────────
 function saveCache(data){
-  try{localStorage.setItem(CACHE_KEY,JSON.stringify({ts:Date.now(),...data}));}catch(e){console.warn('Cache save failed:',e);}
-}
-function loadCache(){
-  try{
-    const c=JSON.parse(localStorage.getItem(CACHE_KEY)||'{}');
-    if(!c.ts||Date.now()-c.ts>CACHE_TTL)return null;
-    return c;
-  }catch(e){console.warn('Cache load failed:',e);return null;}
+  try{localStorage.setItem(CACHE_KEY,JSON.stringify({ts:Date.now(),...data}));}catch(e){}
 }
 function loadCache(){
   try{
@@ -955,14 +939,11 @@ window.addEventListener('load',()=>{
 });
 
 // ── API ────────────────────────────────────────
-async function api(p,timeoutMs=8000){
-  const controller=new AbortController();
-  const to=setTimeout(()=>controller.abort(),timeoutMs);
+async function api(p){
   try {
     const u=new URL(SCRIPT_URL);
     Object.entries(p).forEach(([k,v])=>u.searchParams.set(k,v));
-    const r=await fetch(u.toString(),{signal:controller.signal});
-    clearTimeout(to);
+    const r=await fetch(u.toString());
     if(!r.ok){
       console.error(`API error: ${r.status} ${r.statusText} para acción ${p.action} en sheet ${p.sheet}`);
       throw new Error('HTTP '+r.status);
@@ -973,24 +954,20 @@ async function api(p,timeoutMs=8000){
     }
     return json;
   } catch(e){
-    clearTimeout(to);
     console.error('Error en api():', e, 'Parámetros:', p);
     throw e;
   }
 }
 async function apiPost(body){
-  // Añadir info del usuario actual
-  if(currentUser){
-    body.userEmail = currentUser.email;
-    body.userRole = currentUser.rol;
-  }
-  
   try {
     const r=await fetch(SCRIPT_URL,{method:'POST',body:JSON.stringify(body)});
-    if(!r.ok) throw new Error('HTTP '+r.status);
+    if(!r.ok){
+      console.error(`POST error: ${r.status} ${r.statusText}`);
+      throw new Error('HTTP '+r.status);
+    }
     return r.json();
   } catch(e){
-    console.error('Error:', e);
+    console.error('Error en apiPost():', e);
     throw e;
   }
 }
@@ -1077,13 +1054,14 @@ function renderColabs(){
     return;
   }
   const gr=['linear-gradient(135deg,#33A8DE,#506CFF)','linear-gradient(135deg,#18AE97,#0BC3FF)','linear-gradient(135deg,#F5AD21,#9FDA60)','linear-gradient(135deg,#F82D72,#FF85FF)','linear-gradient(135deg,#FF751F,#FF376F)'];
+  // FIX: usar DocumentFragment para render más eficiente
   const frag=document.createDocumentFragment();
   const tmp=document.createElement('div');
   tmp.innerHTML=d.map((r,i)=>{
     const n=r.Colaborador||'—',c=r.Cargo||'—',p=r['Programa/Proyecto']||'—',e=r.Estado||'Activo';
     const foto=r['Foto']||'';
     const av=foto
-      ? `<div class="avatar" style="background:${gr[i%gr.length]};overflow:hidden;padding:0;"><img loading="lazy" src="${foto}" style="width:100%;height:100%;object-fit:cover;" onerror="this.style.display='none';this.parentElement.innerHTML='${ini(n)}';this.parentElement.style.background='${gr[i%gr.length]}'"></div>`
+      ? `<div class="avatar" style="background:${gr[i%gr.length]};overflow:hidden;padding:0;"><img src="${foto}" style="width:100%;height:100%;object-fit:cover;" onerror="this.parentElement.textContent='${ini(n)}'"></div>`
       : `<div class="avatar" style="background:${gr[i%gr.length]};">${ini(n)}</div>`;
     return `<div class="tbl-row" onclick="openFicha('${x(n)}')">
       <div class="col-name">${av}<span>${x(n)}</span></div>
@@ -2042,51 +2020,31 @@ function closeModal(id){document.getElementById(id)?.classList.remove('open');}
 document.querySelectorAll('.modal-overlay').forEach(el=>el.addEventListener('click',function(e){if(e.target===this)this.classList.remove('open');}));
 
 // ── TOAST ──────────────────────────────────────
-let _toastQueue=[],_toastTimer=null;
+let tTimer;
 function toast(msg,isErr=false,type=''){
-  _toastQueue.push({msg,isErr,type});
-  processToastQueue();
-}
-function processToastQueue(){
-  if(_toastTimer||!_toastQueue.length)return;
   const el=document.getElementById('toast');
-  const t=_toastQueue.shift();
-  el.textContent=t.msg;el.className=t.isErr?'err':(t.type==='ok'?'ok':'');
-  el.style.display='block';el.style.opacity='1';
-  _toastTimer=setTimeout(()=>{
-    el.style.opacity='0';
-    setTimeout(()=>{el.style.display='none';_toastTimer=null;processToastQueue();},220);
-  },2800);
+  el.textContent=msg;el.className=isErr?'err':(type==='ok'?'ok':'');
+  el.style.display='block';clearTimeout(tTimer);
+  tTimer=setTimeout(()=>{el.style.display='none';},3200);
 }
 
 // ── UTILS ──────────────────────────────────────
 function x(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
-function debounce(fn,ms=300){
-  let t;
-  return function(...a){
-    clearTimeout(t);
-    t=setTimeout(()=>fn.apply(this,a),ms);
-  };
-}
-let _debounceColabs=debounce(renderColabs,350);
-function debounceRenderColabs(){_debounceColabs();}
-let _debounceSema=debounce(renderSema,350);
-document.getElementById('sm-nombre')?.addEventListener('input',_debounceSema);
-
-let _jspdfModule=null;
-async function getJsPDF(){
-  if(_jspdfModule)return _jspdfModule;
-  if(window.jspdf){_jspdfModule=window.jspdf.jsPDF;return _jspdfModule;}
-  return new Promise((resolve,reject)=>{
-    const s=document.createElement('script');
-    s.src='https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
-    s.onload=()=>{_jspdfModule=window.jspdf.jsPDF;resolve(_jspdfModule);};
-    s.onerror=reject;
-    document.head.appendChild(s);
-  });
-}
 function ini(n){return(n||'?').split(' ').slice(0,2).map(w=>w[0]||'').join('').toUpperCase();}
-function fmtDate(d){try{return new Date(d+'T12:00:00').toLocaleDateString('es-EC',{day:'numeric',month:'short',year:'numeric'});}catch(e){return d;}}
+function fmtDate(d){
+  if(!d||d===''||d==='undefined')return '';
+  // Si es número (serial de Excel): convertir
+  const n=parseFloat(d);
+  if(!isNaN(n)&&n>1000){
+    const date=new Date(Math.round((n-25569)*86400*1000));
+    return date.toLocaleDateString('es-EC',{day:'numeric',month:'short',year:'numeric'});
+  }
+  try{
+    const date=new Date(d.includes('T')?d:d+'T12:00:00');
+    if(isNaN(date.getTime()))return d;
+    return date.toLocaleDateString('es-EC',{day:'numeric',month:'short',year:'numeric'});
+  }catch(e){return d;}
+}
 // ── GENERADOR DE PDF ──────────────────────────
 function downloadPDF(tipo, data){
   if(tipo==='ficha') generarPDFFicha(data);
@@ -2131,7 +2089,14 @@ function pdfFooter(doc, pageNum){
 }
 
 function loadJsPDF(){
-  return getJsPDF();
+  return new Promise((resolve,reject)=>{
+    if(window.jspdf){ resolve(window.jspdf.jsPDF); return; }
+    const s=document.createElement('script');
+    s.src='https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
+    s.onload=()=>resolve(window.jspdf.jsPDF);
+    s.onerror=reject;
+    document.head.appendChild(s);
+  });
 }
 
 // ── PDF FICHA COLABORADOR ─────────────────────
@@ -2465,7 +2430,7 @@ function renderSemaModal(){
 
 // ── FICHA DE SEGUIMIENTO ───────────────────────
 function openFichaSeg(nombre, rowId){
-  const r = seguimientos.find(s => s.RowID === rowId || (s.Colaborador === nombre && s.RowID === rowId));
+  const r = seguimientos.find(s => s.RowID === rowId);
   if(!r) return;
   const colab = colaboradores.find(c => c.Colaborador === nombre) || {};
 
@@ -2473,58 +2438,70 @@ function openFichaSeg(nombre, rowId){
   document.getElementById('mfs-meta').textContent = (r.Seguimiento || '') + (r.Fecha ? ' · ' + fmtDate(r.Fecha) : '') + (colab['Programa/Proyecto'] ? ' · ' + colab['Programa/Proyecto'] : '');
   document.getElementById('mfs-pdf-btn').setAttribute('onclick', `generarPDFSeguimiento('${nombre}')`);
 
-  const escalas = [
-    ['Satisfacción laboral',        'Nivel de satisfacción laboral (1–10)'],
-    ['Clima laboral',               'Clima laboral con todo el equipo RCR'],
-    ['Relación con liderazgo',      'Relación con liderazgo'],
-    ['Trabajo en equipo',           'Trabajo en equipo con su equipo'],
-    ['Reconocimiento',              'Reconocimiento'],
-    ['Desarrollo profesional',      'Desarrollo profesional'],
-    ['Carga laboral',               'Carga laboral'],
-    ['Autonomía',                   'Autonomía'],
-    ['Sentido/propósito',           'Sentido/propósito'],
-    ['Manejo emocional',            'Manejo emocional'],
-    ['Escucha',                     'Escucha'],
-    ['Empatía',                     'Empatía'],
-    ['Comunicación asertiva',       'Comunicación asertiva'],
-    ['Claridad comunicación',       'Claridad de la comunicación interna'],
-    ['Interés en contenidos',       'Nivel de interés en contenidos'],
-  ];
-
-  const textos = [
-    ['¿Cómo inicias este semestre?',          '¿Cómo inicias este semestre a nivel personal y laboral?'],
-    ['Asuntos personales',                    'Asuntos personales / familiares / salud que debamos considerar'],
-    ['Metas laborales',                       'Metas laborales'],
-    ['Retos laborales',                       'Retos laborales'],
-    ['¿Qué está dificultando tu desempeño?',  '¿Qué está dificultando más tu desempeño actualmente?'],
-    ['¿Qué te mantiene en ese número?',       '¿Qué hace que estés en ese número y no más bajo?'],
-    ['¿Qué necesitas para subir 1 punto?',    '¿Qué necesitarías para subir 1 punto?'],
-    ['Dimensión más baja',                    'Profundizar solo en la dimensión más baja'],
-    ['Habilidad a fortalecer',                '¿Cuál deberías fortalecer este semestre para mejorar tu impacto?'],
-    ['¿Revisas canales internos?',            '¿Revisas canales internos regularmente?'],
-    ['¿Qué mejorar en comunicación?',         '¿Qué deberíamos mejorar como equipo en comunicación?'],
-  ];
-
   const c1='#33A8DE', c2='#506CFF';
+  const escala = (l,k) => {
+    if(!r[k]||r[k]==='') return '';
+    const n=parseFloat(r[k])||0;
+    return `<div class="f-block"><div class="f-lbl">${l}</div><div class="scale-row"><div class="scale-track"><div class="scale-fill" style="width:${n*10}%;background:linear-gradient(90deg,${c1},${c2});"></div></div><div class="scale-num">${n}/10</div></div></div>`;
+  };
+  const texto = (l,k) => {
+    if(!r[k]||r[k]==='') return '';
+    return `<div class="f-block" style="margin-bottom:12px;"><div class="f-lbl">${l}</div><div class="f-val">${x(r[k])}</div></div>`;
+  };
+  const separador = (l) => `<div style="font-size:10px;font-weight:700;color:var(--text-dim);text-transform:uppercase;letter-spacing:.7px;margin:16px 0 8px;">${l}</div>`;
+
   let html = '';
 
-  // Escalas numéricas
-  const escVals = escalas.filter(([,k]) => r[k] && r[k] !== '');
-  if(escVals.length){
-    html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;">';
-    escVals.forEach(([l,k]) => {
-      const n = parseFloat(r[k]) || 0;
-      html += `<div class="f-block"><div class="f-lbl">${l}</div><div class="scale-row"><div class="scale-track"><div class="scale-fill" style="width:${n*10}%;background:linear-gradient(90deg,${c1},${c2});"></div></div><div class="scale-num">${n}/10</div></div></div>`;
-    });
-    html += '</div>';
+  // Orden exacto del Sheet
+  html += texto('¿Cómo inicias este semestre?', '¿Cómo inicias este semestre a nivel personal y laboral?');
+  html += texto('Asuntos personales / familiares / salud', 'Asuntos personales / familiares / salud que debamos considerar');
+  html += texto('Metas laborales', 'Metas laborales');
+  html += texto('Retos laborales', 'Retos laborales');
+  html += escala('Satisfacción laboral (1–10)', 'Nivel de satisfacción laboral (1–10)');
+  html += texto('¿Qué está dificultando tu desempeño?', '¿Qué está dificultando más tu desempeño actualmente?');
+  html += texto('¿Qué te mantiene en ese número?', '¿Qué hace que estés en ese número y no más bajo?');
+  html += texto('¿Qué necesitas para subir 1 punto?', '¿Qué necesitarías para subir 1 punto?');
+
+  const dimFields = [
+    escala('Clima laboral con todo el equipo RCR', 'Clima laboral con todo el equipo RCR'),
+    escala('Relación con liderazgo', 'Relación con liderazgo'),
+    escala('Trabajo en equipo', 'Trabajo en equipo con su equipo'),
+    escala('Reconocimiento', 'Reconocimiento'),
+    escala('Desarrollo profesional', 'Desarrollo profesional'),
+    escala('Carga laboral', 'Carga laboral'),
+    escala('Autonomía', 'Autonomía'),
+    escala('Sentido/propósito', 'Sentido/propósito'),
+  ].filter(Boolean);
+  if(dimFields.length){
+    html += separador('Dimensiones organizacionales');
+    html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">' + dimFields.join('') + '</div>';
   }
 
-  // Campos de texto
-  textos.forEach(([l,k]) => {
-    if(r[k] && r[k] !== '') {
-      html += `<div class="f-block" style="margin-bottom:12px;"><div class="f-lbl">${l}</div><div class="f-val">${x(r[k])}</div></div>`;
-    }
-  });
+  html += texto('Profundizar en la dimensión más baja', 'Profundizar solo en la dimensión más baja');
+
+  const habilFields = [
+    escala('Manejo emocional', 'Manejo emocional'),
+    escala('Escucha', 'Escucha'),
+    escala('Empatía', 'Empatía'),
+    escala('Comunicación asertiva', 'Comunicación asertiva'),
+  ].filter(Boolean);
+  if(habilFields.length){
+    html += separador('Habilidades blandas');
+    html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">' + habilFields.join('') + '</div>';
+  }
+
+  html += texto('¿Cuál habilidad fortalecer?', '¿Cuál deberías fortalecer este semestre para mejorar tu impacto?');
+
+  const comFields = [
+    escala('Claridad de la comunicación interna', 'Claridad de la comunicación interna'),
+    escala('Interés en contenidos', 'Nivel de interés en contenidos'),
+  ].filter(Boolean);
+  if(comFields.length){
+    html += separador('Comunicación interna');
+    html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">' + comFields.join('') + '</div>';
+  }
+  html += texto('¿Revisas canales internos?', '¿Revisas canales internos regularmente?');
+  html += texto('¿Qué mejorar en comunicación?', '¿Qué deberíamos mejorar como equipo en comunicación?');
 
   document.getElementById('mfs-body').innerHTML = html || '<div class="empty-state"><p>Sin datos para este registro</p></div>';
   openModal('m-ficha-seg');
