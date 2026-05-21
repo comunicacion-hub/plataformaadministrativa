@@ -436,7 +436,7 @@ window.addEventListener('load', ()=>{
   google.accounts.id.initialize({
     client_id: G_CLIENT,
     callback: handleCredential,
-    auto_select: true
+    auto_select: false
   });
   google.accounts.id.renderButton(
     document.getElementById('g-login-btn'),
