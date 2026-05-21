@@ -1615,7 +1615,7 @@ function renderSema(){
     const al=col(r)==='mal'?'border-color:rgba(220,38,90,.25);background:rgba(220,38,90,.03);':'';
     return`<div class="sema-card" style="${al}">
       <div class="sema-head"><div class="avatar" style="background:${gr[i%gr.length]};width:36px;height:36px;font-size:11px;">${ini(r.Colaborador)}</div><div><div class="sema-name">${x(r.Colaborador||'—')}</div><div class="sema-meta">${x(r.Mes||'—')} · ${x(r.Equipo||r['Programa/Proyecto']||'')}</div></div></div>
-      <div class="sema-items">${flds.map(([l,k])=>{if(!r[k])return'';const v=r[k];const cd=v==='Estoy bien'?'🟢':v==='Más o menos'?'🟡':v==='No estoy bien'?'🔴':'—';const cc=v==='Estoy bien'?'color:#15803d':v==='Más o menos'?'color:#b45309':v==='No estoy bien'?'color:#be123c':'color:var(--text-dim)';return`<div class="sema-item"><span class="sema-lbl">${l}</span><span style="${cc}">${cd} ${v}</span></div>`;}).join('')}</div>
+      <div class="sema-items">${flds.map(([l,k])=>{if(!r[k])return'';const v=r[k];const cd=v==='Estoy bien'?'🟢':v==='Más o menos'?'🟡':v==='No estoy bien'?'🔴':'—';const cc=v==='Estoy bien'?'color:#15803d':v==='Más o menos'?'color:#b45309':v==='No estoy bien'?'color:#be123c':'color:var(--text-dim)';return`<div class="sema-item"><span class="sema-lbl">${l}</span><span style="font-size:18px;">${cd}</span></div>`;}).join('')}</div>
       <div style="display:flex;gap:8px;margin-top:10px;padding-top:10px;border-top:1px solid var(--border);">
         <button class="btn btn-primary btn-sm" style="flex:1;" onclick="abrirFichaSema('${x(r.Colaborador)}')">Ver</button>
         <button class="btn btn-danger btn-sm" style="flex:1;" onclick="confirmDel('Semáforo','${r.RowID}','RowID')">Eliminar</button>
