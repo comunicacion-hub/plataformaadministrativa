@@ -1591,8 +1591,8 @@ function renderSema(){
       <div class="sema-head"><div class="avatar" style="background:${gr[i%gr.length]};width:36px;height:36px;font-size:11px;">${ini(r.Colaborador)}</div><div><div class="sema-name">${x(r.Colaborador||'—')}</div><div class="sema-meta">${x(r.Mes||'—')} · ${x(r.Equipo||r['Programa/Proyecto']||'')}</div></div></div>
       <div class="sema-items">${flds.map(([l,k])=>r[k]?`<div class="sema-item"><span class="sema-lbl">${l}</span><span style="${colorCls(r[k])}">${colorDot(r[k])} ${r[k]}</span></div>`:'').join('')}</div>
       <div style="display:flex;gap:8px;margin-top:10px;padding-top:10px;border-top:1px solid var(--border);">
-        <button class="btn btn-primary btn-sm" style="flex:1;font-size:13px;" onclick="abrirFichaSema('${r.Colaborador}')">👁 Ver ficha</button>
-        <button style="width:34px;height:34px;flex-shrink:0;border-radius:var(--radius-sm);border:1.5px solid #fecdd3;background:#fff1f2;color:#be123c;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;" onclick="confirmDel('Semáforo','${r.RowID}','RowID')">🗑</button>
+        <button class="btn btn-primary btn-sm" style="flex:1;" onclick="abrirFichaSema('${r.Colaborador}')">Ver</button>
+        <button class="btn btn-danger btn-sm" style="flex:1;" onclick="confirmDel('Semáforo','${r.RowID}','RowID')">Eliminar</button>
       </div>
     </div>`;
   }).join('');
@@ -2376,21 +2376,22 @@ function updateSemaBtnVer(){
 }
 
 function abrirFichaSema(nombre){
-  document.getElementById('btn-ver-sema').dataset.nombre = nombre;
-  openSemaModal();
+  openSemaModal(nombre);
 }
 
-function openSemaModal(){
-  const nombre=document.getElementById('btn-ver-sema').dataset.nombre;
+function openSemaModal(nombre){
+  // Si viene del buscador (sin nombre), leer del btn-ver-sema
+  if(!nombre){
+    const btn=document.getElementById('btn-ver-sema');
+    nombre=btn?btn.dataset.nombre:'';
+  }
   if(!nombre)return;
   const colab=colaboradores.find(c=>c.Colaborador===nombre)||{};
   document.getElementById('m-sema-nombre').textContent=nombre;
   document.getElementById('m-sema-prog').textContent=colab['Programa/Proyecto']||'';
-  // Poblar selector de meses con los que tiene ese colaborador
   const meses=[...new Set(semaforo.filter(s=>s.Colaborador===nombre).map(s=>s.Mes).filter(Boolean))].sort();
   const sel=document.getElementById('m-sema-mes');
   sel.innerHTML='<option value="">Todos los meses</option>'+meses.map(m=>`<option>${m}</option>`).join('');
-  // Seleccionar el mes más reciente por defecto
   if(meses.length)sel.value=meses[meses.length-1];
   renderSemaModal();
   openModal('m-sema');
