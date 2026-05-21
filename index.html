@@ -815,6 +815,30 @@
   </div>
 </div>
 
+
+<!-- MODAL SEMÁFORO -->
+<div class="modal-overlay" id="m-sema">
+  <div class="modal wide">
+    <div class="modal-head">
+      <div>
+        <div class="modal-title" id="m-sema-nombre">—</div>
+        <div style="font-size:12px;color:var(--text-muted);margin-top:2px;" id="m-sema-prog"></div>
+      </div>
+      <button class="modal-close" onclick="closeModal('m-sema')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-grp" style="margin-bottom:16px;">
+        <label class="form-lbl">Mes</label>
+        <select class="form-inp" id="m-sema-mes" onchange="renderSemaModal()"></select>
+      </div>
+      <div id="m-sema-body"></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-glass" onclick="closeModal('m-sema')">Cerrar</button>
+    </div>
+  </div>
+</div>
+
 <div id="toast"></div>
 
 <script>
@@ -1591,7 +1615,11 @@ function renderSema(){
     const al=col(r)==='mal'?'border-color:rgba(220,38,90,.25);background:rgba(220,38,90,.03);':'';
     return`<div class="sema-card" style="${al}">
       <div class="sema-head"><div class="avatar" style="background:${gr[i%gr.length]};width:36px;height:36px;font-size:11px;">${ini(r.Colaborador)}</div><div><div class="sema-name">${x(r.Colaborador||'—')}</div><div class="sema-meta">${x(r.Mes||'—')} · ${x(r.Equipo||r['Programa/Proyecto']||'')}</div></div></div>
-      <div class="sema-items">${flds.map(([l,k])=>r[k]?`<div class="sema-item"><span class="sema-lbl">${l}</span><span>${r[k].split(' ')[0]}</span></div>`:'').join('')}</div>
+      <div class="sema-items">${flds.map(([l,k])=>{if(!r[k])return'';const v=r[k];const cd=v==='Estoy bien'?'🟢':v==='Más o menos'?'🟡':v==='No estoy bien'?'🔴':'—';const cc=v==='Estoy bien'?'color:#15803d':v==='Más o menos'?'color:#b45309':v==='No estoy bien'?'color:#be123c':'color:var(--text-dim)';return`<div class="sema-item"><span class="sema-lbl">${l}</span><span style="${cc}">${cd} ${v}</span></div>`;}).join('')}</div>
+      <div style="display:flex;gap:8px;margin-top:10px;padding-top:10px;border-top:1px solid var(--border);">
+        <button class="btn btn-primary btn-sm" style="flex:1;" onclick="abrirFichaSema('${x(r.Colaborador)}')">Ver</button>
+        <button class="btn btn-danger btn-sm" style="flex:1;" onclick="confirmDel('Semáforo','${r.RowID}','RowID')">Eliminar</button>
+      </div>
     </div>`;
   }).join('');
   if(!q&&!eq&&!mes){
@@ -2373,8 +2401,12 @@ function updateSemaBtnVer(){
   else{btn.style.display='none';}
 }
 
-function openSemaModal(){
-  const nombre=document.getElementById('btn-ver-sema').dataset.nombre;
+function abrirFichaSema(nombre){
+  openSemaModal(nombre);
+}
+
+function openSemaModal(nombre){
+  if(!nombre){const btn=document.getElementById('btn-ver-sema');nombre=btn?btn.dataset.nombre:'';}
   if(!nombre)return;
   const colab=colaboradores.find(c=>c.Colaborador===nombre)||{};
   document.getElementById('m-sema-nombre').textContent=nombre;
