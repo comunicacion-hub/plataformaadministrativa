@@ -1591,8 +1591,8 @@ function renderSema(){
       <div class="sema-head"><div class="avatar" style="background:${gr[i%gr.length]};width:36px;height:36px;font-size:11px;">${ini(r.Colaborador)}</div><div><div class="sema-name">${x(r.Colaborador||'—')}</div><div class="sema-meta">${x(r.Mes||'—')} · ${x(r.Equipo||r['Programa/Proyecto']||'')}</div></div></div>
       <div class="sema-items">${flds.map(([l,k])=>r[k]?`<div class="sema-item"><span class="sema-lbl">${l}</span><span style="${colorCls(r[k])}">${colorDot(r[k])} ${r[k]}</span></div>`:'').join('')}</div>
       <div style="display:flex;gap:8px;margin-top:10px;padding-top:10px;border-top:1px solid var(--border);">
-        <button class="btn btn-glass btn-sm" style="flex:1;" onclick="openSemaModal();document.getElementById('btn-ver-sema').dataset.nombre='${r.Colaborador}'">👁 Ver ficha</button>
-        <button class="btn btn-danger btn-sm" onclick="confirmDel('Semáforo','${r.RowID}','RowID')">🗑</button>
+        <button class="btn btn-primary btn-sm" style="flex:1;font-size:13px;" onclick="abrirFichaSema('${r.Colaborador}')">👁 Ver ficha</button>
+        <button style="width:34px;height:34px;flex-shrink:0;border-radius:var(--radius-sm);border:1.5px solid #fecdd3;background:#fff1f2;color:#be123c;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;" onclick="confirmDel('Semáforo','${r.RowID}','RowID')">🗑</button>
       </div>
     </div>`;
   }).join('');
@@ -2373,6 +2373,11 @@ function updateSemaBtnVer(){
   const colab=colaboradores.find(c=>(c.Colaborador||'').toLowerCase()===q.toLowerCase());
   if(q&&colab){btn.style.display='inline-flex';btn.dataset.nombre=colab.Colaborador;}
   else{btn.style.display='none';}
+}
+
+function abrirFichaSema(nombre){
+  document.getElementById('btn-ver-sema').dataset.nombre = nombre;
+  openSemaModal();
 }
 
 function openSemaModal(){
