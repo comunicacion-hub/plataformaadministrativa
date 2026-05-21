@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Bienestar Organizacional · Redes Con Rostro</title>
+<title>Bienestar360 · Redes Con Rostro</title>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 <style>
@@ -45,7 +45,7 @@
     position:fixed;
     border-radius:50%;
     /* blur reducido de 110px → 60px para aliviar GPU móvil */
-    filter:blur(60px);
+    filter:blur(40px);
     opacity:0.07;
     pointer-events:none;
     z-index:0;
@@ -64,7 +64,7 @@
   #app{position:relative;z-index:1;display:flex;height:100vh;width:100%;}
 
   /* ── SIDEBAR ── */
-  .sidebar{width:var(--sidebar-w);min-width:var(--sidebar-w);height:100vh;display:flex;flex-direction:column;padding:24px 14px 20px;gap:2px;background:#fff;border-right:1px solid var(--border);flex-shrink:0;position:sticky;top:0;}
+  .sidebar{width:var(--sidebar-w);min-width:var(--sidebar-w);height:100dvh;display:flex;flex-direction:column;padding:24px 14px 20px;gap:2px;background:#fff;border-right:1px solid var(--border);flex-shrink:0;position:sticky;top:0;}
   .sidebar-brand{display:flex;align-items:center;gap:10px;padding:0 10px 20px;}
   .brand-icon{width:36px;height:36px;border-radius:10px;background:#fff;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;box-shadow:var(--shadow-sm);}
   .brand-name{font-size:16px;font-weight:600;color:var(--text);}
@@ -114,7 +114,9 @@
   .btn-glass:hover{background:var(--surface-hover);color:var(--text);}
   .btn-sm{padding:7px 13px;font-size:12px;border-radius:8px;}
   .btn-danger{background:#fff;color:#c91a44;border:1.5px solid rgba(220,38,90,0.35);}
-  .btn-danger:hover{background:rgba(220,38,90,0.05);}
+  .btn-danger:hover,.btn-danger:active{background:rgba(220,38,90,0.05);}
+  .btn:active{transform:scale(0.97);}
+  .nav-item:active,.mob-nav-item:active{opacity:0.7;}
 
   /* ── STATS ── */
   .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;}
@@ -213,7 +215,7 @@
     .modal-overlay{backdrop-filter:blur(4px);} /* blur solo en desktop */
   }
   .modal-overlay.open{display:flex;}
-  .modal{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-xl);padding:28px;width:520px;max-width:95vw;max-height:90vh;overflow-y:auto;display:flex;flex-direction:column;gap:18px;box-shadow:0 20px 60px rgba(0,0,0,0.14);animation:mIn 0.18s ease;}
+  .modal{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-xl);padding:28px;width:520px;max-width:95vw;max-height:90dvh;overflow-y:auto;display:flex;flex-direction:column;gap:18px;box-shadow:0 20px 60px rgba(0,0,0,0.14);animation:mIn 0.18s ease;}
   .modal.wide{width:580px;}
   .modal.xl{width:680px;}
   @keyframes mIn{from{transform:scale(.96);opacity:0}to{transform:scale(1);opacity:1}}
@@ -389,7 +391,7 @@
         </div>
       </div>
       <div class="filters-row">
-        <div class="search-wrap"><span class="search-icon">🔍</span><input class="search-input" type="text" placeholder="Buscar por nombre..." id="f-nombre" oninput="renderColabs()"></div>
+        <div class="search-wrap"><span class="search-icon">🔍</span><input class="search-input" type="text" placeholder="Buscar por nombre..." id="f-nombre" oninput="clearTimeout(window._dbColabs);window._dbColabs=setTimeout(renderColabs,250)"></div>
         <select class="filter-sel" id="f-cargo" onchange="renderColabs()">
           <option value="">Todos los cargos</option>
           <option>Coordinador</option><option>Gestor de Proyectos</option>
@@ -522,6 +524,7 @@
   <div class="mob-nav-item"        id="mob-seguimiento"   onclick="go('seguimiento')">   <span>💬</span>Bienestar</div>
   <div class="mob-nav-item"        id="mob-semaforo"      onclick="go('semaforo')">      <span>🚦</span>Semáforo</div>
   <div class="mob-nav-item"        id="mob-accesos"       onclick="go('accesos')">       <span>🔗</span>Accesos</div>
+  <div class="mob-nav-item"        id="mob-config"        onclick="go('config')" style="display:none;">       <span>⚙️</span>Config</div>
 </div>
 
 <!-- MODAL: COLABORADOR (dinámico) -->
@@ -581,8 +584,6 @@
       <button class="btn btn-glass" onclick="closeModal('m-colab')">Cancelar</button>
       <button class="btn btn-primary" id="c-save-btn" onclick="saveColab()">Guardar</button>
     </div>
-  </div>
-</div>
   </div>
 </div>
 
@@ -905,6 +906,7 @@ function enterApp(){
   if(rol==='Admin'){
     document.getElementById('admin-actions').style.display='flex';
     document.getElementById('nav-config').style.display='flex';
+    const mobConfig=document.getElementById('mob-config');if(mobConfig)mobConfig.style.display='flex';
     document.getElementById('btn-nuevo-acceso').style.display='inline-flex';
   }
   document.getElementById('login-screen').style.display='none';
@@ -956,6 +958,8 @@ async function api(p){
 }
 async function apiPost(body){
   try {
+    // Inyectar correo del usuario para validación de permisos en servidor
+    if(currentUser&&currentUser.email) body.correo=currentUser.email;
     const r=await fetch(SCRIPT_URL,{method:'POST',body:JSON.stringify(body)});
     if(!r.ok){
       console.error(`POST error: ${r.status} ${r.statusText}`);
@@ -985,6 +989,7 @@ function enqueue(i){
 }
 
 async function syncAll(){
+  if(!currentUser){toast('Sesión no válida',true);return;}
   const btn=document.getElementById('sync-btn');
   btn.classList.add('syncing');
   btn.innerHTML='<span class="sync-icon">🔄</span> Sincronizando...';
@@ -1329,13 +1334,15 @@ function previewColabPhoto(input){
   const file = input.files[0];
   if(!file) return;
   const url = URL.createObjectURL(file);
+  if(window._prevPhotoUrl) URL.revokeObjectURL(window._prevPhotoUrl);
+  window._prevPhotoUrl=url;
   document.getElementById('c-photo-preview').innerHTML = `<img src="${url}" style="width:100%;height:100%;object-fit:cover;">`;
 }
 
 async function saveColab(){
   // Obtener datos del formulario dinámico
   const formData = getColabFormData();
-  const nombre = (formData['Colaborador']||'').trim();
+  const nombre = (formData['Colaborador']||'').trim().replace(/[<>"]/g,'');
   if(!nombre){toast('El nombre es obligatorio',true);return;}
 
   const isEdit    = !!editingColab;
@@ -1563,7 +1570,7 @@ function renderSema(){
     if(v.some(s=>s.includes('🟡')))return'regular';
     return'bien';
   };
-  const tot=d.length||1;
+  const tot=d.length>0?d.length:1;
   const bien=d.filter(r=>col(r)==='bien').length;
   const reg=d.filter(r=>col(r)==='regular').length;
   const mal=d.filter(r=>col(r)==='mal').length;
@@ -1577,7 +1584,7 @@ function renderSema(){
   const grid=document.getElementById('sema-grid');
   const gr=['linear-gradient(135deg,#33A8DE,#506CFF)','linear-gradient(135deg,#18AE97,#0BC3FF)','linear-gradient(135deg,#F5AD21,#9FDA60)','linear-gradient(135deg,#F82D72,#FF85FF)','linear-gradient(135deg,#FF751F,#FF376F)'];
   const flds=[['Carga y ritmo','Carga y ritmo de trabajo'],['Clima','Clima y relaciones'],['Estado emocional','Estado emocional y energía'],['Liderazgo','Liderazgo y apoyo']];
-  if(!d.length&&!sinR){
+  if(!d.length&&sinR===0){
     grid.innerHTML=`<div class="empty-state"><div class="e-ico">🚦</div><p>Sin datos de semáforo aún</p></div>`;
     return;
   }
@@ -1751,7 +1758,7 @@ function renderAccesos(){
       html+=`<div style="padding:18px;border-radius:var(--radius-md);background:#fff;border:1px solid var(--border);box-shadow:var(--shadow-sm);transition:all 0.18s;cursor:pointer;position:relative;overflow:hidden;"
         onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='var(--shadow)'"
         onmouseout="this.style.transform='';this.style.boxShadow='var(--shadow-sm)'"
-        onclick="window.open('${a.URL}','_blank')">
+        onclick="window.open(this.dataset.href,'_blank')" data-href="${x(a.URL)}">
         <div style="position:absolute;top:0;left:0;right:0;height:3px;background:${color};"></div>
         ${soloAdmin?`<span style="position:absolute;top:10px;right:10px;font-size:9px;font-weight:700;padding:2px 7px;border-radius:10px;background:rgba(80,108,255,0.1);color:#506CFF;">ADMIN</span>`:''}
         <div style="font-size:28px;margin-bottom:10px;">${a.Emoji||'🔗'}</div>
@@ -2144,7 +2151,7 @@ async function generarPDFFicha(nombre){
   const campos = [
     ['Correo RCR',       r['Correo de Redes Con Rostro']],
     ['Correo personal',  r['Correo personal']],
-    ['Teléfono principal',r['Teléfono principal']||r['Télefono principal']],
+    ['Teléfono principal',r['Teléfono principal']||r['Teléfono principal']],
     ['Teléfono secundario',r['Teléfono secundario']],
     ['Fecha de nacimiento',r['Fecha de nacimiento']],
     ['Documento de identidad',r['Documento de identidad']],
