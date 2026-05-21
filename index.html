@@ -817,6 +817,30 @@
   </div>
 </div>
 
+
+<!-- MODAL SEMÁFORO -->
+<div class="modal-overlay" id="m-sema">
+  <div class="modal wide">
+    <div class="modal-head">
+      <div>
+        <div class="modal-title" id="m-sema-nombre">—</div>
+        <div style="font-size:12px;color:var(--text-muted);margin-top:2px;" id="m-sema-prog"></div>
+      </div>
+      <button class="modal-close" onclick="closeModal('m-sema')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-grp" style="margin-bottom:16px;">
+        <label class="form-lbl">Mes</label>
+        <select class="form-inp" id="m-sema-mes" onchange="renderSemaModal()"></select>
+      </div>
+      <div id="m-sema-body"></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-glass" onclick="closeModal('m-sema')">Cerrar</button>
+    </div>
+  </div>
+</div>
+
 <div id="toast"></div>
 
 <script>
