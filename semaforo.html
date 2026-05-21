@@ -366,7 +366,7 @@ select.form-inp{
     <div class="modal-body">
       <div class="form-grp">
         <label class="form-lbl" for="f-mes">Mes</label>
-        <select class="form-inp" id="f-mes"></select>
+        <div class="form-inp" id="f-mes" style="background:#f8fafc;color:var(--text-muted);cursor:default;"></div>
       </div>
 
       <div class="form-grp">
@@ -480,22 +480,15 @@ function escapeHtml(str){
 }
 
 function poblarMeses(){
-  const sel = document.getElementById('f-mes');
   const d = new Date();
-  sel.innerHTML = '';
-  for(let i = 0; i < 12; i++){
-    const fecha = new Date(d.getFullYear(), d.getMonth() - i, 1);
-    const label = MESES[fecha.getMonth()] + ' ' + fecha.getFullYear();
-    const opt = document.createElement('option');
-    opt.value = label;
-    opt.textContent = label;
-    if(i === 0) opt.selected = true;
-    sel.appendChild(opt);
-  }
+  const mesActual = MESES[d.getMonth()] + ' ' + d.getFullYear();
+  const el = document.getElementById('f-mes');
+  el.textContent = mesActual;
+  el.dataset.value = mesActual;
 }
 
 function getMesSeleccionado(){
-  return document.getElementById('f-mes').value;
+  return document.getElementById('f-mes').dataset.value;
 }
 
 window.addEventListener('load', function(){
