@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Semáforo de Bienestar · RCR</title>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://accounts.google.com/gsi/client" async defer></script>
@@ -25,12 +25,14 @@
   --grad-a:linear-gradient(135deg,#FF751F,#FF376F);
   --grad-b:linear-gradient(135deg,#33A8DE,#506CFF);
   --grad-c:linear-gradient(135deg,#18AE97,#0BC3FF);
+  --safe-bottom:env(safe-area-inset-bottom, 0px);
+  --safe-top:env(safe-area-inset-top, 0px);
 }
-html,body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:15px;-webkit-font-smoothing:antialiased;}
+html,body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;min-height:100dvh;font-size:15px;-webkit-font-smoothing:antialiased;overflow-x:hidden;}
 
 /* ── LOGIN ── */
 #login-screen{
-  min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;
+  min-height:100vh;min-height:100dvh;display:flex;align-items:center;justify-content:center;padding:24px;padding-top:calc(24px + var(--safe-top));
 }
 .login-card{
   background:white;border-radius:var(--r-xl);padding:40px 32px;max-width:400px;width:100%;
@@ -38,7 +40,8 @@ html,body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text)
 }
 .login-logo{
   display:flex;align-items:center;justify-content:center;margin:0 auto 20px;
-  font-size:48px;
+  width:64px;height:64px;border-radius:50%;background:var(--grad-b);
+  font-size:28px;
 }
 .login-card h1{font-size:22px;font-weight:800;color:var(--text);margin-bottom:6px;}
 .login-card p{font-size:14px;color:var(--text-muted);margin-bottom:28px;line-height:1.5;}
@@ -48,36 +51,44 @@ html,body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text)
 /* ── TOPBAR ── */
 .topbar{
   position:sticky;top:0;z-index:100;
-  background:rgba(255,255,255,0.92);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  background:rgba(255,255,255,0.92);
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
   border-bottom:1px solid var(--border);
-  padding:12px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:12px 16px;padding-top:calc(12px + var(--safe-top));
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
 }
-.topbar-left{display:flex;align-items:center;gap:10px;}
+.topbar-left{display:flex;align-items:center;gap:10px;min-width:0;}
 .topbar-logo{
-  display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  width:36px;height:36px;border-radius:50%;background:var(--grad-b);
+  font-size:16px;flex-shrink:0;
 }
-.topbar-titles h1{font-size:15px;font-weight:700;color:var(--text);}
-.topbar-titles span{font-size:11px;color:var(--text-muted);}
+.topbar-titles{min-width:0;}
+.topbar-titles h1{font-size:15px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.topbar-titles span{font-size:11px;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block;}
 .user-avatar{
   width:34px;height:34px;border-radius:50%;background:var(--grad-a);
   color:white;font-weight:700;font-size:13px;
   display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;
+  -webkit-tap-highlight-color:transparent;
 }
 
 /* ── MAIN ── */
-.main{padding:20px 16px 100px;max-width:560px;margin:0 auto;}
+.main{padding:20px 16px;padding-bottom:calc(100px + var(--safe-bottom));max-width:560px;margin:0 auto;}
 
-/* ── NUEVO BTN ── */
+/* ── FAB ── */
 .fab{
-  position:fixed;bottom:24px;right:24px;z-index:50;
+  position:fixed;bottom:calc(24px + var(--safe-bottom));right:calc(24px + env(safe-area-inset-right, 0px));z-index:50;
   width:56px;height:56px;border-radius:50%;border:none;
   background:var(--grad-b);color:white;font-size:26px;font-weight:300;
   cursor:pointer;display:flex;align-items:center;justify-content:center;
   box-shadow:0 4px 16px rgba(80,108,255,0.4);
   transition:transform 0.2s,box-shadow 0.2s;
+  -webkit-tap-highlight-color:transparent;
 }
 .fab:hover{transform:scale(1.08);}
 .fab:active{transform:scale(0.95);}
+.fab.loading{pointer-events:none;opacity:.7;}
 
 /* ── SECCIÓN HEADER ── */
 .section-header{
@@ -103,14 +114,15 @@ html,body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text)
   display:flex;align-items:center;justify-content:center;
   flex-direction:column;flex-shrink:0;line-height:1.2;
 }
-.reg-info{flex:1;}
-.reg-info strong{font-size:15px;font-weight:700;display:block;}
+.reg-info{flex:1;min-width:0;}
+.reg-info strong{font-size:15px;font-weight:700;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .reg-info small{font-size:12px;color:var(--text-muted);}
 .btn-del{
   width:32px;height:32px;border-radius:var(--r-sm);
   border:1.5px solid var(--border);background:white;
   cursor:pointer;display:flex;align-items:center;justify-content:center;
   transition:all 0.2s;color:var(--text-muted);flex-shrink:0;
+  -webkit-tap-highlight-color:transparent;
 }
 .btn-del:hover{border-color:var(--pink);color:var(--pink);background:#fff0f4;}
 .semaforos-row{display:flex;gap:8px;flex-wrap:wrap;}
@@ -128,6 +140,7 @@ html,body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text)
 .reg-sentimiento{
   margin-top:10px;padding-top:10px;border-top:1px solid var(--border);
   font-size:13px;color:var(--text-muted);font-style:italic;
+  word-break:break-word;
 }
 
 /* ── EMPTY STATE ── */
@@ -141,6 +154,7 @@ html,body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text)
   display:none;position:fixed;inset:0;
   background:rgba(30,30,50,0.45);z-index:200;
   align-items:flex-end;justify-content:center;
+  padding-bottom:var(--safe-bottom);
 }
 .modal-overlay.open{display:flex;animation:fadeIn 0.2s;}
 @keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
@@ -148,17 +162,17 @@ html,body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text)
 
 .modal{
   background:white;border-radius:var(--r-xl) var(--r-xl) 0 0;
-  width:100%;max-width:560px;max-height:92vh;
+  width:100%;max-width:560px;max-height:85dvh;
   display:flex;flex-direction:column;
   animation:slideUp 0.3s cubic-bezier(0.34,1.56,0.64,1);
   overflow:hidden;
 }
 .modal-handle{width:40px;height:4px;border-radius:2px;background:var(--border);margin:12px auto 4px;flex-shrink:0;}
 .modal-header{padding:8px 20px 16px;border-bottom:1px solid var(--border);flex-shrink:0;}
-.modal-header h2{font-size:18px;font-weight:700;background:var(--grad-b);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.modal-header h2{font-size:18px;font-weight:700;background:var(--grad-b);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
 .modal-header p{font-size:13px;color:var(--text-muted);margin-top:4px;}
-.modal-body{flex:1;overflow-y:auto;padding:20px;}
-.modal-footer{padding:16px 20px;border-top:1px solid var(--border);display:flex;gap:10px;flex-shrink:0;}
+.modal-body{flex:1;overflow-y:auto;padding:20px;-webkit-overflow-scrolling:touch;}
+.modal-footer{padding:16px 20px;padding-bottom:calc(16px + var(--safe-bottom));border-top:1px solid var(--border);display:flex;gap:10px;flex-shrink:0;}
 
 /* ── FORM ── */
 .form-grp{margin-bottom:18px;}
@@ -167,24 +181,37 @@ html,body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text)
   width:100%;padding:12px 14px;border:1.5px solid var(--border);
   border-radius:var(--r-md);font-family:'Outfit',sans-serif;font-size:14px;
   color:var(--text);background:white;outline:none;transition:border-color 0.2s;
+  -webkit-appearance:none;appearance:none;
 }
 .form-inp:focus{border-color:var(--blue);}
 textarea.form-inp{resize:vertical;min-height:80px;}
 
+/* ── SELECT MES ── */
+select.form-inp{
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23777' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;
+  background-position:right 14px center;
+  padding-right:36px;
+  cursor:pointer;
+}
+
 /* ── OPCIONES SEMÁFORO ── */
-.sema-options{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
+.sema-options{display:grid;grid-template-columns:repeat(3, 1fr);gap:8px;}
 .sema-opt{
   display:flex;flex-direction:column;align-items:center;gap:6px;
-  padding:14px 8px;border-radius:var(--r-md);border:2px solid var(--border);
+  padding:14px 6px;border-radius:var(--r-md);border:2px solid var(--border);
   background:white;cursor:pointer;transition:all 0.2s;text-align:center;
   font-family:'Outfit',sans-serif;
+  -webkit-tap-highlight-color:transparent;
+  min-width:0;
 }
 .sema-opt:hover{transform:translateY(-2px);box-shadow:var(--shadow-sm);}
+.sema-opt:active{transform:scale(0.97);}
 .sema-opt.selected-verde{border-color:var(--green);background:#f0fdf4;}
 .sema-opt.selected-amarillo{border-color:var(--yellow);background:#fffbeb;}
 .sema-opt.selected-rojo{border-color:var(--red);background:#fff1f2;}
 .sema-opt-icon{font-size:28px;line-height:1;}
-.sema-opt-label{font-size:12px;font-weight:600;color:var(--text-muted);}
+.sema-opt-label{font-size:11px;font-weight:600;color:var(--text-muted);line-height:1.3;}
 .sema-opt.selected-verde .sema-opt-label{color:#15803d;}
 .sema-opt.selected-amarillo .sema-opt-label{color:#b45309;}
 .sema-opt.selected-rojo .sema-opt-label{color:#be123c;}
@@ -194,6 +221,7 @@ textarea.form-inp{resize:vertical;min-height:80px;}
   flex:1;padding:13px;border-radius:var(--r-md);border:none;
   font-family:'Outfit',sans-serif;font-size:14px;font-weight:600;
   cursor:pointer;transition:all 0.2s;text-align:center;
+  -webkit-tap-highlight-color:transparent;
 }
 .btn-primary{background:var(--grad-b);color:white;box-shadow:0 3px 12px rgba(80,108,255,0.3);}
 .btn-primary:hover{opacity:.9;transform:translateY(-1px);}
@@ -203,11 +231,10 @@ textarea.form-inp{resize:vertical;min-height:80px;}
 
 /* ── CONFIRM MODAL ── */
 .confirm-modal{
-  background:white;border-radius:var(--r-xl);width:calc(100% - 48px);max-width:340px;
+  background:white;border-radius:var(--r-xl);width:calc(100% - 48px);max-width:340px;min-width:280px;
   padding:28px 24px;text-align:center;box-shadow:var(--shadow-lg);
   animation:fadeIn 0.2s;
 }
-#m-confirm .modal-overlay{align-items:center;}
 .confirm-icon{font-size:40px;margin-bottom:12px;}
 .confirm-modal h3{font-size:17px;font-weight:700;margin-bottom:8px;}
 .confirm-modal p{font-size:13px;color:var(--text-muted);margin-bottom:20px;line-height:1.5;}
@@ -216,23 +243,24 @@ textarea.form-inp{resize:vertical;min-height:80px;}
 
 /* ── TOAST ── */
 #toast{
-  position:fixed;bottom:80px;left:50%;transform:translateX(-50%);
+  position:fixed;bottom:calc(80px + var(--safe-bottom));left:50%;transform:translateX(-50%) translateY(10px);
   background:#222;color:white;padding:10px 20px;border-radius:var(--r-md);
-  font-size:13px;font-weight:500;opacity:0;transition:opacity 0.3s;
-  pointer-events:none;z-index:999;white-space:nowrap;
+  font-size:13px;font-weight:500;opacity:0;transition:opacity 0.3s,transform 0.3s;
+  pointer-events:none;z-index:999;white-space:nowrap;max-width:90vw;text-align:center;
 }
-#toast.show{opacity:1;}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 
 /* ── SPINNER ── */
 .spinner{
   width:18px;height:18px;border:2.5px solid rgba(255,255,255,0.3);
   border-top-color:white;border-radius:50%;animation:spin 0.7s linear infinite;display:inline-block;
+  vertical-align:middle;
 }
 @keyframes spin{to{transform:rotate(360deg);}}
 
 /* ── LOGOUT MENU ── */
 .logout-menu{
-  position:absolute;top:60px;right:16px;
+  position:absolute;top:calc(50px + var(--safe-top));right:16px;
   background:white;border:1.5px solid var(--border);border-radius:var(--r-md);
   padding:6px;box-shadow:var(--shadow-md);z-index:200;display:none;min-width:160px;
 }
@@ -241,9 +269,41 @@ textarea.form-inp{resize:vertical;min-height:80px;}
   padding:10px 14px;border-radius:var(--r-sm);font-size:13px;font-weight:500;
   cursor:pointer;color:var(--text);display:flex;align-items:center;gap:8px;
   transition:background 0.15s;
+  -webkit-tap-highlight-color:transparent;
 }
 .logout-item:hover{background:#f8fafc;}
 .logout-item.danger{color:#ef4444;}
+
+/* ── RESPONSIVE: pantallas pequeñas ── */
+@media (max-width:374px){
+  .sema-options{grid-template-columns:1fr 1fr 1fr;gap:6px;}
+  .sema-opt{padding:10px 4px;}
+  .sema-opt-icon{font-size:22px;}
+  .sema-opt-label{font-size:10px;}
+  .login-card{padding:28px 20px;}
+  .topbar{padding:10px 12px;}
+  .main{padding:16px 12px;padding-bottom:calc(90px + var(--safe-bottom));}
+}
+
+@media (min-width:561px){
+  .modal{border-radius:var(--r-xl);max-height:85vh;margin:auto;}
+  .modal-overlay{align-items:center!important;}
+}
+
+/* ── LANDSCAPE ── */
+@media (max-height:500px) and (orientation:landscape){
+  .modal{max-height:95vh;}
+  .modal-header{padding:6px 20px 10px;}
+  .modal-body{padding:12px 20px;}
+  .modal-footer{padding:10px 20px;padding-bottom:calc(10px + var(--safe-bottom));}
+  .sema-opt{padding:8px 6px;}
+  .sema-opt-icon{font-size:20px;}
+}
+
+/* ── ACCESIBILIDAD: respetar preferencia de movimiento ── */
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:0.01ms!important;transition-duration:0.01ms!important;}
+}
 </style>
 </head>
 <body>
@@ -270,7 +330,7 @@ textarea.form-inp{resize:vertical;min-height:80px;}
       </div>
     </div>
     <div style="position:relative;">
-      <div class="user-avatar" id="user-avatar" onclick="toggleMenu()">?</div>
+      <div class="user-avatar" id="user-avatar" role="button" tabindex="0" aria-label="Menú de usuario" onclick="toggleMenu()" onkeydown="if(event.key==='Enter')toggleMenu()">?</div>
       <div class="logout-menu" id="logout-menu">
         <div class="logout-item danger" onclick="logout()">
           <span>🚪</span> Cerrar sesión
@@ -292,35 +352,35 @@ textarea.form-inp{resize:vertical;min-height:80px;}
     </div>
   </div>
 
-  <button class="fab" onclick="openNuevo()">+</button>
+  <button class="fab" id="fab-btn" onclick="openNuevo()" aria-label="Agregar nuevo registro">+</button>
 </div>
 
 <!-- MODAL: NUEVO REGISTRO -->
-<div class="modal-overlay" id="m-nuevo">
+<div class="modal-overlay" id="m-nuevo" role="dialog" aria-modal="true" aria-labelledby="m-nuevo-title">
   <div class="modal">
     <div class="modal-handle"></div>
     <div class="modal-header">
-      <h2>¿Cómo estás este mes?</h2>
+      <h2 id="m-nuevo-title">¿Cómo estás este mes?</h2>
       <p id="m-nuevo-sub">Comparte tu estado de bienestar</p>
     </div>
     <div class="modal-body">
       <div class="form-grp">
-  <label class="form-lbl">Mes</label>
-  <div class="form-inp" id="f-mes" style="background:#f8fafc;color:var(--text-muted);cursor:default;"></div>
-</div>
+        <label class="form-lbl" for="f-mes">Mes</label>
+        <select class="form-inp" id="f-mes"></select>
+      </div>
 
       <div class="form-grp">
         <label class="form-lbl">Carga y ritmo de trabajo</label>
         <div class="sema-options">
-          <button type="button" class="sema-opt" data-field="carga" data-val="Estoy bien" onclick="selectSema(this,'carga','verde')">
+          <button type="button" class="sema-opt" data-field="carga" data-val="Estoy bien" onclick="selectSema(this,'carga','verde')" aria-pressed="false">
             <span class="sema-opt-icon">🟢</span>
             <span class="sema-opt-label">Estoy bien</span>
           </button>
-          <button type="button" class="sema-opt" data-field="carga" data-val="Más o menos" onclick="selectSema(this,'carga','amarillo')">
+          <button type="button" class="sema-opt" data-field="carga" data-val="Más o menos" onclick="selectSema(this,'carga','amarillo')" aria-pressed="false">
             <span class="sema-opt-icon">🟡</span>
             <span class="sema-opt-label">Más o menos</span>
           </button>
-          <button type="button" class="sema-opt" data-field="carga" data-val="No estoy bien" onclick="selectSema(this,'carga','rojo')">
+          <button type="button" class="sema-opt" data-field="carga" data-val="No estoy bien" onclick="selectSema(this,'carga','rojo')" aria-pressed="false">
             <span class="sema-opt-icon">🔴</span>
             <span class="sema-opt-label">No estoy bien</span>
           </button>
@@ -330,13 +390,13 @@ textarea.form-inp{resize:vertical;min-height:80px;}
       <div class="form-grp">
         <label class="form-lbl">Clima y relaciones</label>
         <div class="sema-options">
-          <button type="button" class="sema-opt" data-field="clima" data-val="Estoy bien" onclick="selectSema(this,'clima','verde')">
+          <button type="button" class="sema-opt" data-field="clima" data-val="Estoy bien" onclick="selectSema(this,'clima','verde')" aria-pressed="false">
             <span class="sema-opt-icon">🟢</span><span class="sema-opt-label">Estoy bien</span>
           </button>
-          <button type="button" class="sema-opt" data-field="clima" data-val="Más o menos" onclick="selectSema(this,'clima','amarillo')">
+          <button type="button" class="sema-opt" data-field="clima" data-val="Más o menos" onclick="selectSema(this,'clima','amarillo')" aria-pressed="false">
             <span class="sema-opt-icon">🟡</span><span class="sema-opt-label">Más o menos</span>
           </button>
-          <button type="button" class="sema-opt" data-field="clima" data-val="No estoy bien" onclick="selectSema(this,'clima','rojo')">
+          <button type="button" class="sema-opt" data-field="clima" data-val="No estoy bien" onclick="selectSema(this,'clima','rojo')" aria-pressed="false">
             <span class="sema-opt-icon">🔴</span><span class="sema-opt-label">No estoy bien</span>
           </button>
         </div>
@@ -345,13 +405,13 @@ textarea.form-inp{resize:vertical;min-height:80px;}
       <div class="form-grp">
         <label class="form-lbl">Estado emocional y energía</label>
         <div class="sema-options">
-          <button type="button" class="sema-opt" data-field="emocional" data-val="Estoy bien" onclick="selectSema(this,'emocional','verde')">
+          <button type="button" class="sema-opt" data-field="emocional" data-val="Estoy bien" onclick="selectSema(this,'emocional','verde')" aria-pressed="false">
             <span class="sema-opt-icon">🟢</span><span class="sema-opt-label">Estoy bien</span>
           </button>
-          <button type="button" class="sema-opt" data-field="emocional" data-val="Más o menos" onclick="selectSema(this,'emocional','amarillo')">
+          <button type="button" class="sema-opt" data-field="emocional" data-val="Más o menos" onclick="selectSema(this,'emocional','amarillo')" aria-pressed="false">
             <span class="sema-opt-icon">🟡</span><span class="sema-opt-label">Más o menos</span>
           </button>
-          <button type="button" class="sema-opt" data-field="emocional" data-val="No estoy bien" onclick="selectSema(this,'emocional','rojo')">
+          <button type="button" class="sema-opt" data-field="emocional" data-val="No estoy bien" onclick="selectSema(this,'emocional','rojo')" aria-pressed="false">
             <span class="sema-opt-icon">🔴</span><span class="sema-opt-label">No estoy bien</span>
           </button>
         </div>
@@ -360,21 +420,21 @@ textarea.form-inp{resize:vertical;min-height:80px;}
       <div class="form-grp">
         <label class="form-lbl">Liderazgo y apoyo</label>
         <div class="sema-options">
-          <button type="button" class="sema-opt" data-field="liderazgo" data-val="Estoy bien" onclick="selectSema(this,'liderazgo','verde')">
+          <button type="button" class="sema-opt" data-field="liderazgo" data-val="Estoy bien" onclick="selectSema(this,'liderazgo','verde')" aria-pressed="false">
             <span class="sema-opt-icon">🟢</span><span class="sema-opt-label">Estoy bien</span>
           </button>
-          <button type="button" class="sema-opt" data-field="liderazgo" data-val="Más o menos" onclick="selectSema(this,'liderazgo','amarillo')">
+          <button type="button" class="sema-opt" data-field="liderazgo" data-val="Más o menos" onclick="selectSema(this,'liderazgo','amarillo')" aria-pressed="false">
             <span class="sema-opt-icon">🟡</span><span class="sema-opt-label">Más o menos</span>
           </button>
-          <button type="button" class="sema-opt" data-field="liderazgo" data-val="No estoy bien" onclick="selectSema(this,'liderazgo','rojo')">
+          <button type="button" class="sema-opt" data-field="liderazgo" data-val="No estoy bien" onclick="selectSema(this,'liderazgo','rojo')" aria-pressed="false">
             <span class="sema-opt-icon">🔴</span><span class="sema-opt-label">No estoy bien</span>
           </button>
         </div>
       </div>
 
       <div class="form-grp">
-        <label class="form-lbl">¿Cómo te sentiste este mes? <span style="font-weight:400;text-transform:none;letter-spacing:0;">(opcional)</span></label>
-        <textarea class="form-inp" id="f-sentimiento" placeholder="Cuéntanos cómo fue tu mes..."></textarea>
+        <label class="form-lbl" for="f-sentimiento">¿Cómo te sentiste este mes? <span style="font-weight:400;text-transform:none;letter-spacing:0;">(opcional)</span></label>
+        <textarea class="form-inp" id="f-sentimiento" placeholder="Cuéntanos cómo fue tu mes..." maxlength="500"></textarea>
       </div>
     </div>
     <div class="modal-footer">
@@ -385,10 +445,10 @@ textarea.form-inp{resize:vertical;min-height:80px;}
 </div>
 
 <!-- MODAL: CONFIRMAR ELIMINAR -->
-<div class="modal-overlay" id="m-confirm" style="align-items:center;">
+<div class="modal-overlay" id="m-confirm" role="dialog" aria-modal="true" aria-labelledby="m-confirm-title">
   <div class="confirm-modal">
     <div class="confirm-icon">🗑️</div>
-    <h3>¿Eliminar registro?</h3>
+    <h3 id="m-confirm-title">¿Eliminar registro?</h3>
     <p>Esta acción no se puede deshacer.</p>
     <div class="confirm-btns">
       <button class="btn btn-glass" onclick="closeModal('m-confirm')">Cancelar</button>
@@ -397,7 +457,7 @@ textarea.form-inp{resize:vertical;min-height:80px;}
   </div>
 </div>
 
-<div id="toast"></div>
+<div id="toast" aria-live="polite"></div>
 
 <script>
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz95ASB2boSxom3iPq0Ek-nJHxC0uBmyU3Hcs9dLw9Sza_9VoJj5fJHr3tGdGeqNEr69Q/exec';
@@ -408,41 +468,53 @@ let currentUser = null;
 let misRegistros = [];
 let pendingDelId = null;
 let semaValues = { carga:'', clima:'', emocional:'', liderazgo:'' };
+let isSubmitting = false;
+let isDeleting = false;
 
-// ── MESES ──────────────────────────────────────
 const MESES = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
 
-function getMesActual(){
-  const d = new Date();
-  return MESES[d.getMonth()] + ' ' + d.getFullYear();
+function escapeHtml(str){
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
 }
 
 function poblarMeses(){
   const sel = document.getElementById('f-mes');
   const d = new Date();
   sel.innerHTML = '';
-  for(let i=0; i<12; i++){
-    const fecha = new Date(d.getFullYear(), d.getMonth()-i, 1);
+  for(let i = 0; i < 12; i++){
+    const fecha = new Date(d.getFullYear(), d.getMonth() - i, 1);
     const label = MESES[fecha.getMonth()] + ' ' + fecha.getFullYear();
     const opt = document.createElement('option');
     opt.value = label;
     opt.textContent = label;
+    if(i === 0) opt.selected = true;
     sel.appendChild(opt);
   }
 }
 
-// ── GOOGLE LOGIN ────────────────────────────────
-window.addEventListener('load', ()=>{
-  google.accounts.id.initialize({
-    client_id: G_CLIENT,
-    callback: handleCredential,
-    auto_select: false
-  });
-  google.accounts.id.renderButton(
-    document.getElementById('g-login-btn'),
-    { theme:'outline', size:'large', width:280, text:'continue_with' }
-  );
-  google.accounts.id.prompt();
+function getMesSeleccionado(){
+  return document.getElementById('f-mes').value;
+}
+
+window.addEventListener('load', function(){
+  poblarMeses();
+
+  if(typeof google !== 'undefined' && google.accounts){
+    google.accounts.id.initialize({
+      client_id: G_CLIENT,
+      callback: handleCredential,
+      auto_select: false
+    });
+    google.accounts.id.renderButton(
+      document.getElementById('g-login-btn'),
+      { theme:'outline', size:'large', width:280, text:'continue_with' }
+    );
+    google.accounts.id.prompt();
+  } else {
+    document.getElementById('g-login-btn').innerHTML = '<p style="color:#ef4444;font-size:13px;">No se pudo cargar el login de Google. Recarga la página.</p>';
+  }
 });
 
 async function handleCredential(response){
@@ -451,26 +523,25 @@ async function handleCredential(response){
     const correo  = payload.email;
     const nombre  = payload.name;
     if(!correo.endsWith('@redesconrostro.org')){
-      toast('⛔ Solo cuentas @redesconrostro.org');
+      toast('Solo cuentas @redesconrostro.org');
       return;
     }
-    // Verificar en el sheet de usuarios
     const res = await api({action:'login', correo, source:'semaforo'});
     if(!res.success){
-      toast('⛔ ' + (res.message||'No autorizado'));
+      toast(res.message || 'No autorizado');
       return;
     }
-    currentUser = { correo, nombre: res.nombre||nombre, rol: res.rol };
+    currentUser = { correo, nombre: res.nombre || nombre, rol: res.rol };
     entrarApp();
   } catch(e){
-    toast('Error al iniciar sesión');
+    toast('Error al iniciar sesion');
   }
 }
 
 function entrarApp(){
-  document.getElementById('login-screen').style.display='none';
-  document.getElementById('app-screen').style.display='block';
-  const ini = currentUser.nombre.split(' ').slice(0,2).map(w=>w[0]).join('').toUpperCase();
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('app-screen').style.display = 'block';
+  const ini = currentUser.nombre.split(' ').slice(0, 2).map(w => w[0]).join('').toUpperCase();
   document.getElementById('user-avatar').textContent = ini;
   document.getElementById('topbar-user').textContent = currentUser.nombre;
   document.getElementById('m-nuevo-sub').textContent = currentUser.nombre;
@@ -478,36 +549,46 @@ function entrarApp(){
 }
 
 function logout(){
-  google.accounts.id.disableAutoSelect();
+  if(typeof google !== 'undefined' && google.accounts){
+    google.accounts.id.disableAutoSelect();
+  }
   currentUser = null;
   misRegistros = [];
-  document.getElementById('app-screen').style.display='none';
-  document.getElementById('login-screen').style.display='flex';
+  document.getElementById('app-screen').style.display = 'none';
+  document.getElementById('login-screen').style.display = 'flex';
   closeMenu();
 }
 
-// ── API ─────────────────────────────────────────
 async function api(p){
   const u = new URL(SCRIPT_URL);
-  Object.entries(p).forEach(([k,v])=>u.searchParams.set(k,v));
-  const r = await fetch(u.toString());
-  return r.json();
-}
-async function apiPost(body){
-  const r = await fetch(SCRIPT_URL,{method:'POST',body:JSON.stringify(body)});
+  Object.entries(p).forEach(([k, v]) => u.searchParams.set(k, v));
+  const r = await fetch(u.toString(), { signal: AbortSignal.timeout(15000) });
   return r.json();
 }
 
-// ── CARGAR REGISTROS ────────────────────────────
+async function apiPost(body){
+  const r = await fetch(SCRIPT_URL, {
+    method: 'POST',
+    body: JSON.stringify(body),
+    headers: { 'Content-Type': 'text/plain' },
+    signal: AbortSignal.timeout(15000)
+  });
+  return r.json();
+}
+
 async function cargarRegistros(){
-  document.getElementById('registros-list').innerHTML=`<div class="empty-state"><div class="e-ico">⏳</div><p>Cargando...</p></div>`;
+  const list = document.getElementById('registros-list');
+  list.innerHTML = '<div class="empty-state"><div class="e-ico">⏳</div><p>Cargando...</p></div>';
   try{
     const res = await api({action:'getAll', sheet:SHEET});
     if(res.success){
-      misRegistros = (res.data||[]).filter(r=>r.Colaborador===currentUser.nombre);
+      misRegistros = (res.data || []).filter(r => r.Colaborador === currentUser.nombre);
       renderRegistros();
+    } else {
+      list.innerHTML = '<div class="empty-state"><div class="e-ico">⚠️</div><p>Error al cargar</p><small>Intenta de nuevo</small></div>';
     }
   } catch(e){
+    list.innerHTML = '<div class="empty-state"><div class="e-ico">⚠️</div><p>Sin conexion</p><small>Verifica tu internet</small></div>';
     toast('Error cargando datos');
   }
 }
@@ -516,80 +597,83 @@ function renderRegistros(){
   const list = document.getElementById('registros-list');
   document.getElementById('count-badge').textContent = misRegistros.length;
   if(!misRegistros.length){
-    list.innerHTML=`<div class="empty-state"><div class="e-ico">🚦</div><p>Sin registros aún</p><small>Toca + para agregar tu primer registro</small></div>`;
+    list.innerHTML = '<div class="empty-state"><div class="e-ico">🚦</div><p>Sin registros aún</p><small>Toca + para agregar tu primer registro</small></div>';
     return;
   }
-  list.innerHTML = misRegistros.slice().reverse().map(r=>{
+  list.innerHTML = misRegistros.slice().reverse().map(r => {
     const chips = [
-      ['Carga y ritmo de trabajo', r['Carga y ritmo de trabajo']],
-      ['Clima y relaciones', r['Clima y relaciones']],
-      ['Estado emocional', r['Estado emocional y energía']],
-      ['Liderazgo y apoyo', r['Liderazgo y apoyo']],
-    ].filter(([,v])=>v).map(([l,v])=>{
-      const cls = v==='Estoy bien'?'verde':v==='Más o menos'?'amarillo':'rojo';
-      const dot = v==='Estoy bien'?'🟢':v==='Más o menos'?'🟡':'🔴';
-      return `<div class="sema-chip ${cls}"><span class="sema-dot"></span>${l}</div>`;
+      ['Carga', r['Carga y ritmo de trabajo']],
+      ['Clima', r['Clima y relaciones']],
+      ['Emocional', r['Estado emocional y energía']],
+      ['Liderazgo', r['Liderazgo y apoyo']],
+    ].filter(([, v]) => v).map(([l, v]) => {
+      const cls = v === 'Estoy bien' ? 'verde' : v === 'Más o menos' ? 'amarillo' : 'rojo';
+      return '<div class="sema-chip ' + cls + '"><span class="sema-dot"></span>' + escapeHtml(l) + ': ' + escapeHtml(v) + '</div>';
     }).join('');
-    const sentimiento = r['¿Cómo te sentiste este mes? ']||r['¿Cómo te sentiste este mes?']||'';
-    const mesLabel = r.Mes||'—';
-    const mesCorto = mesLabel.split(' ')[0].substring(0,3).toUpperCase();
-    const anio = mesLabel.split(' ')[1]||'';
-    return `
-    <div class="reg-card">
-      <div class="reg-card-top">
-        <div class="reg-month"><span>${mesCorto}</span><span>${anio}</span></div>
-        <div class="reg-info">
-          <strong>${mesLabel}</strong>
-          <small>${currentUser.nombre}</small>
-        </div>
-        <button class="btn-del" onclick="pedirEliminar('${r.RowID}')">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>
-        </button>
-      </div>
-      <div class="semaforos-row">${chips}</div>
-      ${sentimiento?`<div class="reg-sentimiento">"${sentimiento}"</div>`:''}
-    </div>`;
+    const sentimiento = r['¿Cómo te sentiste este mes?'] || '';
+    const mesLabel = r.Mes || '—';
+    const mesCorto = mesLabel.split(' ')[0].substring(0, 3).toUpperCase();
+    const anio = mesLabel.split(' ')[1] || '';
+    const rowId = r.RowID ? escapeHtml(String(r.RowID)) : '';
+    return (
+      '<div class="reg-card">' +
+        '<div class="reg-card-top">' +
+          '<div class="reg-month"><span>' + escapeHtml(mesCorto) + '</span><span>' + escapeHtml(anio) + '</span></div>' +
+          '<div class="reg-info">' +
+            '<strong>' + escapeHtml(mesLabel) + '</strong>' +
+            '<small>' + escapeHtml(currentUser.nombre) + '</small>' +
+          '</div>' +
+          '<button class="btn-del" onclick="pedirEliminar(\'' + rowId + '\')" aria-label="Eliminar registro de ' + escapeHtml(mesLabel) + '">' +
+            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>' +
+          '</button>' +
+        '</div>' +
+        '<div class="semaforos-row">' + chips + '</div>' +
+        (sentimiento ? '<div class="reg-sentimiento">"' + escapeHtml(sentimiento) + '"</div>' : '') +
+      '</div>'
+    );
   }).join('');
 }
 
-// ── SEMÁFORO SELECTOR ───────────────────────────
 function selectSema(btn, field, color){
-  // Deseleccionar todos los del mismo field
-  document.querySelectorAll(`[data-field="${field}"]`).forEach(b=>{
-    b.className='sema-opt';
+  document.querySelectorAll('[data-field="' + field + '"]').forEach(b => {
+    b.className = 'sema-opt';
+    b.setAttribute('aria-pressed', 'false');
   });
-  btn.classList.add('selected-'+color);
+  btn.classList.add('selected-' + color);
+  btn.setAttribute('aria-pressed', 'true');
   semaValues[field] = btn.dataset.val;
 }
 
-// ── ABRIR MODAL NUEVO ───────────────────────────
 function openNuevo(){
-  semaValues = {carga:'',clima:'',emocional:'',liderazgo:''};
-  document.querySelectorAll('.sema-opt').forEach(b=>b.className='sema-opt');
-  document.getElementById('f-sentimiento').value='';
-  const d = new Date();
-const mesActual = MESES[d.getMonth()] + ' ' + d.getFullYear();
-document.getElementById('f-mes').textContent = mesActual;
-document.getElementById('f-mes').dataset.value = mesActual;
+  if(isSubmitting) return;
+  semaValues = {carga:'', clima:'', emocional:'', liderazgo:''};
+  document.querySelectorAll('.sema-opt').forEach(b => {
+    b.className = 'sema-opt';
+    b.setAttribute('aria-pressed', 'false');
+  });
+  document.getElementById('f-sentimiento').value = '';
+  poblarMeses();
   openModal('m-nuevo');
 }
 
-// ── GUARDAR ─────────────────────────────────────
 async function guardarRegistro(){
-  const mes = document.getElementById('f-mes').dataset.value;
-  if(!semaValues.carga||!semaValues.clima||!semaValues.emocional||!semaValues.liderazgo){
-    toast('⚠️ Completa todos los campos del semáforo');
+  if(isSubmitting) return;
+  const mes = getMesSeleccionado();
+  if(!semaValues.carga || !semaValues.clima || !semaValues.emocional || !semaValues.liderazgo){
+    toast('Completa todos los campos del semaforo');
     return;
   }
-  // Verificar si ya existe un registro del mismo mes
-  const existe = misRegistros.find(r=>r.Mes===mes);
+  const existe = misRegistros.find(r => r.Mes === mes);
   if(existe){
-    toast('⚠️ Ya enviaste un registro para '+mes);
+    toast('Ya enviaste un registro para ' + mes);
     return;
   }
+  isSubmitting = true;
   const btn = document.getElementById('btn-guardar');
-  btn.disabled=true;
-  btn.innerHTML='<span class="spinner"></span>';
+  const fab = document.getElementById('fab-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span>';
+  fab.classList.add('loading');
   try{
     const data = {
       Colaborador:           currentUser.nombre,
@@ -598,7 +682,7 @@ async function guardarRegistro(){
       'Clima y relaciones':         semaValues.clima,
       'Estado emocional y energía': semaValues.emocional,
       'Liderazgo y apoyo':          semaValues.liderazgo,
-      '¿Cómo te sentiste este mes? ': document.getElementById('f-sentimiento').value,
+      '¿Cómo te sentiste este mes?': document.getElementById('f-sentimiento').value.trim(),
     };
     const res = await apiPost({action:'createRow', sheet:SHEET, data});
     if(res.success){
@@ -606,72 +690,98 @@ async function guardarRegistro(){
       misRegistros.push(data);
       renderRegistros();
       closeModal('m-nuevo');
-      toast('✅ Registro guardado');
+      toast('Registro guardado');
     } else {
-      toast('❌ '+(res.message||'Error guardando'));
+      toast(res.message || 'Error guardando');
     }
   } catch(e){
-    toast('❌ Error de conexión');
+    toast('Error de conexion');
   }
-  btn.disabled=false;
-  btn.innerHTML='Guardar';
+  btn.disabled = false;
+  btn.innerHTML = 'Guardar';
+  fab.classList.remove('loading');
+  isSubmitting = false;
 }
 
-// ── ELIMINAR ─────────────────────────────────────
 function pedirEliminar(rowId){
+  if(isDeleting) return;
   pendingDelId = rowId;
   openModal('m-confirm');
 }
 
 async function confirmarEliminar(){
-  if(!pendingDelId) return;
+  if(isDeleting || !pendingDelId) return;
+  isDeleting = true;
   const btn = document.getElementById('btn-confirm-del');
-  btn.disabled=true;
-  btn.innerHTML='<span class="spinner"></span>';
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span>';
   try{
     const res = await apiPost({action:'deleteRow', sheet:SHEET, rowId:pendingDelId, field:'RowID'});
     if(res.success){
-      misRegistros = misRegistros.filter(r=>r.RowID!==pendingDelId);
+      misRegistros = misRegistros.filter(r => r.RowID !== pendingDelId);
       renderRegistros();
       closeModal('m-confirm');
-      toast('🗑️ Registro eliminado');
+      toast('Registro eliminado');
     } else {
-      toast('❌ '+(res.message||'Error eliminando'));
+      toast(res.message || 'Error eliminando');
     }
   } catch(e){
-    toast('❌ Error de conexión');
+    toast('Error de conexion');
   }
-  btn.disabled=false;
-  btn.innerHTML='Eliminar';
-  pendingDelId=null;
+  btn.disabled = false;
+  btn.innerHTML = 'Eliminar';
+  pendingDelId = null;
+  isDeleting = false;
 }
 
-// ── HELPERS ─────────────────────────────────────
-function openModal(id){document.getElementById(id).classList.add('open');}
-function closeModal(id){document.getElementById(id).classList.remove('open');}
+function openModal(id){
+  document.getElementById(id).classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal(id){
+  document.getElementById(id).classList.remove('open');
+  document.body.style.overflow = '';
+}
 
 function toggleMenu(){
   document.getElementById('logout-menu').classList.toggle('open');
 }
+
 function closeMenu(){
   document.getElementById('logout-menu').classList.remove('open');
 }
-document.addEventListener('click',e=>{
-  if(!e.target.closest('#user-avatar')&&!e.target.closest('#logout-menu')) closeMenu();
+
+document.addEventListener('click', function(e){
+  if(!e.target.closest('#user-avatar') && !e.target.closest('#logout-menu')){
+    closeMenu();
+  }
 });
 
 let toastTimer;
 function toast(msg){
-  const el=document.getElementById('toast');
-  el.textContent=msg;
+  const el = document.getElementById('toast');
+  el.textContent = msg;
   el.classList.add('show');
   clearTimeout(toastTimer);
-  toastTimer=setTimeout(()=>el.classList.remove('show'),3000);
+  toastTimer = setTimeout(function(){ el.classList.remove('show'); }, 3000);
 }
 
-// Cerrar modales al tocar fondo
-document.querySelectorAll('.modal-overlay').forEach(el=>{
-  el.addEventListener('click',e=>{if(e.target===el)closeModal(el.id);});
+document.querySelectorAll('.modal-overlay').forEach(function(el){
+  el.addEventListener('click', function(e){
+    if(e.target === el){
+      closeModal(el.id);
+    }
+  });
+});
+
+document.addEventListener('keydown', function(e){
+  if(e.key === 'Escape'){
+    document.querySelectorAll('.modal-overlay.open').forEach(function(el){
+      closeModal(el.id);
+    });
+    closeMenu();
+  }
 });
 </script>
 </body>
