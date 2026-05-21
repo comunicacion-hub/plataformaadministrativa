@@ -40,8 +40,7 @@ html,body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text)
 }
 .login-logo{
   display:flex;align-items:center;justify-content:center;margin:0 auto 20px;
-  width:64px;height:64px;border-radius:50%;background:var(--grad-b);
-  font-size:28px;
+  font-size:48px;
 }
 .login-card h1{font-size:22px;font-weight:800;color:var(--text);margin-bottom:6px;}
 .login-card p{font-size:14px;color:var(--text-muted);margin-bottom:28px;line-height:1.5;}
@@ -60,8 +59,7 @@ html,body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text)
 .topbar-left{display:flex;align-items:center;gap:10px;min-width:0;}
 .topbar-logo{
   display:flex;align-items:center;justify-content:center;
-  width:36px;height:36px;border-radius:50%;background:var(--grad-b);
-  font-size:16px;flex-shrink:0;
+  font-size:22px;flex-shrink:0;
 }
 .topbar-titles{min-width:0;}
 .topbar-titles h1{font-size:15px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
@@ -482,13 +480,22 @@ function escapeHtml(str){
 function poblarMeses(){
   const d = new Date();
   const mesActual = MESES[d.getMonth()] + ' ' + d.getFullYear();
+  const dia = String(d.getDate()).padStart(2,'0');
+  const mes = String(d.getMonth()+1).padStart(2,'0');
+  const anio = d.getFullYear();
+  const fechaExacta = dia + ' - ' + mes + ' - ' + anio;
   const el = document.getElementById('f-mes');
-  el.textContent = mesActual;
+  el.textContent = fechaExacta;
   el.dataset.value = mesActual;
+  el.dataset.fecha = dia + '/' + mes + '/' + anio;
 }
 
 function getMesSeleccionado(){
   return document.getElementById('f-mes').dataset.value;
+}
+
+function getFechaExacta(){
+  return document.getElementById('f-mes').dataset.fecha;
 }
 
 window.addEventListener('load', function(){
@@ -671,11 +678,12 @@ async function guardarRegistro(){
     const data = {
       Colaborador:           currentUser.nombre,
       Mes:                   mes,
+      Fecha:                 getFechaExacta(),
       'Carga y ritmo de trabajo':   semaValues.carga,
       'Clima y relaciones':         semaValues.clima,
       'Estado emocional y energía': semaValues.emocional,
       'Liderazgo y apoyo':          semaValues.liderazgo,
-      '¿Cómo te sentiste este mes?': document.getElementById('f-sentimiento').value.trim(),
+      '¿Cómo te sentiste este mes? ': document.getElementById('f-sentimiento').value.trim(),
     };
     const res = await apiPost({action:'createRow', sheet:SHEET, data});
     if(res.success){
@@ -711,7 +719,7 @@ async function confirmarEliminar(){
   try{
     const res = await apiPost({action:'deleteRow', sheet:SHEET, rowId:pendingDelId, field:'RowID'});
     if(res.success){
-      misRegistros = misRegistros.filter(r => r.RowID !== pendingDelId);
+      misRegistros = misRegistros.filter(r => String(r.RowID) !== String(pendingDelId));
       renderRegistros();
       closeModal('m-confirm');
       toast('Registro eliminado');
