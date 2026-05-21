@@ -305,9 +305,9 @@ textarea.form-inp{resize:vertical;min-height:80px;}
     </div>
     <div class="modal-body">
       <div class="form-grp">
-        <label class="form-lbl">Mes</label>
-        <select class="form-inp" id="f-mes"></select>
-      </div>
+  <label class="form-lbl">Mes</label>
+  <div class="form-inp" id="f-mes" style="background:#f8fafc;color:var(--text-muted);cursor:default;"></div>
+</div>
 
       <div class="form-grp">
         <label class="form-lbl">Carga y ritmo de trabajo</label>
@@ -567,13 +567,16 @@ function openNuevo(){
   semaValues = {carga:'',clima:'',emocional:'',liderazgo:''};
   document.querySelectorAll('.sema-opt').forEach(b=>b.className='sema-opt');
   document.getElementById('f-sentimiento').value='';
-  poblarMeses();
+  const d = new Date();
+const mesActual = MESES[d.getMonth()] + ' ' + d.getFullYear();
+document.getElementById('f-mes').textContent = mesActual;
+document.getElementById('f-mes').dataset.value = mesActual;
   openModal('m-nuevo');
 }
 
 // ── GUARDAR ─────────────────────────────────────
 async function guardarRegistro(){
-  const mes = document.getElementById('f-mes').value;
+  const mes = document.getElementById('f-mes').dataset.value;
   if(!semaValues.carga||!semaValues.clima||!semaValues.emocional||!semaValues.liderazgo){
     toast('⚠️ Completa todos los campos del semáforo');
     return;
