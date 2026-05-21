@@ -435,9 +435,7 @@
     <div class="screen" id="screen-semaforo">
       <div class="page-header">
         <div><div class="page-title">Semáforo de Satisfacción</div><div class="page-sub">Autopercepción del equipo · Solo visualización</div></div>
-        <div class="hdr-actions">
-          <button class="btn btn-glass btn-sm" onclick="syncAll()">🔄 Sincronizar</button>
-        </div>
+        <div class="hdr-actions"></div>
       </div>
       <div class="filters-row">
         <div class="search-wrap"><span class="search-icon">🔍</span><input class="search-input" type="text" placeholder="Buscar colaborador..." id="sm-nombre" oninput="renderSema();updateSemaBtnVer()"></div>
@@ -1585,11 +1583,17 @@ function renderSema(){
     grid.innerHTML=`<div class="empty-state"><div class="e-ico">🚦</div><p>Sin datos de semáforo aún</p></div>`;
     return;
   }
+  const colorDot=v=>v==='Estoy bien'?'🟢':v==='Más o menos'?'🟡':v==='No estoy bien'?'🔴':'—';
+  const colorCls=v=>v==='Estoy bien'?'color:#15803d':v==='Más o menos'?'color:#b45309':v==='No estoy bien'?'color:#be123c':'color:var(--text-dim)';
   grid.innerHTML=d.map((r,i)=>{
     const al=col(r)==='mal'?'border-color:rgba(220,38,90,.25);background:rgba(220,38,90,.03);':'';
     return`<div class="sema-card" style="${al}">
       <div class="sema-head"><div class="avatar" style="background:${gr[i%gr.length]};width:36px;height:36px;font-size:11px;">${ini(r.Colaborador)}</div><div><div class="sema-name">${x(r.Colaborador||'—')}</div><div class="sema-meta">${x(r.Mes||'—')} · ${x(r.Equipo||r['Programa/Proyecto']||'')}</div></div></div>
-      <div class="sema-items">${flds.map(([l,k])=>r[k]?`<div class="sema-item"><span class="sema-lbl">${l}</span><span>${r[k].split(' ')[0]}</span></div>`:'').join('')}</div>
+      <div class="sema-items">${flds.map(([l,k])=>r[k]?`<div class="sema-item"><span class="sema-lbl">${l}</span><span style="${colorCls(r[k])}">${colorDot(r[k])} ${r[k]}</span></div>`:'').join('')}</div>
+      <div style="display:flex;gap:8px;margin-top:10px;padding-top:10px;border-top:1px solid var(--border);">
+        <button class="btn btn-glass btn-sm" style="flex:1;" onclick="openSemaModal();document.getElementById('btn-ver-sema').dataset.nombre='${r.Colaborador}'">👁 Ver ficha</button>
+        <button class="btn btn-danger btn-sm" onclick="confirmDel('Semáforo','${r.RowID}','RowID')">🗑</button>
+      </div>
     </div>`;
   }).join('');
   if(!q&&!eq&&!mes){
