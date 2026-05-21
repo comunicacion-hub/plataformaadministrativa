@@ -455,7 +455,7 @@ async function handleCredential(response){
       return;
     }
     // Verificar en el sheet de usuarios
-    const res = await api({action:'login', correo});
+    const res = await api({action:'login', correo, source:'semaforo'});
     if(!res.success){
       toast('⛔ ' + (res.message||'No autorizado'));
       return;
