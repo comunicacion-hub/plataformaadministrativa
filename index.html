@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Bienestar360</title>
+<title>Bienestar 360</title>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 <style>
@@ -294,40 +294,169 @@
   @media(min-width:769px){#mobile-nav{display:none;}}
 
 
-/* ===== PRO UI + MOBILE FIXES (v2) ===== */
-:root{ --text-secondary: var(--text-muted); }
+/* =========================================================
+   BIENESTAR 360 — TEAMS INSPIRED PRO UI
+   Rebuild visual: Fluent/Teams-like, responsive, fast-loading.
+   ========================================================= */
+:root{
+  --teams-bg:#f5f5fb;
+  --teams-rail:#ffffff;
+  --teams-surface:#ffffff;
+  --teams-surface-2:#faf9f8;
+  --teams-primary:#6264A7;
+  --teams-primary-2:#464775;
+  --teams-accent:#33A8DE;
+  --teams-text:#242424;
+  --teams-muted:#616161;
+  --teams-soft:#8a8886;
+  --teams-border:#e1dfdd;
+  --teams-success:#13A10E;
+  --teams-warning:#f2c94c;
+  --teams-danger:#d13438;
+  --teams-shadow:0 8px 24px rgba(0,0,0,.08);
+  --teams-shadow-sm:0 2px 8px rgba(0,0,0,.06);
+  --teams-radius:16px;
+}
+
 *,*::before,*::after{box-sizing:border-box}
+html,body{max-width:100%;overflow-x:hidden;}
+body{
+  background:var(--teams-bg) !important;
+  color:var(--teams-text) !important;
+  -webkit-text-size-adjust:100%;
+  text-size-adjust:100%;
+}
 
-.google-btn-wrap{width:100%;display:flex;flex-direction:column;gap:12px;align-items:center;justify-content:center;}
-#google-login-btn{width:100%;display:flex;justify-content:center;}
-.google-login-fallback{width:100%;padding:13px 20px;background:#fff;color:#3c4043;border:1px solid #dadce0;border-radius:12px;font-family:'Outfit',sans-serif;font-size:15px;font-weight:600;cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,0.1);}
+/* ---------- Teams Login ---------- */
+.teams-login{position:fixed;inset:0;z-index:500;display:flex;align-items:center;justify-content:center;padding:24px;overflow:hidden;background:linear-gradient(135deg,#f7f7ff 0%,#eef2ff 45%,#eefaff 100%);}
+.teams-login-bg{position:absolute;inset:0;overflow:hidden;}
+.teams-orb{position:absolute;border-radius:999px;filter:blur(24px);opacity:.22;}
+.orb-a{width:360px;height:360px;background:#6264A7;top:-110px;right:-80px;}
+.orb-b{width:300px;height:300px;background:#33A8DE;bottom:-90px;left:-70px;}
+.orb-c{width:220px;height:220px;background:#18AE97;right:12%;bottom:14%;opacity:.14;}
+.teams-login-card{position:relative;z-index:1;width:min(480px,94vw);background:rgba(255,255,255,.92);border:1px solid rgba(255,255,255,.82);border-radius:28px;padding:34px;box-shadow:0 24px 80px rgba(70,71,117,.18);backdrop-filter:blur(18px);}
+.teams-login-brand{display:flex;align-items:center;gap:14px;margin-bottom:28px;}
+.teams-logo-mark{width:52px;height:52px;border-radius:14px;background:linear-gradient(135deg,var(--teams-primary),var(--teams-accent));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:14px;letter-spacing:.4px;box-shadow:var(--teams-shadow-sm);}
+.teams-login-title{font-size:24px;font-weight:750;color:var(--teams-text);letter-spacing:-.5px;}
+.teams-login-subtitle{font-size:13px;color:var(--teams-muted);margin-top:2px;}
+.teams-login-copy h1{font-size:28px;line-height:1.14;letter-spacing:-.8px;margin:0 0 12px;color:var(--teams-text);}
+.teams-login-copy p{font-size:15px;line-height:1.55;color:var(--teams-muted);margin:0 0 26px;}
+.teams-google-area{width:100%;display:flex;flex-direction:column;align-items:stretch;gap:12px;}
+.google-login-btn-slot{display:flex;justify-content:center;width:100%;min-height:44px;}
+.teams-google-fallback{width:100%;height:46px;border-radius:12px;border:1px solid var(--teams-border);background:#fff;color:var(--teams-text);font:600 14px 'Outfit',sans-serif;cursor:pointer;}
+.teams-login-footer{font-size:12px;color:var(--teams-soft);line-height:1.45;text-align:center;margin-top:18px;}
 
-.form-grp{display:flex;flex-direction:column;gap:8px;width:100%}
-.form-lbl{font-size:12px;font-weight:600;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.4px}
-.form-inp{width:100%;min-height:48px;height:48px;padding:0 14px;border-radius:14px;border:1.5px solid var(--border);background:var(--surface);font-size:15px;transition:all .2s ease}
-.form-inp:focus{outline:none;border-color:#3b82f6;box-shadow:0 0 0 3px rgba(59,130,246,.15)}
-textarea.form-inp{height:auto;min-height:110px;padding:12px 14px;}
-select.form-inp{appearance:none;}
+/* ---------- App Shell ---------- */
+#app{background:var(--teams-bg) !important;}
+.sidebar{background:var(--teams-rail) !important;border-right:1px solid var(--teams-border) !important;padding:18px 12px !important;box-shadow:1px 0 0 rgba(0,0,0,.02);}
+.sidebar-brand{padding:8px 10px 18px !important;border-bottom:1px solid var(--teams-border);margin-bottom:8px;}
+.brand-icon{background:linear-gradient(135deg,var(--teams-primary),var(--teams-accent)) !important;color:#fff;border:0 !important;box-shadow:none !important;}
+.brand-name{font-size:17px !important;font-weight:760 !important;color:var(--teams-text) !important;}
+.brand-sub{font-size:11px !important;color:var(--teams-muted) !important;}
+.nav-lbl{color:var(--teams-soft) !important;padding:14px 12px 6px !important;}
+.nav-item{border-radius:10px !important;color:var(--teams-muted) !important;padding:10px 12px !important;margin:1px 0;}
+.nav-item:hover{background:#f5f5fa !important;color:var(--teams-primary-2) !important;}
+.nav-item.active{background:#eeeeff !important;color:var(--teams-primary-2) !important;font-weight:700 !important;}
+.nav-item.active::before{background:var(--teams-primary) !important;}
+.user-chip{background:#faf9f8 !important;border:1px solid var(--teams-border) !important;border-radius:14px !important;}
+.logout-btn{color:var(--teams-danger) !important;}
 
+.main{padding:28px 32px !important;gap:22px !important;background:var(--teams-bg) !important;}
+.screen{gap:20px !important;}
+.page-header{background:transparent;align-items:center !important;}
+.page-title{font-size:28px !important;font-weight:760 !important;color:var(--teams-text) !important;letter-spacing:-.7px;}
+.page-sub{font-size:14px !important;color:var(--teams-muted) !important;}
+
+/* ---------- Cards ---------- */
+.stat-card,.inicio-card,.panel-card,.sum-card,.sema-card,.tbl-wrap{background:var(--teams-surface) !important;border:1px solid var(--teams-border) !important;border-radius:18px !important;box-shadow:var(--teams-shadow-sm) !important;}
+.stat-card{padding:22px !important;}
+.stat-value{font-size:32px !important;color:var(--teams-text) !important;}
+.stat-label{font-size:13px !important;color:var(--teams-muted) !important;line-height:1.35;}
+.inicio-card{padding:26px !important;transition:transform .16s ease, box-shadow .16s ease !important;}
+.inicio-card:hover{transform:translateY(-2px) !important;box-shadow:var(--teams-shadow) !important;}
+.ic-title{font-size:17px !important;font-weight:720 !important;}
+.ic-desc{font-size:13px !important;color:var(--teams-muted) !important;}
+
+/* ---------- Buttons and inputs ---------- */
+.btn{height:40px;border-radius:10px !important;border:1px solid var(--teams-border) !important;background:#fff !important;color:var(--teams-text) !important;font-weight:650 !important;box-shadow:none !important;}
+.btn-primary{background:var(--teams-primary) !important;border-color:var(--teams-primary) !important;color:#fff !important;}
+.btn-primary:hover{background:var(--teams-primary-2) !important;transform:none !important;}
+.btn-glass:hover{background:#f5f5fa !important;}
+.btn-danger{color:var(--teams-danger) !important;border-color:#f1b5b8 !important;}
+.search-input,.filter-sel,.form-inp,.panel-sel,.panel-sel,.panel-sel{border:1px solid var(--teams-border) !important;border-radius:12px !important;background:#fff !important;color:var(--teams-text) !important;min-height:42px;}
+.search-input:focus,.filter-sel:focus,.form-inp:focus{border-color:var(--teams-primary) !important;box-shadow:0 0 0 3px rgba(98,100,167,.16) !important;}
+.form-grp{display:flex;flex-direction:column;gap:8px;width:100%;}
+.form-lbl{font-size:12px !important;font-weight:700 !important;color:var(--teams-muted) !important;text-transform:uppercase;letter-spacing:.35px;}
+.form-inp{height:48px !important;padding:0 14px !important;font-size:15px !important;}
+textarea.form-inp{height:auto !important;min-height:104px !important;padding:12px 14px !important;}
+.form-row,.form-row-3{gap:14px !important;}
+
+/* ---------- Tables ---------- */
+.tbl-head{background:#faf9f8 !important;color:var(--teams-soft) !important;border-bottom:1px solid var(--teams-border) !important;}
+.tbl-row{background:#fff !important;border-bottom:1px solid #f0efee !important;}
+.tbl-row:hover{background:#fbfbff !important;}
+.badge-on{background:#e7f6e7 !important;border-color:#bde5bd !important;color:#107C10 !important;}
+.badge-off{background:#f3f2f1 !important;color:var(--teams-muted) !important;}
+.icon-btn{border-radius:10px !important;background:#f8f8fb !important;border:1px solid var(--teams-border) !important;}
+
+/* ---------- Modals ---------- */
+.modal-overlay{background:rgba(32,31,30,.44) !important;}
+.modal{border-radius:22px !important;border:1px solid var(--teams-border) !important;box-shadow:0 24px 70px rgba(0,0,0,.20) !important;}
+.modal-title{font-weight:760 !important;letter-spacing:-.3px;}
+.modal-close{border-radius:10px !important;}
+.modal-foot{border-top:1px solid var(--teams-border);padding-top:14px;}
+
+/* ---------- Mobile: native-app behavior ---------- */
 @media(max-width:768px){
+  .sidebar{display:none !important;}
+  #app{height:auto !important;min-height:100dvh;}
+  .main{padding:18px 16px calc(92px + env(safe-area-inset-bottom)) !important;gap:18px !important;}
+  .page-header{flex-direction:column !important;align-items:stretch !important;gap:12px !important;}
+  .page-title{font-size:26px !important;line-height:1.12;}
+  .hdr-actions{display:flex !important;gap:8px !important;flex-wrap:wrap;}
+  .hdr-actions .btn,.hdr-actions button{flex:1 1 auto;justify-content:center;}
+  .stats-grid{grid-template-columns:1fr 1fr !important;gap:12px !important;}
+  .inicio-cards,.panels-wrap,.sema-grid{grid-template-columns:1fr !important;}
+  .filters-row{flex-direction:column !important;align-items:stretch !important;gap:10px !important;}
+  .search-wrap,.filter-sel,.filters-row button{width:100% !important;max-width:none !important;}
+  .form-row,.form-row-3{grid-template-columns:1fr !important;}
+
   .modal-overlay{align-items:stretch !important;justify-content:stretch !important;}
-  .modal{width:100vw!important;height:100dvh!important;max-height:100dvh!important;border-radius:0!important;padding:18px 16px calc(16px + env(safe-area-inset-bottom))!important;}
-  .modal-head{position:sticky;top:0;background:var(--surface);z-index:10;padding-bottom:10px;border-bottom:1px solid var(--border);}
-  .modal-body{flex:1;overflow-y:auto;max-height:none !important;padding-bottom:120px;gap:16px !important;}
-  .modal-foot{position:fixed;left:0;right:0;bottom:0;z-index:20;background:rgba(255,255,255,.96);backdrop-filter:blur(10px);border-top:1px solid var(--border);padding:12px 16px calc(12px + env(safe-area-inset-bottom));display:flex;gap:10px;}
-  .modal-foot .btn{flex:1;justify-content:center;height:46px;font-size:14px;}
-}
+  .modal,.modal.wide,.modal.xl{width:100vw !important;max-width:100vw !important;height:100dvh !important;max-height:100dvh !important;border-radius:0 !important;padding:18px 16px calc(16px + env(safe-area-inset-bottom)) !important;}
+  .modal-head{position:sticky;top:0;z-index:10;background:#fff;padding-bottom:12px;border-bottom:1px solid var(--teams-border);}
+  .modal-body{flex:1;overflow-y:auto;max-height:none !important;padding-bottom:112px;gap:16px !important;}
+  .modal-foot{position:fixed;left:0;right:0;bottom:0;z-index:20;background:rgba(255,255,255,.96);backdrop-filter:blur(12px);padding:12px 16px calc(12px + env(safe-area-inset-bottom));display:flex;gap:10px;}
+  .modal-foot .btn{flex:1;height:46px;justify-content:center;}
 
-@media(max-width:768px){
   .tbl-head{display:none !important;}
-  .tbl-wrap{background:transparent;border:none;box-shadow:none;}
-  .tbl-row{display:flex !important;flex-direction:column !important;gap:10px;padding:14px 14px;border:1px solid var(--border);border-radius:16px;margin:0 0 10px;background:var(--surface);}
-  .row-acts{opacity:1 !important;display:flex !important;gap:8px;}
-  .icon-btn{flex:1;justify-content:center;padding:8px 10px;font-size:12px;border-radius:12px;}
+  .tbl-wrap{border:0 !important;background:transparent !important;box-shadow:none !important;overflow:visible !important;}
+  .tbl-row{display:flex !important;flex-direction:column !important;gap:10px;padding:14px !important;margin-bottom:10px;border:1px solid var(--teams-border) !important;border-radius:16px;background:#fff !important;}
+  .col-name{font-size:15px !important;font-weight:700 !important;}
+  .row-acts{opacity:1 !important;display:flex !important;gap:8px;margin-top:4px;}
+  .icon-btn{flex:1;justify-content:center;padding:9px 10px !important;font-size:12px !important;}
+  .th-cargo,.col-cargo,.th-prog,.col-prog{display:none !important;}
+
+  .teams-bottom-nav{display:flex !important;position:fixed;left:0;right:0;bottom:0;z-index:160;background:rgba(255,255,255,.90);backdrop-filter:blur(16px);border-top:1px solid var(--teams-border);padding:8px 6px calc(8px + env(safe-area-inset-bottom));justify-content:space-around;}
+  .mob-nav-item{appearance:none;border:0;background:transparent;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;flex:1;color:var(--teams-soft);font:600 10px 'Outfit',sans-serif;min-height:50px;}
+  .mob-nav-item span{font-size:21px;line-height:1;}
+  .mob-nav-item.active{color:var(--teams-primary) !important;}
+
+  .mobile-more-sheet{display:none;position:fixed;inset:0;z-index:300;}
+  .mobile-more-sheet.open{display:block;}
+  .more-backdrop{position:absolute;inset:0;background:rgba(0,0,0,.28);}
+  .more-panel{position:absolute;left:10px;right:10px;bottom:calc(10px + env(safe-area-inset-bottom));background:#fff;border:1px solid var(--teams-border);border-radius:22px;padding:10px;box-shadow:0 20px 60px rgba(0,0,0,.22);}
+  .more-handle{width:42px;height:4px;border-radius:99px;background:#d1d1d1;margin:6px auto 12px;}
+  .more-title{font-size:13px;font-weight:800;color:var(--teams-muted);text-transform:uppercase;letter-spacing:.4px;padding:0 8px 8px;}
+  .more-panel button{width:100%;height:48px;border:0;background:#fff;border-radius:14px;display:flex;align-items:center;gap:12px;padding:0 12px;font:700 15px 'Outfit',sans-serif;color:var(--teams-text);}
+  .more-panel button:hover{background:#f5f5fa;}
+  .more-panel button.danger{color:var(--teams-danger);}
 }
 
-#mobile-nav{backdrop-filter:blur(10px);background:rgba(255,255,255,0.85);border-top:1px solid rgba(0,0,0,0.06)}
-.mob-nav-item{font-size:10px;gap:2px}
+@media(max-width:390px){
+  .teams-login-card{padding:26px 20px;border-radius:24px;}
+  .teams-login-copy h1{font-size:24px;}
+  .stats-grid{grid-template-columns:1fr !important;}
+}
 
 </style>
 </head>
@@ -341,26 +470,34 @@ select.form-inp{appearance:none;}
 <div id="offline-banner">Sin conexión — los cambios se guardarán al recuperar el internet</div>
 
 <!-- LOGIN -->
-<div id="login-screen">
-  <div class="login-bg"></div>
-  <div class="login-circle" style="width:400px;height:400px;background:radial-gradient(#33A8DE,#506CFF);top:-100px;right:-100px;opacity:0.15;"></div>
-  <div class="login-circle" style="width:300px;height:300px;background:radial-gradient(#18AE97,#0BC3FF);bottom:-80px;left:-60px;opacity:0.12;"></div>
-  <div class="login-circle" style="width:200px;height:200px;background:radial-gradient(#F5AD21,#9FDA60);bottom:20%;right:10%;opacity:0.1;"></div>
-  <div class="login-card">
-    <div class="login-top">
-      <div class="login-icon-wrap">🌐</div>
+<div id="login-screen" class="teams-login">
+  <div class="teams-login-bg">
+    <div class="teams-orb orb-a"></div>
+    <div class="teams-orb orb-b"></div>
+    <div class="teams-orb orb-c"></div>
+  </div>
+
+  <section class="teams-login-card" aria-label="Inicio de sesión Bienestar 360">
+    <div class="teams-login-brand">
+      <div class="teams-logo-mark">B360</div>
       <div>
-        <div class="login-welcome">Bienvenido(a)</div>
-        <div class="login-title"><br>Bienestar360</div>
+        <div class="teams-login-title">Bienestar 360</div>
+        <div class="teams-login-subtitle">Redes Con Rostro</div>
       </div>
     </div>
-    <div class="login-divider"></div>
-    <div class="google-btn-wrap" id="google-login-btn-wrap">
-  <div id="google-login-btn"></div>
-  <button class="google-login-fallback" id="google-login-fallback" onclick="startGoogleLogin()" style="display:none;">Continuar con Google</button>
-</div>
-    <div class="login-hint">Una app de <strong>Redes Con Rostro</strong></div>
-  </div>
+
+    <div class="teams-login-copy">
+      <h1>Gestiona bienestar, seguimiento y equipo en un solo lugar.</h1>
+      <p>Accede con tu cuenta institucional para continuar al panel administrativo.</p>
+    </div>
+
+    <div class="teams-google-area">
+      <div id="google-login-btn" class="google-login-btn-slot"></div>
+      <button class="teams-google-fallback" id="google-login-fallback" onclick="startGoogleLogin()" style="display:none;">Continuar con Google</button>
+    </div>
+
+    <div class="teams-login-footer">Acceso restringido a cuentas autorizadas de Redes Con Rostro.</div>
+  </section>
 </div>
 
 <!-- APP -->
@@ -368,7 +505,7 @@ select.form-inp{appearance:none;}
   <nav class="sidebar">
     <div class="sidebar-brand">
       <div class="brand-icon">🌐</div>
-      <div><div class="brand-name">Bienestar360</div><div class="brand-sub">Redes Con Rostro</div></div>
+      <div><div class="brand-name">Bienestar 360</div><div class="brand-sub">Redes Con Rostro</div></div>
     </div>
     <div class="nav-lbl">Principal</div>
     <div class="nav-item active" id="nav-inicio"        onclick="go('inicio')">        <span class="nav-icon">🏠</span> Inicio</div>
@@ -423,7 +560,7 @@ select.form-inp{appearance:none;}
         </div>
       </div>
       <div class="filters-row">
-        <div class="search-wrap"><span class="search-icon">🔍</span><input class="search-input" type="text" placeholder="Buscar por nombre..." id="f-nombre" oninput="clearTimeout(window._dbColabs);window._dbColabs=setTimeout(renderColabs,250)"></div>
+        <div class="search-wrap"><span class="search-icon">🔍</span><input class="search-input" type="text" placeholder="Buscar por nombre..." id="f-nombre"></div>
         <select class="filter-sel" id="f-cargo" onchange="renderColabs()">
           <option value="">Todos los cargos</option>
           <option>Coordinador</option><option>Gestor de Proyectos</option>
@@ -470,7 +607,7 @@ select.form-inp{appearance:none;}
         </div>
       </div>
       <div class="filters-row">
-        <div class="search-wrap"><span class="search-icon">🔍</span><input class="search-input" type="text" placeholder="Buscar colaborador..." id="sm-nombre" oninput="renderSema();updateSemaBtnVer()"></div>
+        <div class="search-wrap"><span class="search-icon">🔍</span><input class="search-input" type="text" placeholder="Buscar colaborador..." id="sm-nombre"></div>
         <button class="btn btn-primary btn-sm" id="btn-ver-sema" style="display:none;" onclick="openSemaModal()">📋 Ver formulario</button>
         <select class="filter-sel" id="sm-equipo" onchange="renderSema()"><option value="">Todos los equipos</option><option>General</option><option>ReCircula</option><option>Vidrio Mejor Planeta</option><option>Juntos Por La Vida</option><option>Otros</option></select>
         <select class="filter-sel" id="sm-mes" onchange="renderSema()"><option value="">Todos los meses</option></select>
@@ -549,16 +686,24 @@ select.form-inp{appearance:none;}
   </main>
 </div>
 
-<div id="mobile-nav">
-  <div class="mob-nav-item active" id="mob-inicio" onclick="go('inicio')"><span>🏠</span>Inicio</div>
-  <div class="mob-nav-item" id="mob-colaboradores" onclick="go('colaboradores')"><span>👥</span>Colabs</div>
-  <div class="mob-nav-item" id="mob-seguimiento" onclick="go('seguimiento')"><span>💬</span>Bienestar</div>
-  <div class="mob-nav-item" id="mob-semaforo" onclick="go('semaforo')"><span>🚦</span>Semáforo</div>
-  <div class="mob-nav-item" id="mob-accesos" onclick="go('accesos')"><span>🔗</span>Accesos</div>
-  <div class="mob-nav-item" id="mob-config" onclick="go('config')" style="display:none;"><span>⚙️</span>Config</div>
-  <div class="mob-nav-item" id="mob-logout" onclick="doLogout()" style="color:#ef4444;"><span>🚪</span>Salir</div>
+<div id="mobile-nav" class="teams-bottom-nav">
+  <button class="mob-nav-item active" id="mob-inicio" onclick="go('inicio')"><span>🏠</span><b>Inicio</b></button>
+  <button class="mob-nav-item" id="mob-colaboradores" onclick="go('colaboradores')"><span>👥</span><b>Colabs</b></button>
+  <button class="mob-nav-item" id="mob-seguimiento" onclick="go('seguimiento')"><span>💬</span><b>Bienestar</b></button>
+  <button class="mob-nav-item" id="mob-semaforo" onclick="go('semaforo')"><span>🚦</span><b>Semáforo</b></button>
+  <button class="mob-nav-item" id="mob-more" onclick="openMoreMenu()"><span>⋯</span><b>Más</b></button>
 </div>
 
+<div id="mobile-more-sheet" class="mobile-more-sheet" aria-hidden="true">
+  <div class="more-backdrop" onclick="closeMoreMenu()"></div>
+  <div class="more-panel">
+    <div class="more-handle"></div>
+    <div class="more-title">Más opciones</div>
+    <button onclick="closeMoreMenu();go('accesos')"><span>🔗</span>Accesos</button>
+    <button id="more-config" onclick="closeMoreMenu();go('config')" style="display:none;"><span>⚙️</span>Configuración</button>
+    <button class="danger" onclick="closeMoreMenu();doLogout()"><span>🚪</span>Salir</button>
+  </div>
+</div>
 
 <!-- MODAL: COLABORADOR (dinámico) -->
 <div class="modal-overlay" id="m-colab">
@@ -906,7 +1051,6 @@ function loadSession(){try{const s=sessionStorage.getItem(SESSION_KEY);return s?
 function clearSession(){try{sessionStorage.removeItem(SESSION_KEY);}catch(e){}}
 
 // ── GOOGLE LOGIN ───────────────────────────────
-// PRO FIX: se elimina el prompt flotante y se usa el botón oficial renderizado en el login.
 let googleBtnRendered = false;
 
 function cancelGooglePrompt(){
@@ -922,68 +1066,56 @@ function initGoogleButton(){
   if(typeof google==='undefined' || !google.accounts || !google.accounts.id) return false;
 
   google.accounts.id.initialize({
-    client_id: G_CLIENT,
-    callback: handleCredential,
-    auto_select: false,
-    cancel_on_tap_outside: true,
-    use_fedcm_for_prompt: false
+    client_id:G_CLIENT,
+    callback:handleCredential,
+    auto_select:false,
+    cancel_on_tap_outside:true,
+    use_fedcm_for_prompt:false
   });
 
-  const target = document.getElementById('google-login-btn');
-  const fallback = document.getElementById('google-login-fallback');
+  const target=document.getElementById('google-login-btn');
+  const fallback=document.getElementById('google-login-fallback');
 
   if(target && !googleBtnRendered){
-    target.innerHTML = '';
-    google.accounts.id.renderButton(target, {
-      theme: 'outline',
-      size: 'large',
-      type: 'standard',
-      shape: 'rectangular',
-      text: 'continue_with',
-      width: 320
+    target.innerHTML='';
+    google.accounts.id.renderButton(target,{
+      theme:'outline',
+      size:'large',
+      type:'standard',
+      shape:'rectangular',
+      text:'continue_with',
+      width:320
     });
-    googleBtnRendered = true;
-    if(fallback) fallback.style.display = 'none';
+    googleBtnRendered=true;
+    if(fallback) fallback.style.display='none';
   }
 
-  if(!target && fallback){
-    fallback.style.display = 'block';
-  }
-
+  if(!target && fallback){fallback.style.display='block';}
   return true;
 }
 
 function startGoogleLogin(){
-  // Fallback si el botón oficial no alcanzó a renderizarse.
   if(typeof google==='undefined'){
-    toast('Cargando Google... intenta de nuevo en un segundo', true);
+    toast('Cargando Google... intenta de nuevo en un segundo',true);
     return;
   }
   if(!initGoogleButton()){
-    toast('No se pudo inicializar Google. Recarga la página.', true);
+    toast('No se pudo inicializar Google. Recarga la página.',true);
     return;
   }
-  toast('Toca el botón de Google para continuar.', false);
+  toast('Toca el botón de Google para continuar.',false);
 }
 
 async function handleCredential(resp){
   try{
     cancelGooglePrompt();
-    const p = JSON.parse(atob(resp.credential.split('.')[1]));
-    const email = p.email || '';
-    const name  = p.name || email;
-    const pic   = p.picture || '';
-
-    if(!email.endsWith('@'+DOMAIN)){
-      toast('Solo cuentas @'+DOMAIN+' pueden acceder', true);
-      return;
-    }
+    const p=JSON.parse(atob(resp.credential.split('.')[1]));
+    const email=p.email||'',name=p.name||email,pic=p.picture||'';
+    if(!email.endsWith('@'+DOMAIN)){toast('Solo cuentas @'+DOMAIN+' pueden acceder',true);return;}
 
     if(email===ADMIN_EMAIL){
       currentUser={email,nombre:name,rol:'Admin',picture:pic};
-      saveSession(currentUser);
-      enterApp();
-      return;
+      saveSession(currentUser);enterApp();return;
     }
 
     let rol='Visualizador';
@@ -991,46 +1123,38 @@ async function handleCredential(resp){
       const controller=new AbortController();
       const timeout=setTimeout(()=>controller.abort(),4000);
       const u=new URL(SCRIPT_URL);
-      u.searchParams.set('action','login');
-      u.searchParams.set('correo',email);
-      u.searchParams.set('googleToken','true');
+      u.searchParams.set('action','login');u.searchParams.set('correo',email);u.searchParams.set('googleToken','true');
       const r=await fetch(u.toString(),{signal:controller.signal});
       clearTimeout(timeout);
       const res=await r.json();
       if(res.success){rol=res.rol||'Visualizador';}
       else{toast('Tu cuenta no está autorizada. Pide acceso al administrador.',true);return;}
     }catch(e){
-      toast('No se pudo verificar tu cuenta. Intenta de nuevo.',true);
-      return;
+      toast('No se pudo verificar tu cuenta. Intenta de nuevo.',true);return;
     }
 
     currentUser={email,nombre:name,rol,picture:pic};
-    saveSession(currentUser);
-    enterApp();
-  }catch(e){
-    toast('Error al procesar la cuenta de Google', true);
-  }
+    saveSession(currentUser);enterApp();
+  }catch(e){toast('Error al procesar la cuenta de Google',true);}
 }
 
 function enterApp(){
-  // Cerrar cualquier modal que haya quedado abierto
-  document.querySelectorAll('.modal-overlay.open').forEach(m=>m.classList.remove('open'));
   cancelGooglePrompt();
-  const {nombre,rol,picture} = currentUser;
-  const fn = (nombre||'').split(' ')[0] || '—';
-  document.getElementById('user-name').textContent = fn;
-  document.getElementById('user-role').textContent = ({Admin:'🔑',Editor:'✏️',Visualizador:'👁️'}[rol]||'👤')+' '+rol;
-  document.getElementById('welcome-name').textContent = fn;
+  const{nombre,rol,picture}=currentUser;
+  const fn=(nombre||'').split(' ')[0]||'—';
+  document.getElementById('user-name').textContent=fn;
+  document.getElementById('user-role').textContent=({Admin:'🔑',Editor:'✏️',Visualizador:'👁️'}[rol]||'👤')+' '+rol;
+  document.getElementById('welcome-name').textContent=fn;
   const av=document.getElementById('user-avatar');
-  if(picture){av.innerHTML = `<img src="${picture}" alt="${fn}">`;}
-  else{av.textContent = ini(nombre);}
+  if(picture){av.innerHTML=`<img src="${picture}" alt="${fn}">`;}
+  else{av.textContent=ini(nombre);}
 
   if(rol==='Admin'){
     document.getElementById('admin-actions').style.display='flex';
     document.getElementById('nav-config').style.display='flex';
-    const mobConfig=document.getElementById('mob-config');
-    if(mobConfig) mobConfig.style.display='flex';
-    document.getElementById('btn-nuevo-acceso').style.display='inline-flex';
+    const mobConfig=document.getElementById('mob-config');if(mobConfig)mobConfig.style.display='flex';
+    const moreConfig=document.getElementById('more-config');if(moreConfig)moreConfig.style.display='flex';
+    const btnAcceso=document.getElementById('btn-nuevo-acceso');if(btnAcceso)btnAcceso.style.display='inline-flex';
   }
 
   document.getElementById('login-screen').style.display='none';
@@ -1039,29 +1163,23 @@ function enterApp(){
 }
 
 function doLogout(){
-  currentUser=null;
-  clearSession();
-  cancelGooglePrompt();
-  // Cerrar cualquier modal que haya quedado abierto
-  document.querySelectorAll('.modal-overlay.open').forEach(m=>m.classList.remove('open'));
+  currentUser=null;clearSession();cancelGooglePrompt();
   document.getElementById('app').style.display='none';
   document.getElementById('login-screen').style.display='flex';
   googleBtnRendered=false;
-  setTimeout(initGoogleButton, 100);
+  setTimeout(initGoogleButton,100);
 }
 
 // ── AUTO-LOGIN ─────────────────────────────────
 window.addEventListener('load',()=>{
   const saved=loadSession();
   if(saved){currentUser=saved;enterApp();return;}
-
   const waitGoogle=setInterval(()=>{
     if(typeof google!=='undefined' && google.accounts && google.accounts.id){
       clearInterval(waitGoogle);
       initGoogleButton();
-      // Sin prompt flotante.
     }
-  },300);
+  },250);
 });
 
 // ── API ────────────────────────────────────────
@@ -2645,6 +2763,28 @@ function openFichaSeg(nombre, rowId){
   document.getElementById('mfs-body').innerHTML = html || '<div class="empty-state"><p>Sin datos para este registro</p></div>';
   openModal('m-ficha-seg');
 }
+
+
+
+/* ── PRO UI HELPERS ───────────────────────────── */
+function openMoreMenu(){
+  const sheet=document.getElementById('mobile-more-sheet');
+  if(sheet){sheet.classList.add('open');sheet.setAttribute('aria-hidden','false');}
+}
+function closeMoreMenu(){
+  const sheet=document.getElementById('mobile-more-sheet');
+  if(sheet){sheet.classList.remove('open');sheet.setAttribute('aria-hidden','true');}
+}
+function debounceB360(fn,delay=250){
+  let timer;
+  return function(...args){clearTimeout(timer);timer=setTimeout(()=>fn.apply(this,args),delay);};
+}
+document.addEventListener('DOMContentLoaded',()=>{
+  const fNombre=document.getElementById('f-nombre');
+  if(fNombre){fNombre.removeAttribute('oninput');fNombre.addEventListener('input',debounceB360(()=>{if(typeof renderColabs==='function')renderColabs();},220));}
+  const smNombre=document.getElementById('sm-nombre');
+  if(smNombre){smNombre.removeAttribute('oninput');smNombre.addEventListener('input',debounceB360(()=>{if(typeof renderSema==='function')renderSema();if(typeof updateSemaBtnVer==='function')updateSemaBtnVer();},220));}
+});
 
 </script>
 </body>
