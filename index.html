@@ -2092,9 +2092,8 @@ function renderSema(){
   }
 
   grid.innerHTML=d.map((r,i)=>{
-    const estadoRegistro=claseSemaforoRegistro(r);
-    const al=estadoRegistro==='mal'?'border-color:rgba(220,38,90,.25);background:rgba(220,38,90,.03);':estadoRegistro==='regular'?'border-color:rgba(245,173,33,.25);background:rgba(245,173,33,.03);':'';
-    return`<div class="sema-card" style="${al}">
+    // Tarjeta respondida siempre en blanco/neutra. El estado se ve solo en los puntos.
+    return`<div class="sema-card" style="background:var(--surface);border-color:var(--border);">
       <div class="sema-head"><div class="avatar" style="background:${gr[i%gr.length]};width:36px;height:36px;font-size:11px;">${ini(r.Colaborador)}</div><div><div class="sema-name">${x(r.Colaborador||'—')}</div><div class="sema-meta">${x(r.Mes||'—')} · ${x(r.Equipo||r['Programa/Proyecto']||'')}</div></div></div>
       <div class="sema-items">${flds.map(([l,k])=>{if(!r[k])return'';const e=estadoSemaforo(r[k]);const cd=e==='bien'?'🟢':e==='regular'?'🟡':e==='mal'?'🔴':'—';return`<div class="sema-item"><span class="sema-lbl">${l}</span><span style="font-size:18px;">${cd}</span></div>`;}).join('')}</div>
       <div style="display:flex;gap:8px;margin-top:10px;padding-top:10px;border-top:1px solid var(--border);">
@@ -2142,29 +2141,53 @@ function confirmDelColab(){closeModal('m-ficha');confirmDel('Colaboradores',edit
 async function executeDel(){
   if(!pendingDel)return;
   const{sheet,id,field}=pendingDel;
-  if(sheet==='Colaboradores'){colaboradores=colaboradores.filter(r=>r.Colaborador!==id);renderColabs();updateStats();}
-  if(sheet==='Seguimiento'){seguimientos=seguimientos.filter(r=>r.RowID!==id);loadPanels();}
-  closeModal('m-confirm');
-  toast('Registro eliminado');
-  pendingDel=null;
-  saveCache({colaboradores,seguimientos,semaforo});
-  apiPost({action:'deleteRow',sheet,rowId:id,field}).catch(()=>{});
+  const ok=document.getElementById('confirm-ok');
+  const oldText=ok?ok.textContent:'';
+  if(ok){ok.disabled=true;ok.textContent='Eliminando...';}
+
+  try{
+    const res=await apiPost({action:'deleteRow',sheet,rowId:id,field});
+    if(!res.success){toast(res.message||'No se pudo eliminar',true);return;}
+
+    if(sheet==='Colaboradores'){
+      colaboradores=colaboradores.filter(r=>String(r.Colaborador)!==String(id)&&String(r.RowID||'')!==String(id));
+      renderColabs();
+    }
+    if(sheet==='Seguimiento'){
+      seguimientos=seguimientos.filter(r=>String(r.RowID)!==String(id));
+      loadPanels();
+    }
+    if(sheet==='Semáforo'){
+      semaforo=semaforo.filter(r=>String(r.RowID)!==String(id));
+      renderSema();
+      // Re-sincroniza en segundo plano para quedar igual que Google Sheets.
+      setTimeout(()=>{try{loadSema();}catch(e){}},300);
+    }
+
+    updateStats();
+    saveCache({colaboradores,seguimientos,semaforo});
+    closeModal('m-confirm');
+    toast('Registro eliminado','','ok');
+    pendingDel=null;
+  }catch(e){
+    toast('Error eliminando',true);
+  }finally{
+    if(ok){ok.disabled=false;ok.textContent=oldText||'Eliminar';}
+  }
 }
 
 // ── STATS ──────────────────────────────────────
 function updateStats(){
   document.getElementById('s-colabs').textContent=colaboradores.length;
   document.getElementById('s-segs').textContent=seguimientos.length;
-  const st=semaforo.length||1;
-  // FIX: lógica corregida para semáforo "bien"
-  const sb=semaforo.filter(r=>{
-    const vals=Object.values(r).join(' ');
-    return !vals.includes('🔴')&&!vals.includes('🟡');
-  }).length;
-  document.getElementById('s-bien').textContent=Math.round(sb/st*100)+'%';
-  // FIX: variable 'on' definida correctamente aquí
+
+  // Semáforo bien se calcula igual que el dashboard: por cada respuesta individual.
+  const resumen=calcularResumenSemaforo(semaforo||[]);
+  document.getElementById('s-bien').textContent=resumen.pBien;
+
   const activos=colaboradores.filter(r=>r.Estado==='Activo').length;
-  const sinRespuesta=activos-[...new Set(semaforo.map(r=>r.Colaborador))].length;
+  const respondieron=[...new Set((semaforo||[]).map(r=>r.Colaborador))].length;
+  const sinRespuesta=activos-respondieron;
   document.getElementById('s-alert').textContent=Math.max(0,sinRespuesta);
 }
 
