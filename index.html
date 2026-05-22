@@ -1006,7 +1006,7 @@
           <div class="form-grp"><label class="form-lbl">¿Revisas canales internos regularmente?</label><select class="form-inp" data-col="¿Revisas canales internos regularmente?"><option value="">Seleccionar...</option><option>Sí</option><option>No</option></select></div>
         </div>
         <div class="form-row">
-          <div class="form-grp"><label class="form-lbl">Nivel de interés en contenidos</label><input class="form-inp" type="number" min="1" max="10" data-col="Nivel de interés en contenidos" placeholder="1-10"></div>
+          <div class="form-grp"><label class="form-lbl">Nivel de interés en contenidos</label><input class="form-inp" type="number" min="1" max="5" data-col="Nivel de interés en contenidos" placeholder="1-5"></div>
         </div>
         <div class="form-grp"><label class="form-lbl">¿Qué deberíamos mejorar como equipo en comunicación?</label><textarea class="form-inp" data-col="¿Qué deberíamos mejorar como equipo en comunicación?" rows="2"></textarea></div>
       </div>
@@ -1201,6 +1201,7 @@ const SCALE_MAX_BY_FIELD = {
   'Empatía': 5,
   'Comunicación asertiva': 5,
   'Claridad de la comunicación interna': 5
+  'Interés en contenidos': 5
 };
 function scaleMax(field){ return SCALE_MAX_BY_FIELD[field] || 10; }
 function scalePct(value, field){
@@ -2039,12 +2040,32 @@ function renderSema(){
   const meses=[...new Set(semaforo.map(r=>r.Mes).filter(Boolean))];
   const mSel=document.getElementById('sm-mes');
   if(mSel.options.length<=1)meses.forEach(m=>{const o=document.createElement('option');o.textContent=m;mSel.appendChild(o);});
-  const col=r=>{
-    const v=[r['Carga y ritmo de trabajo'],r['Clima y relaciones'],r['Estado emocional y energía'],r['Liderazgo y apoyo']].filter(Boolean);
-    if(v.some(s=>s.includes('🔴')))return'mal';
-    if(v.some(s=>s.includes('🟡')))return'regular';
-    return'bien';
-  };
+  const estadoSemaforo = valor => {
+  const v = String(valor || '').trim().toLowerCase();
+
+  if (!v) return '';
+
+  if (
+    v.includes('no estoy bien') ||
+    v.includes('🔴') ||
+    v === 'mal'
+  ) return 'mal';
+
+  if (
+    v.includes('más o menos') ||
+    v.includes('mas o menos') ||
+    v.includes('🟡') ||
+    v === 'regular'
+  ) return 'regular';
+
+  if (
+    v.includes('estoy bien') ||
+    v.includes('🟢') ||
+    v === 'bien'
+  ) return 'bien';
+
+  return '';
+};
   const tot=d.length>0?d.length:1;
   const bien=d.filter(r=>col(r)==='bien').length;
   const reg=d.filter(r=>col(r)==='regular').length;
