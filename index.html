@@ -1229,6 +1229,8 @@ function cancelGooglePrompt(){
 
 function initGoogleButton(){
   if(typeof google==='undefined' || !google.accounts || !google.accounts.id) return false;
+  if(window.__b360GoogleInitialized) return true;
+  window.__b360GoogleInitialized = true;
 
   google.accounts.id.initialize({
     client_id: G_CLIENT,
@@ -1302,7 +1304,7 @@ async function handleCredential(resp){
       const u=new URL(SCRIPT_URL);
       u.searchParams.set('action','login');
       u.searchParams.set('correo',email);
-      u.searchParams.set('idToken', resp.credential);
+      // Token no enviado al login mientras REQUIRE_ID_TOKEN=false; se guarda en sesión para futura activación.
       const r=await fetch(u.toString(),{signal:controller.signal});
       clearTimeout(timeout);
       const res=await r.json();
@@ -1380,11 +1382,11 @@ async function api(p){
   try {
     const params={...(p||{})};
     const correo=(currentUser?.correo||currentUser?.email||currentUser?.mail||'').toLowerCase().trim();
-    const idToken=currentUser?.idToken||currentUser?.credential||window.googleIdToken||'';
+    const idToken=''; // temporal: no enviar token en llamadas API mientras REQUIRE_ID_TOKEN=false
 
     // El Apps Script seguro requiere correo para autorizar lecturas.
     if(correo&&!params.correo)params.correo=correo;
-    if(idToken&&!params.idToken)params.idToken=idToken;
+    // No enviar idToken en GET hasta activar REQUIRE_ID_TOKEN=true en Apps Script.
 
     const u=new URL(SCRIPT_URL);
     Object.entries(params).forEach(([k,v])=>{
@@ -1410,14 +1412,14 @@ async function apiPost(body){
   try {
     const payload={...(body||{})};
     const correo=(currentUser?.correo||currentUser?.email||currentUser?.mail||'').toLowerCase().trim();
-    const idToken=currentUser?.idToken||currentUser?.credential||window.googleIdToken||'';
+    const idToken=''; // temporal: no enviar token en llamadas API mientras REQUIRE_ID_TOKEN=false
 
     // Enviamos correo/email por compatibilidad con Apps Script seguro.
     if(correo){
       if(!payload.correo)payload.correo=correo;
       if(!payload.email)payload.email=correo;
     }
-    if(idToken&&!payload.idToken)payload.idToken=idToken;
+    // No enviar idToken en POST hasta activar REQUIRE_ID_TOKEN=true en Apps Script.
 
     const r=await fetch(SCRIPT_URL,{method:'POST',body:JSON.stringify(payload),cache:'no-store'});
     if(!r.ok){
@@ -3135,6 +3137,24 @@ function openFichaSeg(nombre, rowId){
 })();
 </script>
 <!-- ===== Fin Runtime Hardening ===== -->
+
+
+
+<script>
+/* B360 Google Initialize Guard: evita inicializaciones duplicadas de Google Identity Services */
+(function(){
+  const originalInit = window.initGoogleButton;
+  if (typeof originalInit === 'function' && !window.__b360InitGoogleWrapped) {
+    window.__b360InitGoogleWrapped = true;
+    window.initGoogleButton = function(){
+      if (window.__b360GoogleInitialized) return true;
+      const result = originalInit.apply(this, arguments);
+      if (result) window.__b360GoogleInitialized = true;
+      return result;
+    };
+  }
+})();
+</script>
 
 </body>
 
