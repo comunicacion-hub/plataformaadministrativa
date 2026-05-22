@@ -1116,6 +1116,8 @@ function doLogout(){
   currentUser=null;
   clearSession();
   cancelGooglePrompt();
+  // Cerrar todos los modales abiertos
+  document.querySelectorAll('.modal-overlay.open').forEach(m => m.classList.remove('open'));
   document.getElementById('app').style.display='none';
   document.getElementById('login-screen').style.display='flex';
   googleBtnRendered=false;
