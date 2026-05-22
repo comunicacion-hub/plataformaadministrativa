@@ -592,47 +592,51 @@
 
   
 
-/* ===== Bienestar360 Mobile/Responsive Hardening ===== */
+/* ===== PATCH FINAL: escalas 1–5 + modal confirmar ===== */
+.scale-num{min-width:42px!important;}
+.scale-max-note{font-size:10px;color:var(--text-dim);font-weight:600;margin-left:4px;}
+.modal-confirm {
+  width: min(420px, calc(100vw - 32px)) !important;
+  max-width: 420px !important;
+  height: auto !important;
+  max-height: calc(100dvh - 48px) !important;
+  border-radius: 24px !important;
+}
+.modal-confirm-body {
+  padding: 18px 28px !important;
+  flex: initial !important;
+  overflow: visible !important;
+}
+.modal-confirm-body p {
+  margin: 0;
+  font-size: 14px;
+  color: var(--text-muted);
+  line-height: 1.6;
+  text-align: left;
+  word-break: normal;
+  overflow-wrap: anywhere;
+}
+.modal-confirm-foot {
+  padding: 16px 28px 20px !important;
+  display: flex;
+  gap: 12px;
+}
+.modal-confirm-foot .btn {
+  flex: 1;
+  min-height: 44px;
+}
 @media (max-width: 768px) {
-  html, body { width:100%; max-width:100%; overflow-x:hidden; }
-  #app { min-height:100dvh; height:auto; }
-  .main { width:100%; max-width:100vw; padding:16px 14px calc(24px + env(safe-area-inset-bottom)); }
-  .page-header { gap:12px; flex-wrap:wrap; }
-  .hdr-actions { width:100%; justify-content:stretch; flex-wrap:wrap; }
-  .hdr-actions .btn { flex:1 1 auto; min-width:0; }
-  .modal-overlay.open { display:flex; }
-  .modal, .modal.wide, .modal.xl, .modal[style] {
-    width:100% !important;
-    max-width:100% !important;
-    height:100dvh !important;
-    max-height:100dvh !important;
-    border-radius:0 !important;
+  .modal-confirm {
+    width: calc(100vw - 32px) !important;
+    max-width: calc(100vw - 32px) !important;
+    height: auto !important;
+    max-height: calc(100dvh - 32px) !important;
+    border-radius: 24px !important;
   }
-  .modal-head { position:sticky; top:0; z-index:2; }
-  .modal-foot { position:sticky; bottom:0; z-index:2; }
-  .modal-body { min-height:0; overflow-y:auto; }
-  #f-body, .modal-body[style*="grid-template-columns"] { display:flex !important; flex-direction:column !important; }
-  .btn, .icon-btn, .modal-close, .mob-menu-btn, .nav-item { min-height:44px; }
-  .icon-btn { padding:10px 12px; }
-  .filters-row { display:grid; grid-template-columns:1fr; width:100%; }
-  .search-wrap, .filter-sel { max-width:none !important; width:100%; }
-  #toast {
-    left:16px !important;
-    right:16px !important;
-    bottom:calc(16px + env(safe-area-inset-bottom)) !important;
-    max-width:none !important;
-    text-align:center;
-  }
+  .modal-confirm-body { padding: 16px 20px !important; }
+  .modal-confirm-foot { padding: 14px 20px calc(16px + env(safe-area-inset-bottom)) !important; }
 }
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    animation-duration:.01ms !important;
-    animation-iteration-count:1 !important;
-    transition-duration:.01ms !important;
-    scroll-behavior:auto !important;
-  }
-}
-/* ===== Fin Mobile/Responsive Hardening ===== */
+/* ===== FIN PATCH FINAL ===== */
 
 </style>
 </head>
@@ -869,7 +873,7 @@
         <div style="flex:1;">
           <label for="c-photo-input" style="display:inline-flex;align-items:center;gap:7px;padding:8px 14px;border:1.5px dashed var(--border);border-radius:var(--radius-sm);cursor:pointer;font-size:13px;font-weight:600;color:var(--text-muted);transition:all 0.15s;background:#fff;" onmouseover="this.style.borderColor='#33A8DE';this.style.color='#33A8DE'" onmouseout="this.style.borderColor='rgba(0,0,0,0.09)';this.style.color='var(--text-muted)'">
             📷 Seleccionar foto
-            <input type="file" id="c-photo-input" accept="image/jpeg,image/png" data-max-size="2097152" style="display:none;" onchange="previewColabPhoto(this)">
+            <input type="file" id="c-photo-input" accept="image/jpeg,image/png" style="display:none;" onchange="previewColabPhoto(this)">
           </label>
           <button id="c-photo-delete-btn" onclick="deleteColabPhoto()" style="display:none;margin-left:8px;padding:8px 14px;border:1.5px solid rgba(220,38,90,0.3);border-radius:var(--radius-sm);background:#fff;color:#c91a44;font-family:'Outfit',sans-serif;font-size:13px;font-weight:600;cursor:pointer;" onmouseover="this.style.background='rgba(220,38,90,0.05)'" onmouseout="this.style.background='#fff'">Eliminar foto</button>
           <div style="font-size:11px;color:var(--text-dim);margin-top:5px;">JPG o PNG · opcional</div>
@@ -889,11 +893,11 @@
         </div>
         <div class="form-row">
           <div class="form-grp"><label class="form-lbl">Fecha de finalización</label><input class="form-inp" type="date" data-col="Fecha de finalización"></div>
-          <div class="form-grp"><label class="form-lbl">Documento de identidad</label><input class="form-inp" inputmode="numeric" autocomplete="off" data-col="Documento de identidad" placeholder="Ej. 0912345678"></div>
+          <div class="form-grp"><label class="form-lbl">Documento de identidad</label><input class="form-inp" data-col="Documento de identidad" placeholder="Ej. 0912345678"></div>
         </div>
         <div class="form-row">
-          <div class="form-grp"><label class="form-lbl">Teléfono principal</label><input class="form-inp" type="tel" inputmode="tel" autocomplete="tel" data-col="Teléfono principal" placeholder="Ej. 0987654321"></div>
-          <div class="form-grp"><label class="form-lbl">Teléfono secundario</label><input class="form-inp" type="tel" inputmode="tel" autocomplete="tel" data-col="Teléfono secundario" placeholder="Opcional"></div>
+          <div class="form-grp"><label class="form-lbl">Teléfono principal</label><input class="form-inp" data-col="Teléfono principal" placeholder="Ej. 0987654321"></div>
+          <div class="form-grp"><label class="form-lbl">Teléfono secundario</label><input class="form-inp" data-col="Teléfono secundario" placeholder="Opcional"></div>
         </div>
         <div class="form-row">
           <div class="form-grp"><label class="form-lbl">Correo de Redes Con Rostro</label><input class="form-inp" type="email" data-col="Correo de Redes Con Rostro" placeholder="nombre@redesconrostro.org"></div>
@@ -985,19 +989,19 @@
           <div class="form-grp"><label class="form-lbl">Sentido/propósito</label><input class="form-inp" type="number" min="1" max="10" data-col="Sentido/propósito" placeholder="1-10"></div>
         </div>
         <div class="form-grp"><label class="form-lbl">Profundizar solo en la dimensión más baja</label><textarea class="form-inp" data-col="Profundizar solo en la dimensión más baja" rows="2"></textarea></div>
-        <div style="font-size:11px;font-weight:700;color:var(--text-dim);text-transform:uppercase;letter-spacing:.7px;margin:8px 0 4px;">Habilidades blandas (1–10)</div>
+        <div style="font-size:11px;font-weight:700;color:var(--text-dim);text-transform:uppercase;letter-spacing:.7px;margin:8px 0 4px;">Habilidades blandas (Manejo emocional, Escucha y Empatía: 1–5 · Comunicación asertiva: 1–10)</div>
         <div class="form-row">
-          <div class="form-grp"><label class="form-lbl">Manejo emocional</label><input class="form-inp" type="number" min="1" max="10" data-col="Manejo emocional" placeholder="1-10"></div>
-          <div class="form-grp"><label class="form-lbl">Escucha</label><input class="form-inp" type="number" min="1" max="10" data-col="Escucha" placeholder="1-10"></div>
+          <div class="form-grp"><label class="form-lbl">Manejo emocional (1–5)</label><input class="form-inp" type="number" min="1" max="5" data-col="Manejo emocional" placeholder="1-5"></div>
+          <div class="form-grp"><label class="form-lbl">Escucha (1–5)</label><input class="form-inp" type="number" min="1" max="5" data-col="Escucha" placeholder="1-5"></div>
         </div>
         <div class="form-row">
-          <div class="form-grp"><label class="form-lbl">Empatía</label><input class="form-inp" type="number" min="1" max="10" data-col="Empatía" placeholder="1-10"></div>
+          <div class="form-grp"><label class="form-lbl">Empatía (1–5)</label><input class="form-inp" type="number" min="1" max="5" data-col="Empatía" placeholder="1-5"></div>
           <div class="form-grp"><label class="form-lbl">Comunicación asertiva</label><input class="form-inp" type="number" min="1" max="10" data-col="Comunicación asertiva" placeholder="1-10"></div>
         </div>
         <div class="form-grp"><label class="form-lbl">¿Cuál deberías fortalecer este semestre para mejorar tu impacto?</label><textarea class="form-inp" data-col="¿Cuál deberías fortalecer este semestre para mejorar tu impacto?" rows="2"></textarea></div>
         <div style="font-size:11px;font-weight:700;color:var(--text-dim);text-transform:uppercase;letter-spacing:.7px;margin:8px 0 4px;">Comunicación interna</div>
         <div class="form-row">
-          <div class="form-grp"><label class="form-lbl">Claridad de la comunicación interna</label><input class="form-inp" type="number" min="1" max="10" data-col="Claridad de la comunicación interna" placeholder="1-10"></div>
+          <div class="form-grp"><label class="form-lbl">Claridad de la comunicación interna (1–5)</label><input class="form-inp" type="number" min="1" max="5" data-col="Claridad de la comunicación interna" placeholder="1-5"></div>
           <div class="form-grp"><label class="form-lbl">¿Revisas canales internos regularmente?</label><select class="form-inp" data-col="¿Revisas canales internos regularmente?"><option value="">Seleccionar...</option><option>Sí</option><option>No</option></select></div>
         </div>
         <div class="form-row">
@@ -1072,10 +1076,15 @@
 </div>
 <!-- MODAL: CONFIRMAR -->
 <div class="modal-overlay" id="m-confirm">
-  <div class="modal" style="width:380px;">
-    <div class="modal-head"><div class="modal-title">Confirmar eliminación</div><button class="modal-close" onclick="closeModal('m-confirm')">✕</button></div>
-    <p style="font-size:14px;color:var(--text-muted);line-height:1.6;" id="confirm-msg"></p>
-    <div class="modal-foot">
+  <div class="modal modal-confirm">
+    <div class="modal-head">
+      <div><div class="modal-title">Confirmar eliminación</div></div>
+      <button class="modal-close" onclick="closeModal('m-confirm')">✕</button>
+    </div>
+    <div class="modal-body modal-confirm-body">
+      <p id="confirm-msg"></p>
+    </div>
+    <div class="modal-foot modal-confirm-foot">
       <button class="btn btn-glass" onclick="closeModal('m-confirm')">Cancelar</button>
       <button class="btn btn-danger" id="confirm-ok">Eliminar</button>
     </div>
@@ -1184,6 +1193,44 @@ const CACHE_TTL   = 5 * 60 * 1000; // 5 minutos
 
 let currentUser=null, colaboradores=[], seguimientos=[], semaforo=[], editingColab=null, pendingDel=null;
 
+// ── ESCALAS POR CAMPO ───────────────────────────
+const SCALE_MAX_BY_FIELD = {
+  'Manejo emocional': 5,
+  'Escucha': 5,
+  'Empatía': 5,
+  'Claridad de la comunicación interna': 5
+};
+function scaleMax(field){ return SCALE_MAX_BY_FIELD[field] || 10; }
+function scalePct(value, field){
+  const n = parseFloat(value) || 0;
+  const max = scaleMax(field);
+  if(!n || n < 0) return 0;
+  return Math.max(0, Math.min(100, (n / max) * 100));
+}
+function scaleLabel(value, field){
+  const n = parseFloat(value) || 0;
+  return `${n}/${scaleMax(field)}`;
+}
+function scaleColorByPct(pct, c1, c2){
+  // Conserva gradiente visual del diseño, pero permite evaluar proporcionalmente 1–5 o 1–10.
+  return `linear-gradient(90deg,${c1},${c2})`;
+}
+function validateScaleFieldsInForm(){
+  const invalid = [];
+  document.querySelectorAll('#ms-dynamic-fields [data-col]').forEach(el=>{
+    const field = el.dataset.col;
+    const max = scaleMax(field);
+    if(el.type === 'number' && el.value !== ''){
+      const n = parseFloat(el.value);
+      if(!Number.isFinite(n) || n < 1 || n > max){
+        invalid.push(`${field}: debe estar entre 1 y ${max}`);
+      }
+    }
+  });
+  return invalid;
+}
+
+
 // ── CACHE ──────────────────────────────────────
 function saveCache(data){
   try{localStorage.setItem(CACHE_KEY,JSON.stringify({ts:Date.now(),...data}));}catch(e){}
@@ -1197,22 +1244,9 @@ function loadCache(){
 }
 
 // ── SESSION PERSISTENCE ────────────────────────
-function saveSession(user){
-  try{
-    const u={...(user||{}),expiresAt:Date.now()+8*60*60*1000};
-    sessionStorage.setItem(SESSION_KEY,JSON.stringify(u));
-  }catch(e){}
-}
-function loadSession(){
-  try{
-    const s=sessionStorage.getItem(SESSION_KEY);
-    if(!s)return null;
-    const u=JSON.parse(s);
-    if(u.expiresAt&&Date.now()>Number(u.expiresAt)){clearSession();return null;}
-    return u;
-  }catch(e){return null;}
-}
-function clearSession(){try{sessionStorage.removeItem(SESSION_KEY);localStorage.removeItem(SESSION_KEY);}catch(e){}}
+function saveSession(user){try{sessionStorage.setItem(SESSION_KEY,JSON.stringify(user));}catch(e){}}
+function loadSession(){try{const s=sessionStorage.getItem(SESSION_KEY);return s?JSON.parse(s):null;}catch(e){return null;}}
+function clearSession(){try{sessionStorage.removeItem(SESSION_KEY);}catch(e){}}
 
 // ── GOOGLE LOGIN ───────────────────────────────
 // PRO FIX: se elimina el prompt flotante y se usa el botón oficial renderizado en el login.
@@ -1229,8 +1263,6 @@ function cancelGooglePrompt(){
 
 function initGoogleButton(){
   if(typeof google==='undefined' || !google.accounts || !google.accounts.id) return false;
-  if(window.__b360GoogleInitialized) return true;
-  window.__b360GoogleInitialized = true;
 
   google.accounts.id.initialize({
     client_id: G_CLIENT,
@@ -1291,7 +1323,7 @@ async function handleCredential(resp){
     }
 
     if(email===ADMIN_EMAIL){
-      currentUser={email,correo:email,nombre:name,rol:'Admin',picture:pic,idToken:resp.credential,credential:resp.credential};
+      currentUser={email,nombre:name,rol:'Admin',picture:pic};
       saveSession(currentUser);
       enterApp();
       return;
@@ -1304,7 +1336,7 @@ async function handleCredential(resp){
       const u=new URL(SCRIPT_URL);
       u.searchParams.set('action','login');
       u.searchParams.set('correo',email);
-      // Token no enviado al login mientras REQUIRE_ID_TOKEN=false; se guarda en sesión para futura activación.
+      u.searchParams.set('googleToken','true');
       const r=await fetch(u.toString(),{signal:controller.signal});
       clearTimeout(timeout);
       const res=await r.json();
@@ -1315,7 +1347,7 @@ async function handleCredential(resp){
       return;
     }
 
-    currentUser={email,correo:email,nombre:name,rol,picture:pic,idToken:resp.credential,credential:resp.credential};
+    currentUser={email,nombre:name,rol,picture:pic};
     saveSession(currentUser);
     enterApp();
   }catch(e){
@@ -1382,59 +1414,27 @@ async function api(p){
   try {
     const params={...(p||{})};
     const correo=(currentUser?.correo||currentUser?.email||currentUser?.mail||'').toLowerCase().trim();
-    const idToken=''; // temporal: no enviar token en llamadas API mientras REQUIRE_ID_TOKEN=false
-
-    // El Apps Script seguro requiere correo para autorizar lecturas.
     if(correo&&!params.correo)params.correo=correo;
-    // No enviar idToken en GET hasta activar REQUIRE_ID_TOKEN=true en Apps Script.
-
     const u=new URL(SCRIPT_URL);
-    Object.entries(params).forEach(([k,v])=>{
-      if(v!==undefined&&v!==null&&v!=='')u.searchParams.set(k,v);
-    });
-
+    Object.entries(params).forEach(([k,v])=>{if(v!==undefined&&v!==null&&v!=='')u.searchParams.set(k,v);});
     const r=await fetch(u.toString(),{method:'GET',cache:'no-store'});
-    if(!r.ok){
-      console.error(`API error: ${r.status} ${r.statusText} para acción ${params.action} en sheet ${params.sheet}`);
-      throw new Error('HTTP '+r.status);
-    }
+    if(!r.ok)throw new Error('HTTP '+r.status);
     const json=await r.json();
-    if(!json.success){
-      console.warn(`API warning: ${json.message||'Sin detalles'}`, params);
-    }
+    if(!json.success)console.warn(`API warning: ${json.message||'Sin detalles'}`,params);
     return json;
-  } catch(e){
-    console.error('Error en api():',e,'Parámetros:',p);
-    throw e;
-  }
+  } catch(e){console.error('Error en api():',e,'Parámetros:',p);throw e;}
 }
 async function apiPost(body){
   try {
     const payload={...(body||{})};
     const correo=(currentUser?.correo||currentUser?.email||currentUser?.mail||'').toLowerCase().trim();
-    const idToken=''; // temporal: no enviar token en llamadas API mientras REQUIRE_ID_TOKEN=false
-
-    // Enviamos correo/email por compatibilidad con Apps Script seguro.
-    if(correo){
-      if(!payload.correo)payload.correo=correo;
-      if(!payload.email)payload.email=correo;
-    }
-    // No enviar idToken en POST hasta activar REQUIRE_ID_TOKEN=true en Apps Script.
-
+    if(correo){if(!payload.correo)payload.correo=correo;if(!payload.email)payload.email=correo;}
     const r=await fetch(SCRIPT_URL,{method:'POST',body:JSON.stringify(payload),cache:'no-store'});
-    if(!r.ok){
-      console.error(`POST error: ${r.status} ${r.statusText}`);
-      throw new Error('HTTP '+r.status);
-    }
+    if(!r.ok)throw new Error('HTTP '+r.status);
     const json=await r.json();
-    if(!json.success){
-      console.warn(`POST warning: ${json.message||'Sin detalles'}`, payload);
-    }
+    if(!json.success)console.warn(`POST warning: ${json.message||'Sin detalles'}`,payload);
     return json;
-  } catch(e){
-    console.error('Error en apiPost():',e,'Body:',body);
-    throw e;
-  }
+  } catch(e){console.error('Error en apiPost():',e,'Body:',body);throw e;}
 }
 
 // ── OFFLINE + SYNC ─────────────────────────────
@@ -1896,7 +1896,11 @@ function loadPanels(){
     scaleFields.forEach(([l,k])=>{
       const v=r[k];if(!v||v==='')return;
       const n=parseFloat(v)||0;
-      if(n>0&&n<=10){html+=`<div class="f-block"><div class="f-lbl">${l}</div><div class="scale-row"><div class="scale-track"><div class="scale-fill" style="width:${n*10}%;background:linear-gradient(90deg,${c1},${c2});"></div></div><div class="scale-num">${n}/10</div></div></div>`;}
+      const max=scaleMax(k);
+      if(n>0&&n<=max){
+        const pct=scalePct(n,k);
+        html+=`<div class="f-block"><div class="f-lbl">${l} <span class="scale-max-note">/${max}</span></div><div class="scale-row"><div class="scale-track"><div class="scale-fill" style="width:${pct}%;background:linear-gradient(90deg,${c1},${c2});"></div></div><div class="scale-num">${n}/${max}</div></div></div>`;
+      }
     });
     const textFields=[['Inicio del semestre','¿Cómo inicias este semestre a nivel personal y laboral?'],['Asuntos personales','Asuntos personales / familiares / salud que debamos considerar'],['Metas laborales','Metas laborales'],['Retos laborales','Retos laborales']];
     textFields.forEach(([l,k])=>{if(r[k])html+=`<div class="f-block"><div class="f-lbl">${l}</div><div class="f-val">${x(r[k])}</div></div>`;});
@@ -1914,6 +1918,10 @@ async function saveSeg(){
   const colab=document.getElementById('ms-colab').value;
   const fecha=document.getElementById('ms-fecha').value;
   if(!colab||!fecha){toast('Colaborador y fecha son obligatorios',true);return;}
+
+  // Validar rangos por campo antes de guardar
+  const scaleErrors = validateScaleFieldsInForm();
+  if(scaleErrors.length){ toast(scaleErrors[0], true); return; }
 
   // Obtener datos dinámicos del formulario
   const dynData = getSegFormData();
@@ -2754,20 +2762,22 @@ async function generarPDFSeguimiento(nombreColab){
       const col=[10,75,140][i%3];
       if(i%3===0&&i>0) y+=12;
       const val=parseFloat(r[key])||0;
+      const max=scaleMax(key);
+      const pct=max ? Math.max(0, Math.min(1, val/max)) : 0;
       doc.setFont('helvetica','bold');
       doc.setFontSize(7);
       doc.setTextColor(150,150,150);
-      doc.text(label.toUpperCase(),col,y);
+      doc.text(label.toUpperCase() + ' /' + max,col,y);
       // Barra
       doc.setFillColor(230,235,245);
       doc.rect(col,y+1.5,55,3,'F');
-      const color = val>=7?[24,174,151]:val>=4?[245,173,33]:[255,55,111];
+      const color = pct>=0.7?[24,174,151]:pct>=0.4?[245,173,33]:[255,55,111];
       doc.setFillColor(...color);
-      doc.rect(col,y+1.5,55*(val/10),3,'F');
+      doc.rect(col,y+1.5,55*pct,3,'F');
       doc.setFont('helvetica','bold');
       doc.setFontSize(8);
       doc.setTextColor(...color);
-      doc.text(val+'/10',col+57,y+4.5);
+      doc.text(val+'/'+max,col+57,y+4.5);
       doc.setTextColor(51,51,51);
     });
     if(escVals.length) y+=16;
@@ -2964,7 +2974,10 @@ function openFichaSeg(nombre, rowId){
   const escala = (l,k) => {
     if(!r[k]||r[k]==='') return '';
     const n=parseFloat(r[k])||0;
-    return `<div class="f-block"><div class="f-lbl">${l}</div><div class="scale-row"><div class="scale-track"><div class="scale-fill" style="width:${n*10}%;background:linear-gradient(90deg,${c1},${c2});"></div></div><div class="scale-num">${n}/10</div></div></div>`;
+    const max=scaleMax(k);
+    if(!(n>0&&n<=max)) return '';
+    const pct=scalePct(n,k);
+    return `<div class="f-block"><div class="f-lbl">${l} <span class="scale-max-note">/${max}</span></div><div class="scale-row"><div class="scale-track"><div class="scale-fill" style="width:${pct}%;background:linear-gradient(90deg,${c1},${c2});"></div></div><div class="scale-num">${n}/${max}</div></div></div>`;
   };
   const texto = (l,k) => {
     if(!r[k]||r[k]==='') return '';
@@ -3030,138 +3043,5 @@ function openFichaSeg(nombre, rowId){
 }
 
 </script>
-
-
-<!-- ===== Bienestar360 Security + Mobile Runtime Hardening ===== -->
-<script>
-(function(){
-  'use strict';
-  const MAX_IMAGE_BYTES = 2 * 1024 * 1024;
-  const ALLOWED_IMAGE_TYPES = new Set(['image/jpeg','image/png']);
-  const B360 = window.B360Security = window.B360Security || {};
-
-  function isSafeUrl(value){
-    if (!value) return true;
-    const raw = String(value).trim();
-    const v = raw.toLowerCase().replace(/[\u0000-\u001F\u007F\s]+/g,'');
-    if (v.startsWith('javascript:') || v.startsWith('vbscript:') || v.startsWith('data:text/html')) return false;
-    if (v.startsWith('#') || v.startsWith('/') || v.startsWith('mailto:') || v.startsWith('tel:')) return true;
-    if (v.startsWith('data:image/png;base64,') || v.startsWith('data:image/jpeg;base64,')) return true;
-    try { return ['http:','https:'].includes(new URL(raw, location.origin).protocol); }
-    catch { return false; }
-  }
-
-  const ALLOWED_TAGS = new Set('A ABBR B BR BUTTON CODE DIV EM HR I IMG INPUT LABEL LI OL OPTION P SELECT SMALL SPAN STRONG TABLE TBODY TD TEXTAREA TH THEAD TR UL'.split(' '));
-  const ALLOWED_ATTRS = new Set('accept aria-label aria-hidden autocomplete checked class data-action data-col data-id disabled for href id inputmode max maxlength min multiple name placeholder readonly rel role rows selected src style target title type value onclick onchange oninput onmouseover onmouseout'.split(' '));
-
-  function sanitizeHTML(dirty){
-    const html = String(dirty ?? '');
-    const template = document.createElement('template');
-    B360.__nativeInnerHTMLSet.call(template, html);
-    const walker = document.createTreeWalker(template.content, NodeFilter.SHOW_ELEMENT, null);
-    const remove = [];
-    while (walker.nextNode()) {
-      const el = walker.currentNode;
-      if (!ALLOWED_TAGS.has(el.tagName)) { remove.push(el); continue; }
-      [...el.attributes].forEach(attr => {
-        const name = attr.name.toLowerCase();
-        const value = String(attr.value || '');
-        if (!ALLOWED_ATTRS.has(name)) { el.removeAttribute(attr.name); return; }
-        if (name.startsWith('on')) {
-          const risky = /(?:<script|javascript:|eval\s*\(|Function\s*\(|document\.cookie|localStorage|sessionStorage|fetch\s*\(|XMLHttpRequest|import\s*\()/i.test(value);
-          if (risky) el.removeAttribute(attr.name);
-          return;
-        }
-        if ((name === 'href' || name === 'src') && !isSafeUrl(value)) { el.removeAttribute(attr.name); return; }
-        if (value.toLowerCase().includes('<script') || value.toLowerCase().includes('javascript:')) el.removeAttribute(attr.name);
-      });
-      if (el.tagName === 'A') {
-        el.setAttribute('rel','noopener noreferrer');
-        if (!el.getAttribute('target')) el.setAttribute('target','_blank');
-      }
-    }
-    remove.forEach(el => el.replaceWith(document.createTextNode(el.textContent || '')));
-    return B360.__nativeInnerHTMLGet.call(template);
-  }
-
-  const desc = Object.getOwnPropertyDescriptor(Element.prototype, 'innerHTML');
-  if (desc && desc.set && !B360.__innerHTMLPatched) {
-    B360.__nativeInnerHTMLSet = desc.set;
-    B360.__nativeInnerHTMLGet = desc.get;
-    Object.defineProperty(Element.prototype, 'innerHTML', {
-      configurable:true,
-      enumerable:desc.enumerable,
-      get:desc.get,
-      set(value){ desc.set.call(this, sanitizeHTML(value)); }
-    });
-    B360.__innerHTMLPatched = true;
-  }
-
-  async function validateImageFile(file){
-    if (!file) return true;
-    if (!ALLOWED_IMAGE_TYPES.has(file.type)) throw new Error('Solo se permiten imágenes JPG o PNG.');
-    if (file.size > MAX_IMAGE_BYTES) throw new Error('La imagen supera 2 MB.');
-    const header = new Uint8Array(await file.slice(0, 12).arrayBuffer());
-    const jpg = header[0] === 0xFF && header[1] === 0xD8 && header[2] === 0xFF;
-    const png = header[0] === 0x89 && header[1] === 0x50 && header[2] === 0x4E && header[3] === 0x47;
-    if (!jpg && !png) throw new Error('El contenido del archivo no coincide con JPG/PNG.');
-    return true;
-  }
-
-  B360.sanitizeHTML = sanitizeHTML;
-  B360.validateImageFile = validateImageFile;
-
-  document.addEventListener('change', async (ev) => {
-    const input = ev.target;
-    if (input && input.matches && input.matches('input[type="file"]')) {
-      try { await validateImageFile(input.files && input.files[0]); }
-      catch(err) { input.value=''; if (typeof toast === 'function') toast(err.message, true); else alert(err.message); }
-    }
-  }, true);
-
-  document.addEventListener('keydown', (ev) => {
-    if (ev.key === 'Escape') {
-      document.getElementById('sidebar-nav')?.classList.remove('open');
-      document.getElementById('sidebar-overlay')?.classList.remove('open');
-      document.querySelectorAll('.modal-overlay.open').forEach(m => m.classList.remove('open'));
-    }
-  });
-
-  function hardenInputs(){
-    document.querySelectorAll('input[data-col*="Teléfono"], input[id*="telefono"], input[id*="phone"]').forEach(i => { i.type='tel'; i.inputMode='tel'; i.autocomplete='tel'; });
-    document.querySelectorAll('input[data-col*="Documento"], input[type="number"]').forEach(i => { i.inputMode='numeric'; });
-    document.querySelectorAll('input[type="url"]').forEach(i => { i.inputMode='url'; });
-  }
-  hardenInputs();
-  new MutationObserver(hardenInputs).observe(document.body, { childList:true, subtree:true });
-})();
-</script>
-<!-- ===== Fin Runtime Hardening ===== -->
-
-
-
-<script>
-/* B360 Google Initialize Guard: evita inicializaciones duplicadas de Google Identity Services */
-(function(){
-  const originalInit = window.initGoogleButton;
-  if (typeof originalInit === 'function' && !window.__b360InitGoogleWrapped) {
-    window.__b360InitGoogleWrapped = true;
-    window.initGoogleButton = function(){
-      if (window.__b360GoogleInitialized) return true;
-      const result = originalInit.apply(this, arguments);
-      if (result) window.__b360GoogleInitialized = true;
-      return result;
-    };
-  }
-})();
-</script>
-
 </body>
-
-
-<!--
-Nota: este HTML está preparado para el Apps Script endurecido.
-Para máxima seguridad, mantén REQUIRE_ID_TOKEN=true en Apps Script cuando confirmes que todas las llamadas envían idToken.
--->
-
 </html>
