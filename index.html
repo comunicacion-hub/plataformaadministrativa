@@ -602,7 +602,11 @@
   .hdr-actions .btn { flex:1 1 auto; min-width:0; }
   .modal-overlay.open { display:flex; }
   .modal, .modal.wide, .modal.xl, .modal[style] {
-    width:100% !important; max-width:100% !important; height:100dvh !important; max-height:100dvh !important; border-radius:0 !important;
+    width:100% !important;
+    max-width:100% !important;
+    height:100dvh !important;
+    max-height:100dvh !important;
+    border-radius:0 !important;
   }
   .modal-head { position:sticky; top:0; z-index:2; }
   .modal-foot { position:sticky; bottom:0; z-index:2; }
@@ -612,10 +616,21 @@
   .icon-btn { padding:10px 12px; }
   .filters-row { display:grid; grid-template-columns:1fr; width:100%; }
   .search-wrap, .filter-sel { max-width:none !important; width:100%; }
-  #toast { left:16px !important; right:16px !important; bottom:calc(16px + env(safe-area-inset-bottom)) !important; max-width:none !important; text-align:center; }
+  #toast {
+    left:16px !important;
+    right:16px !important;
+    bottom:calc(16px + env(safe-area-inset-bottom)) !important;
+    max-width:none !important;
+    text-align:center;
+  }
 }
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after { animation-duration:.01ms !important; animation-iteration-count:1 !important; transition-duration:.01ms !important; scroll-behavior:auto !important; }
+  *, *::before, *::after {
+    animation-duration:.01ms !important;
+    animation-iteration-count:1 !important;
+    transition-duration:.01ms !important;
+    scroll-behavior:auto !important;
+  }
 }
 /* ===== Fin Mobile/Responsive Hardening ===== */
 
@@ -1156,199 +1171,6 @@
 
 <div id="toast"></div>
 
-
-<!-- ===== Bienestar360 Security Hardening: inicio ===== -->
-<script>
-(function(){
-  'use strict';
-  window.B360Security = window.B360Security || {};
-  const B360 = window.B360Security;
-  const MAX_IMAGE_BYTES = 2 * 1024 * 1024;
-  const ALLOWED_IMAGE_TYPES = new Set(['image/jpeg','image/png']);
-  const SESSION_TTL_MS = 8 * 60 * 60 * 1000;
-
-  function safeDomain(){ return window.DOMAIN || 'redesconrostro.org'; }
-  function sessionKey(){ return window.SESSION_KEY || 'rcr_session'; }
-
-  function escapeHTML(value){
-    return String(value ?? '')
-      .replace(/&/g,'&amp;')
-      .replace(/</g,'&lt;')
-      .replace(/>/g,'&gt;')
-      .replace(/"/g,'&quot;')
-      .replace(/'/g,'&#39;');
-  }
-
-  function isSafeUrl(value){
-    if (!value) return true;
-    const raw = String(value).trim();
-    const v = raw.toLowerCase().replace(/[\u0000-\u001F\u007F\s]+/g,'');
-    if (v.startsWith('javascript:') || v.startsWith('vbscript:') || v.startsWith('data:text/html')) return false;
-    if (v.startsWith('#') || v.startsWith('/') || v.startsWith('mailto:') || v.startsWith('tel:')) return true;
-    if (v.startsWith('data:image/png;base64,') || v.startsWith('data:image/jpeg;base64,')) return true;
-    try { return ['http:','https:'].includes(new URL(raw, location.origin).protocol); }
-    catch { return false; }
-  }
-
-  const ALLOWED_TAGS = new Set('A ABBR B BR BUTTON CODE DIV EM HR I IMG INPUT LABEL LI OL OPTION P SELECT SMALL SPAN STRONG TABLE TBODY TD TEXTAREA TH THEAD TR UL'.split(' '));
-  const ALLOWED_ATTRS = new Set('accept aria-label aria-hidden autocomplete checked class data-action data-col data-id disabled for href id inputmode max maxlength min multiple name placeholder readonly rel role rows selected src style target title type value'.split(' '));
-
-  function sanitizeHTML(dirty){
-    const html = String(dirty ?? '');
-    const template = document.createElement('template');
-    // IMPORTANTE: usar el setter nativo para no recursar con el parche global.
-    B360.__nativeInnerHTMLSet.call(template, html);
-    const walker = document.createTreeWalker(template.content, NodeFilter.SHOW_ELEMENT, null);
-    const remove = [];
-    while (walker.nextNode()) {
-      const el = walker.currentNode;
-      if (!ALLOWED_TAGS.has(el.tagName)) { remove.push(el); continue; }
-      [...el.attributes].forEach(attr => {
-        const name = attr.name.toLowerCase();
-        const value = String(attr.value || '');
-        if (name.startsWith('on')) {
-          const risky = /(?:<script|javascript:|eval\s*\(|Function\s*\(|document\.cookie|localStorage|sessionStorage|fetch\s*\(|XMLHttpRequest|import\s*\()/i.test(value);
-          if (risky) el.removeAttribute(attr.name);
-          return;
-        }
-        if (!ALLOWED_ATTRS.has(name)) { el.removeAttribute(attr.name); return; }
-        if ((name === 'href' || name === 'src') && !isSafeUrl(value)) { el.removeAttribute(attr.name); return; }
-        if (value.toLowerCase().includes('<script') || value.toLowerCase().includes('javascript:')) { el.removeAttribute(attr.name); }
-      });
-      if (el.tagName === 'A') {
-        el.setAttribute('rel','noopener noreferrer');
-        if (!el.getAttribute('target')) el.setAttribute('target','_blank');
-      }
-    }
-    remove.forEach(el => el.replaceWith(document.createTextNode(el.textContent || '')));
-    return B360.__nativeInnerHTMLGet.call(template);
-  }
-
-  const desc = Object.getOwnPropertyDescriptor(Element.prototype, 'innerHTML');
-  if (desc && desc.set && !B360.__innerHTMLPatched) {
-    B360.__nativeInnerHTMLSet = desc.set;
-    B360.__nativeInnerHTMLGet = desc.get;
-    Object.defineProperty(Element.prototype, 'innerHTML', {
-      configurable: true,
-      enumerable: desc.enumerable,
-      get: desc.get,
-      set(value){ desc.set.call(this, sanitizeHTML(value)); }
-    });
-    B360.__innerHTMLPatched = true;
-  }
-
-  function cleanString(value, maxLen){
-    return String(value ?? '')
-      .replace(/[\u0000-\u001F\u007F]/g, '')
-      .replace(/<\/?script[^>]*>/gi, '')
-      .replace(/javascript:/gi, '')
-      .trim()
-      .slice(0, maxLen || 5000);
-  }
-
-  function sanitizeObject(value){
-    if (value === null || value === undefined) return '';
-    if (Array.isArray(value)) return value.map(sanitizeObject);
-    if (typeof value === 'object') {
-      const out = {};
-      Object.keys(value).forEach(k => { out[cleanString(k, 120)] = sanitizeObject(value[k]); });
-      return out;
-    }
-    return cleanString(value);
-  }
-
-  function getSession(){
-    try {
-      const key = sessionKey();
-      const raw = sessionStorage.getItem(key) || localStorage.getItem(key);
-      if (!raw) return null;
-      const s = JSON.parse(raw);
-      if (s.expiresAt && Date.now() > Number(s.expiresAt)) { sessionStorage.removeItem(key); localStorage.removeItem(key); return null; }
-      if (s.email && !String(s.email).toLowerCase().endsWith('@' + safeDomain())) return null;
-      return s;
-    } catch { return null; }
-  }
-
-  function saveSession(session){
-    const key = sessionKey();
-    const s = { ...(session || {}), expiresAt: Date.now() + SESSION_TTL_MS };
-    try { sessionStorage.setItem(key, JSON.stringify(s)); localStorage.removeItem(key); } catch {}
-    return s;
-  }
-
-  async function validateImageFile(file){
-    if (!file) return true;
-    if (!ALLOWED_IMAGE_TYPES.has(file.type)) throw new Error('Solo se permiten imágenes JPG o PNG.');
-    if (file.size > MAX_IMAGE_BYTES) throw new Error('La imagen supera 2 MB.');
-    const header = new Uint8Array(await file.slice(0, 12).arrayBuffer());
-    const jpg = header[0] === 0xFF && header[1] === 0xD8 && header[2] === 0xFF;
-    const png = header[0] === 0x89 && header[1] === 0x50 && header[2] === 0x4E && header[3] === 0x47;
-    if (!jpg && !png) throw new Error('El contenido del archivo no coincide con JPG/PNG.');
-    return true;
-  }
-
-  async function apiFetch(action, payload){
-    const s = getSession();
-    if (!s || !s.email) throw new Error('Sesión inválida o expirada.');
-    if (!String(s.email).toLowerCase().endsWith('@' + safeDomain())) throw new Error('Dominio no autorizado.');
-    const body = {
-      action: cleanString(action, 80),
-      payload: sanitizeObject(payload || {}),
-      email: s.email,
-      idToken: s.idToken || s.credential || '',
-      nonce: (crypto.randomUUID ? crypto.randomUUID() : String(Date.now()) + Math.random())
-    };
-    const res = await fetch(window.SCRIPT_URL || window.SCRIPT_URL || SCRIPT_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-      body: JSON.stringify(body),
-      credentials: 'omit',
-      cache: 'no-store'
-    });
-    if (!res.ok) throw new Error('Error API: ' + res.status);
-    const json = await res.json();
-    if (json && json.error) throw new Error(json.error);
-    return json;
-  }
-
-  B360.escapeHTML = escapeHTML;
-  B360.sanitizeHTML = sanitizeHTML;
-  B360.cleanString = cleanString;
-  B360.sanitizeObject = sanitizeObject;
-  B360.getSession = getSession;
-  B360.saveSession = saveSession;
-  B360.validateImageFile = validateImageFile;
-  B360.apiFetch = apiFetch;
-
-  window.addEventListener('DOMContentLoaded', () => {
-    document.addEventListener('change', async (ev) => {
-      const input = ev.target;
-      if (input && input.matches && input.matches('input[type="file"]')) {
-        try { await validateImageFile(input.files && input.files[0]); }
-        catch(err) { input.value=''; if (typeof toast === 'function') toast(err.message, 'err'); else alert(err.message); }
-      }
-    }, true);
-
-    document.addEventListener('keydown', (ev) => {
-      if (ev.key === 'Escape') {
-        document.getElementById('sidebar-nav')?.classList.remove('open');
-        document.getElementById('sidebar-overlay')?.classList.remove('open');
-        document.querySelectorAll('.modal-overlay.open').forEach(m => m.classList.remove('open'));
-      }
-    });
-
-    const hardenInputs = () => {
-      document.querySelectorAll('input[data-col*="Teléfono"], input[id*="telefono"], input[id*="phone"]').forEach(i => { i.type='tel'; i.inputMode='tel'; i.autocomplete='tel'; });
-      document.querySelectorAll('input[data-col*="Documento"], input[type="number"]').forEach(i => { i.inputMode='numeric'; });
-      document.querySelectorAll('input[type="url"]').forEach(i => { i.inputMode='url'; });
-    };
-    hardenInputs();
-    new MutationObserver(hardenInputs).observe(document.body, { childList:true, subtree:true });
-  });
-})();
-</script>
-<!-- ===== Bienestar360 Security Hardening: fin ===== -->
-
 <script>
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz95ASB2boSxom3iPq0Ek-nJHxC0uBmyU3Hcs9dLw9Sza_9VoJj5fJHr3tGdGeqNEr69Q/exec';
 const G_CLIENT    = '783730193199-d7nhahv3ou4rmps7nrpoop5cpor079ej.apps.googleusercontent.com';
@@ -1375,9 +1197,22 @@ function loadCache(){
 }
 
 // ── SESSION PERSISTENCE ────────────────────────
-function saveSession(user){try{sessionStorage.setItem(SESSION_KEY,JSON.stringify(user));}catch(e){}}
-function loadSession(){try{const s=sessionStorage.getItem(SESSION_KEY);return s?JSON.parse(s):null;}catch(e){return null;}}
-function clearSession(){try{sessionStorage.removeItem(SESSION_KEY);}catch(e){}}
+function saveSession(user){
+  try{
+    const u={...(user||{}),expiresAt:Date.now()+8*60*60*1000};
+    sessionStorage.setItem(SESSION_KEY,JSON.stringify(u));
+  }catch(e){}
+}
+function loadSession(){
+  try{
+    const s=sessionStorage.getItem(SESSION_KEY);
+    if(!s)return null;
+    const u=JSON.parse(s);
+    if(u.expiresAt&&Date.now()>Number(u.expiresAt)){clearSession();return null;}
+    return u;
+  }catch(e){return null;}
+}
+function clearSession(){try{sessionStorage.removeItem(SESSION_KEY);localStorage.removeItem(SESSION_KEY);}catch(e){}}
 
 // ── GOOGLE LOGIN ───────────────────────────────
 // PRO FIX: se elimina el prompt flotante y se usa el botón oficial renderizado en el login.
@@ -1454,7 +1289,7 @@ async function handleCredential(resp){
     }
 
     if(email===ADMIN_EMAIL){
-      currentUser={email,nombre:name,rol:'Admin',picture:pic};
+      currentUser={email,correo:email,nombre:name,rol:'Admin',picture:pic,idToken:resp.credential,credential:resp.credential};
       saveSession(currentUser);
       enterApp();
       return;
@@ -1467,7 +1302,7 @@ async function handleCredential(resp){
       const u=new URL(SCRIPT_URL);
       u.searchParams.set('action','login');
       u.searchParams.set('correo',email);
-      u.searchParams.set('googleToken','true');
+      u.searchParams.set('idToken', resp.credential);
       const r=await fetch(u.toString(),{signal:controller.signal});
       clearTimeout(timeout);
       const res=await r.json();
@@ -1478,7 +1313,7 @@ async function handleCredential(resp){
       return;
     }
 
-    currentUser={email,nombre:name,rol,picture:pic};
+    currentUser={email,correo:email,nombre:name,rol,picture:pic,idToken:resp.credential,credential:resp.credential};
     saveSession(currentUser);
     enterApp();
   }catch(e){
@@ -1543,35 +1378,59 @@ window.addEventListener('load',()=>{
 // ── API ────────────────────────────────────────
 async function api(p){
   try {
+    const params={...(p||{})};
+    const correo=(currentUser?.correo||currentUser?.email||currentUser?.mail||'').toLowerCase().trim();
+    const idToken=currentUser?.idToken||currentUser?.credential||window.googleIdToken||'';
+
+    // El Apps Script seguro requiere correo para autorizar lecturas.
+    if(correo&&!params.correo)params.correo=correo;
+    if(idToken&&!params.idToken)params.idToken=idToken;
+
     const u=new URL(SCRIPT_URL);
-    Object.entries(p).forEach(([k,v])=>u.searchParams.set(k,v));
-    const r=await fetch(u.toString());
+    Object.entries(params).forEach(([k,v])=>{
+      if(v!==undefined&&v!==null&&v!=='')u.searchParams.set(k,v);
+    });
+
+    const r=await fetch(u.toString(),{method:'GET',cache:'no-store'});
     if(!r.ok){
-      console.error(`API error: ${r.status} ${r.statusText} para acción ${p.action} en sheet ${p.sheet}`);
+      console.error(`API error: ${r.status} ${r.statusText} para acción ${params.action} en sheet ${params.sheet}`);
       throw new Error('HTTP '+r.status);
     }
-    const json = await r.json();
-    if(!json.success && p.action !== 'getAll'){
-      console.warn(`API warning: ${json.message || 'Sin detalles'}`);
+    const json=await r.json();
+    if(!json.success){
+      console.warn(`API warning: ${json.message||'Sin detalles'}`, params);
     }
     return json;
   } catch(e){
-    console.error('Error en api():', e, 'Parámetros:', p);
+    console.error('Error en api():',e,'Parámetros:',p);
     throw e;
   }
 }
 async function apiPost(body){
   try {
-    // Inyectar correo del usuario para validación de permisos en servidor
-    if(currentUser&&currentUser.email) body.correo=currentUser.email;
-    const r=await fetch(SCRIPT_URL,{method:'POST',body:JSON.stringify(body)});
+    const payload={...(body||{})};
+    const correo=(currentUser?.correo||currentUser?.email||currentUser?.mail||'').toLowerCase().trim();
+    const idToken=currentUser?.idToken||currentUser?.credential||window.googleIdToken||'';
+
+    // Enviamos correo/email por compatibilidad con Apps Script seguro.
+    if(correo){
+      if(!payload.correo)payload.correo=correo;
+      if(!payload.email)payload.email=correo;
+    }
+    if(idToken&&!payload.idToken)payload.idToken=idToken;
+
+    const r=await fetch(SCRIPT_URL,{method:'POST',body:JSON.stringify(payload),cache:'no-store'});
     if(!r.ok){
       console.error(`POST error: ${r.status} ${r.statusText}`);
       throw new Error('HTTP '+r.status);
     }
-    return r.json();
+    const json=await r.json();
+    if(!json.success){
+      console.warn(`POST warning: ${json.message||'Sin detalles'}`, payload);
+    }
+    return json;
   } catch(e){
-    console.error('Error en apiPost():', e);
+    console.error('Error en apiPost():',e,'Body:',body);
     throw e;
   }
 }
@@ -3168,51 +3027,121 @@ function openFichaSeg(nombre, rowId){
   openModal('m-ficha-seg');
 }
 
-
-
-/* ===== Bienestar360 Session/Logout Wrapper ===== */
-(function(){
-  const originalDoLogout = window.doLogout;
-  window.doLogout = function(){
-    try {
-      const key = window.SESSION_KEY || window.SESSION_KEY || 'rcr_session';
-      sessionStorage.removeItem(key);
-      localStorage.removeItem(key);
-    } catch(e) {}
-    if (typeof originalDoLogout === 'function') return originalDoLogout.apply(this, arguments);
-    location.reload();
-  };
-})();
-/* ===== Fin Session/Logout Wrapper ===== */
-
 </script>
+
+
+<!-- ===== Bienestar360 Security + Mobile Runtime Hardening ===== -->
+<script>
+(function(){
+  'use strict';
+  const MAX_IMAGE_BYTES = 2 * 1024 * 1024;
+  const ALLOWED_IMAGE_TYPES = new Set(['image/jpeg','image/png']);
+  const B360 = window.B360Security = window.B360Security || {};
+
+  function isSafeUrl(value){
+    if (!value) return true;
+    const raw = String(value).trim();
+    const v = raw.toLowerCase().replace(/[\u0000-\u001F\u007F\s]+/g,'');
+    if (v.startsWith('javascript:') || v.startsWith('vbscript:') || v.startsWith('data:text/html')) return false;
+    if (v.startsWith('#') || v.startsWith('/') || v.startsWith('mailto:') || v.startsWith('tel:')) return true;
+    if (v.startsWith('data:image/png;base64,') || v.startsWith('data:image/jpeg;base64,')) return true;
+    try { return ['http:','https:'].includes(new URL(raw, location.origin).protocol); }
+    catch { return false; }
+  }
+
+  const ALLOWED_TAGS = new Set('A ABBR B BR BUTTON CODE DIV EM HR I IMG INPUT LABEL LI OL OPTION P SELECT SMALL SPAN STRONG TABLE TBODY TD TEXTAREA TH THEAD TR UL'.split(' '));
+  const ALLOWED_ATTRS = new Set('accept aria-label aria-hidden autocomplete checked class data-action data-col data-id disabled for href id inputmode max maxlength min multiple name placeholder readonly rel role rows selected src style target title type value onclick onchange oninput onmouseover onmouseout'.split(' '));
+
+  function sanitizeHTML(dirty){
+    const html = String(dirty ?? '');
+    const template = document.createElement('template');
+    B360.__nativeInnerHTMLSet.call(template, html);
+    const walker = document.createTreeWalker(template.content, NodeFilter.SHOW_ELEMENT, null);
+    const remove = [];
+    while (walker.nextNode()) {
+      const el = walker.currentNode;
+      if (!ALLOWED_TAGS.has(el.tagName)) { remove.push(el); continue; }
+      [...el.attributes].forEach(attr => {
+        const name = attr.name.toLowerCase();
+        const value = String(attr.value || '');
+        if (!ALLOWED_ATTRS.has(name)) { el.removeAttribute(attr.name); return; }
+        if (name.startsWith('on')) {
+          const risky = /(?:<script|javascript:|eval\s*\(|Function\s*\(|document\.cookie|localStorage|sessionStorage|fetch\s*\(|XMLHttpRequest|import\s*\()/i.test(value);
+          if (risky) el.removeAttribute(attr.name);
+          return;
+        }
+        if ((name === 'href' || name === 'src') && !isSafeUrl(value)) { el.removeAttribute(attr.name); return; }
+        if (value.toLowerCase().includes('<script') || value.toLowerCase().includes('javascript:')) el.removeAttribute(attr.name);
+      });
+      if (el.tagName === 'A') {
+        el.setAttribute('rel','noopener noreferrer');
+        if (!el.getAttribute('target')) el.setAttribute('target','_blank');
+      }
+    }
+    remove.forEach(el => el.replaceWith(document.createTextNode(el.textContent || '')));
+    return B360.__nativeInnerHTMLGet.call(template);
+  }
+
+  const desc = Object.getOwnPropertyDescriptor(Element.prototype, 'innerHTML');
+  if (desc && desc.set && !B360.__innerHTMLPatched) {
+    B360.__nativeInnerHTMLSet = desc.set;
+    B360.__nativeInnerHTMLGet = desc.get;
+    Object.defineProperty(Element.prototype, 'innerHTML', {
+      configurable:true,
+      enumerable:desc.enumerable,
+      get:desc.get,
+      set(value){ desc.set.call(this, sanitizeHTML(value)); }
+    });
+    B360.__innerHTMLPatched = true;
+  }
+
+  async function validateImageFile(file){
+    if (!file) return true;
+    if (!ALLOWED_IMAGE_TYPES.has(file.type)) throw new Error('Solo se permiten imágenes JPG o PNG.');
+    if (file.size > MAX_IMAGE_BYTES) throw new Error('La imagen supera 2 MB.');
+    const header = new Uint8Array(await file.slice(0, 12).arrayBuffer());
+    const jpg = header[0] === 0xFF && header[1] === 0xD8 && header[2] === 0xFF;
+    const png = header[0] === 0x89 && header[1] === 0x50 && header[2] === 0x4E && header[3] === 0x47;
+    if (!jpg && !png) throw new Error('El contenido del archivo no coincide con JPG/PNG.');
+    return true;
+  }
+
+  B360.sanitizeHTML = sanitizeHTML;
+  B360.validateImageFile = validateImageFile;
+
+  document.addEventListener('change', async (ev) => {
+    const input = ev.target;
+    if (input && input.matches && input.matches('input[type="file"]')) {
+      try { await validateImageFile(input.files && input.files[0]); }
+      catch(err) { input.value=''; if (typeof toast === 'function') toast(err.message, true); else alert(err.message); }
+    }
+  }, true);
+
+  document.addEventListener('keydown', (ev) => {
+    if (ev.key === 'Escape') {
+      document.getElementById('sidebar-nav')?.classList.remove('open');
+      document.getElementById('sidebar-overlay')?.classList.remove('open');
+      document.querySelectorAll('.modal-overlay.open').forEach(m => m.classList.remove('open'));
+    }
+  });
+
+  function hardenInputs(){
+    document.querySelectorAll('input[data-col*="Teléfono"], input[id*="telefono"], input[id*="phone"]').forEach(i => { i.type='tel'; i.inputMode='tel'; i.autocomplete='tel'; });
+    document.querySelectorAll('input[data-col*="Documento"], input[type="number"]').forEach(i => { i.inputMode='numeric'; });
+    document.querySelectorAll('input[type="url"]').forEach(i => { i.inputMode='url'; });
+  }
+  hardenInputs();
+  new MutationObserver(hardenInputs).observe(document.body, { childList:true, subtree:true });
+})();
+</script>
+<!-- ===== Fin Runtime Hardening ===== -->
+
 </body>
 
 
 <!--
-===== IMPORTANTE: validaciones mínimas que deben estar también en Apps Script =====
-La seguridad real debe validarse en backend. Ejemplo base:
-
-const DOMAIN = 'redesconrostro.org';
-const ADMIN_EMAIL = 'comunicacion@redesconrostro.org';
-const ALLOWED_ACTIONS = new Set(['list','get','create','update','delete','uploadImage','createUser','saveColumn','deleteColumn']);
-const ADMIN_ACTIONS = new Set(['delete','createUser','saveColumn','deleteColumn']);
-
-function doPost(e) {
-  try {
-    const req = JSON.parse(e.postData && e.postData.contents || '{}');
-    const email = String(req.email || '').toLowerCase().trim();
-    const action = String(req.action || '').trim();
-    if (!email.endsWith('@' + DOMAIN)) throw new Error('Dominio no autorizado');
-    if (!ALLOWED_ACTIONS.has(action)) throw new Error('Acción no permitida');
-    if (ADMIN_ACTIONS.has(action) && email !== ADMIN_EMAIL) throw new Error('Permiso insuficiente');
-    // Verificar idToken de Google, sanitizar payload y aplicar rate limit/LockService.
-    return ContentService.createTextOutput(JSON.stringify({ok:true})).setMimeType(ContentService.MimeType.JSON);
-  } catch (err) {
-    return ContentService.createTextOutput(JSON.stringify({ok:false,error:String(err.message || err)})).setMimeType(ContentService.MimeType.JSON);
-  }
-}
-===== Fin validaciones Apps Script =====
+Nota: este HTML está preparado para el Apps Script endurecido.
+Para máxima seguridad, mantén REQUIRE_ID_TOKEN=true en Apps Script cuando confirmes que todas las llamadas envían idToken.
 -->
 
 </html>
