@@ -302,6 +302,66 @@ select.form-inp{
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:0.01ms!important;transition-duration:0.01ms!important;}
 }
+
+
+/* ===== PATCH RCR: seguridad visual, accesibilidad y mobile ===== */
+.btn-del{
+  width:44px!important;
+  height:44px!important;
+  min-width:44px;
+  min-height:44px;
+}
+button:focus-visible,
+.user-avatar:focus-visible,
+.form-inp:focus-visible,
+.sema-opt:focus-visible{
+  outline:3px solid rgba(51,168,222,.35);
+  outline-offset:2px;
+}
+#toast{
+  white-space:normal!important;
+  width:max-content;
+  max-width:calc(100vw - 32px)!important;
+  line-height:1.35;
+}
+.modal-header{
+  position:relative;
+  padding-right:60px!important;
+}
+.modal-close{
+  position:absolute;
+  top:10px;
+  right:14px;
+  width:44px;
+  height:44px;
+  border-radius:14px;
+  border:1.5px solid var(--border);
+  background:#fff;
+  color:var(--text-muted);
+  font-size:18px;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  -webkit-tap-highlight-color:transparent;
+}
+.modal-close:hover{border-color:var(--blue);color:var(--blue);}
+@media (max-width:340px){
+  .sema-options{grid-template-columns:1fr!important;}
+  .sema-opt{
+    flex-direction:row!important;
+    justify-content:flex-start!important;
+    padding:12px!important;
+    gap:10px!important;
+  }
+  .sema-opt-icon{font-size:22px!important;}
+  .sema-opt-label{font-size:13px!important;text-align:left;}
+}
+@media (max-width:374px){
+  .btn-del{width:44px!important;height:44px!important;}
+}
+/* ===== FIN PATCH RCR ===== */
+
 </style>
 </head>
 <body>
@@ -358,6 +418,7 @@ select.form-inp{
   <div class="modal">
     <div class="modal-handle"></div>
     <div class="modal-header">
+      <button type="button" class="modal-close" onclick="closeModal('m-nuevo')" aria-label="Cerrar">✕</button>
       <h2 id="m-nuevo-title">¿Cómo estás este mes?</h2>
       <p id="m-nuevo-sub">Comparte tu estado de bienestar</p>
     </div>
@@ -500,23 +561,34 @@ function getFechaExacta(){
 
 window.addEventListener('load', function(){
   poblarMeses();
-
-  if(typeof google !== 'undefined' && google.accounts){
-    google.accounts.id.initialize({
-      client_id: G_CLIENT,
-      callback: handleCredential,
-      auto_select: false
-    });
-    google.accounts.id.renderButton(
-      document.getElementById('g-login-btn'),
-      { theme:'outline', size:'large', width:280, text:'continue_with' }
-    );
-    google.accounts.id.prompt();
-  } else {
-    document.getElementById('g-login-btn').innerHTML = '<p style="color:#ef4444;font-size:13px;">No se pudo cargar el login de Google. Recarga la página.</p>';
-  }
+  initGoogleLogin();
 });
 
+let googleInitialized = false;
+function initGoogleLogin(){
+ if(googleInitialized) return true;
+ if(typeof google === 'undefined' || !google.accounts || !google.accounts.id){
+   const box = document.getElementById('g-login-btn');
+   if(box) box.innerHTML = '<p style="color:#ef4444;font-size:13px;">No se pudo cargar el login de Google. Recarga la página.</p>';
+   return false;
+ }
+ googleInitialized = true;
+ google.accounts.id.initialize({
+   client_id: G_CLIENT,
+   callback: handleCredential,
+   auto_select: false
+ });
+ google.accounts.id.renderButton(
+   document.getElementById('g-login-btn'),
+   { theme:'outline', size:'large', width:280, text:'continue_with' }
+ );
+ // Evitamos prompt flotante para reducir warnings COOP / postMessage en algunos navegadores.
+ return true;
+}
+window.addEventListener('load', function(){
+ poblarMeses();
+ initGoogleLogin();
+});
 async function handleCredential(response){
   try{
     const payload = JSON.parse(atob(response.credential.split('.')[1]));
@@ -531,7 +603,7 @@ async function handleCredential(response){
       toast(res.message || 'No autorizado');
       return;
     }
-    currentUser = { correo, nombre: res.nombre || nombre, rol: res.rol };
+    currentUser = { correo, email: correo, nombre: res.nombre || nombre, rol: res.rol, idToken: response.credential, credential: response.credential };
     entrarApp();
   } catch(e){
     toast('Error al iniciar sesion');
@@ -560,23 +632,48 @@ function logout(){
 }
 
 async function api(p){
-  const u = new URL(SCRIPT_URL);
-  Object.entries(p).forEach(([k, v]) => u.searchParams.set(k, v));
-  const r = await fetch(u.toString(), { signal: AbortSignal.timeout(15000) });
-  return r.json();
+ const params = Object.assign({}, p || {});
+ if(currentUser && currentUser.correo && !params.correo) params.correo = currentUser.correo;
+ // No enviamos idToken mientras Apps Script tenga REQUIRE_ID_TOKEN=false.
+ // Cuando se active, descomenta estas 2 líneas:
+ // const token = currentUser && (currentUser.idToken || currentUser.credential);
+ // if(token && !params.idToken) params.idToken = token;
+ const u = new URL(SCRIPT_URL);
+ Object.entries(params).forEach(([k, v]) => {
+   if(v !== undefined && v !== null && v !== '') u.searchParams.set(k, v);
+ });
+ const r = await fetch(u.toString(), {
+   method:'GET',
+   cache:'no-store',
+   signal: AbortSignal.timeout(15000)
+ });
+ if(!r.ok) throw new Error('HTTP ' + r.status);
+ return r.json();
 }
-
 async function apiPost(body){
-  if(currentUser&&currentUser.correo) body.correo=currentUser.correo;
-  const r = await fetch(SCRIPT_URL,{method:'POST',body:JSON.stringify(body)});
-  return r.json();
+ const payload = Object.assign({}, body || {});
+ if(currentUser && currentUser.correo){
+   if(!payload.correo) payload.correo = currentUser.correo;
+   if(!payload.email) payload.email = currentUser.correo;
+ }
+ // No enviamos idToken mientras Apps Script tenga REQUIRE_ID_TOKEN=false.
+ // Cuando se active, descomenta estas 2 líneas:
+ // const token = currentUser && (currentUser.idToken || currentUser.credential);
+ // if(token && !payload.idToken) payload.idToken = token;
+ const r = await fetch(SCRIPT_URL, {
+   method:'POST',
+   body:JSON.stringify(payload),
+   cache:'no-store',
+   signal: AbortSignal.timeout(15000)
+ });
+ if(!r.ok) throw new Error('HTTP ' + r.status);
+ return r.json();
 }
-
 async function cargarRegistros(){
   const list = document.getElementById('registros-list');
   list.innerHTML = '<div class="empty-state"><div class="e-ico">⏳</div><p>Cargando...</p></div>';
   try{
-    const res = await api({action:'getAll', sheet:SHEET});
+    const res = await api({action:'getAll', sheet:SHEET, correo:currentUser.correo});
     if(res.success){
       misRegistros = (res.data || []).filter(r => r.Colaborador === currentUser.nombre);
       renderRegistros();
@@ -606,7 +703,7 @@ function renderRegistros(){
       const cls = v === 'Estoy bien' ? 'verde' : v === 'Más o menos' ? 'amarillo' : 'rojo';
       return '<div class="sema-chip ' + cls + '"><span class="sema-dot"></span>' + escapeHtml(l) + ': ' + escapeHtml(v) + '</div>';
     }).join('');
-    const sentimiento = r['¿Cómo te sentiste este mes?'] || '';
+    const sentimiento = r['¿Cómo te sentiste este mes? '] || r['¿Cómo te sentiste este mes?'] || '';
     const mesLabel = r.Mes || '—';
     const mesCorto = mesLabel.split(' ')[0].substring(0, 3).toUpperCase();
     const anio = mesLabel.split(' ')[1] || '';
@@ -782,4 +879,12 @@ document.addEventListener('keydown', function(e){
 });
 </script>
 </body>
+
+<!--
+RCR Nota técnica:
+- Este HTML envía correo en GET/POST para que Apps Script autorice la lectura/escritura.
+- No envía idToken mientras Apps Script tenga REQUIRE_ID_TOKEN=false.
+- El backend debe validar que un colaborador solo vea/edite/elimine sus propios registros.
+-->
+
 </html>
