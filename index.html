@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>Bienestar360</title>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://accounts.google.com/gsi/client" async defer></script>
@@ -63,6 +63,26 @@
 
   #app{position:relative;z-index:1;display:flex;height:100vh;width:100%;}
 
+  /* ── MOBILE: Sidebar oculto por defecto ── */
+  @media(max-width:768px){
+    #app { height:100dvh; }
+    .sidebar{
+      position:fixed;
+      left:-230px;
+      top:0;
+      z-index:200;
+      height:100dvh;
+      transition:left 0.3s cubic-bezier(0.4,0,0.2,1);
+      box-shadow:2px 0 12px rgba(0,0,0,0.15);
+    }
+    .sidebar.open { left:0; }
+    .main { padding:20px 16px 100px; max-width:100%; }
+  }
+  @media(min-width:769px){
+    .sidebar { position:sticky; }
+    .main { padding:32px 36px; }
+  }
+
   /* ── SIDEBAR ── */
   .sidebar{width:var(--sidebar-w);min-width:var(--sidebar-w);height:100dvh;display:flex;flex-direction:column;padding:24px 14px 20px;gap:2px;background:#fff;border-right:1px solid var(--border);flex-shrink:0;position:sticky;top:0;}
   .sidebar-brand{display:flex;align-items:center;gap:10px;padding:0 10px 20px;}
@@ -85,6 +105,37 @@
   .logout-btn{background:none;border:none;cursor:pointer;font-size:14px;color:var(--text-dim);transition:color 0.15s;margin-left:auto;}
   .logout-btn:hover{color:#e53e6d;}
 
+  /* ── MOBILE OVERLAY ── */
+  .sidebar-overlay{
+    display:none;
+    position:fixed;
+    top:0;
+    left:0;
+    right:0;
+    bottom:0;
+    background:rgba(0,0,0,0.4);
+    z-index:150;
+    backdrop-filter:blur(2px);
+  }
+  .sidebar-overlay.open { display:block; }
+  @media(min-width:769px){ .sidebar-overlay { display:none!important; } }
+
+  /* ── MOBILE MENU BUTTON ── */
+  .mob-menu-btn{
+    display:none;
+    width:40px;
+    height:40px;
+    border:none;
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:var(--radius-sm);
+    cursor:pointer;
+    font-size:18px;
+    flex-shrink:0;
+  }
+  @media(max-width:768px){ .mob-menu-btn { display:flex; align-items:center; justify-content:center; } }
+  .mob-menu-btn:hover { background:var(--surface-hover); }
+
   /* ── SYNC BUTTON ── */
   .sync-btn{display:flex;align-items:center;gap:6px;padding:7px 13px;border-radius:var(--radius-sm);background:var(--surface);border:1px solid var(--border);font-family:'Outfit',sans-serif;font-size:12px;font-weight:600;color:var(--text-muted);cursor:pointer;transition:all 0.15s;box-shadow:var(--shadow-sm);}
   .sync-btn:hover{background:var(--surface-hover);color:var(--text);}
@@ -102,6 +153,12 @@
   @keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
 
   .page-header{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;}
+  @media(max-width:768px){
+    .page-header { flex-direction:column; gap:12px; }
+    .page-title { font-size:22px; }
+    .hdr-actions { flex-direction:column; width:100%; }
+    .hdr-actions .btn { width:100%; justify-content:center; }
+  }
   .page-title{font-size:26px;font-weight:600;letter-spacing:-0.5px;color:var(--text);}
   .page-sub{font-size:13px;color:var(--text-muted);margin-top:3px;}
   .hdr-actions{display:flex;gap:10px;align-items:center;flex-shrink:0;}
@@ -120,6 +177,8 @@
 
   /* ── STATS ── */
   .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;}
+  @media(max-width:1200px){ .stats-grid { grid-template-columns:repeat(2,1fr); } }
+  @media(max-width:768px){ .stats-grid { grid-template-columns:1fr; } }
   .stat-card{padding:20px 18px;border-radius:var(--radius-md);background:var(--surface);border:1px solid var(--border);box-shadow:var(--shadow-sm);}
   .stat-value{font-size:30px;font-weight:700;letter-spacing:-1.2px;color:var(--text);}
   .stat-label{font-size:12px;color:var(--text-muted);margin-top:4px;}
@@ -128,6 +187,11 @@
 
   /* ── FILTERS ── */
   .filters-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+  @media(max-width:768px){
+    .filters-row { flex-direction:column; }
+    .search-wrap { max-width:100%; }
+    .filter-sel { width:100%; }
+  }
   .search-wrap{position:relative;flex:1;max-width:300px;min-width:160px;}
   .search-icon{position:absolute;left:11px;top:50%;transform:translateY(-50%);font-size:13px;color:var(--text-dim);pointer-events:none;}
   .search-input{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:9px 14px 9px 33px;color:var(--text);font-family:'Outfit',sans-serif;font-size:13px;outline:none;transition:all 0.15s;box-shadow:var(--shadow-sm);}
@@ -137,7 +201,13 @@
   .filter-sel:focus{border-color:#33A8DE;}
 
   /* ── TABLE ── */
-  .tbl-wrap{border-radius:var(--radius-lg);overflow:hidden;border:1px solid var(--border);box-shadow:var(--shadow);background:var(--surface);}
+  .tbl-wrap{border-radius:var(--radius-lg);overflow:auto;border:1px solid var(--border);box-shadow:var(--shadow);background:var(--surface);-webkit-overflow-scrolling:touch;}
+  .tbl-wrap::-webkit-scrollbar{height:4px;}
+  .tbl-wrap::-webkit-scrollbar-thumb{background:var(--border-strong);border-radius:2px;}
+  @media(max-width:768px){
+    .tbl-wrap { overflow-x:auto; }
+    table { min-width:600px; }
+  }
   .tbl-head{display:grid;grid-template-columns:2.2fr 1.4fr 1.2fr 0.9fr 110px;gap:12px;padding:11px 20px;background:#f8f8fc;border-bottom:1px solid var(--border);font-size:11px;font-weight:700;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.7px;}
   .tbl-row{display:grid;grid-template-columns:2.2fr 1.4fr 1.2fr 0.9fr 110px;gap:12px;padding:13px 20px;border-bottom:1px solid rgba(0,0,0,0.05);align-items:center;transition:background 0.12s;cursor:pointer;}
   .tbl-row:hover{background:#fafafa;}
@@ -365,7 +435,8 @@ select.form-inp{appearance:none;}
 
 <!-- APP -->
 <div id="app" style="display:none;">
-  <nav class="sidebar">
+  <div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebarMobile()"></div>
+  <nav class="sidebar" id="sidebar-nav">
     <div class="sidebar-brand">
       <div class="brand-icon">🌐</div>
       <div><div class="brand-name">Bienestar360</div><div class="brand-sub">Redes Con Rostro</div></div>
@@ -390,6 +461,7 @@ select.form-inp{appearance:none;}
     <!-- INICIO -->
     <div class="screen active" id="screen-inicio">
       <div class="page-header">
+        <button class="mob-menu-btn" id="mob-menu-btn" onclick="openSidebarMobile()" title="Menú">☰</button>
         <div>
           <div class="page-title">Bienvenido/a, <span class="grad-b-text" id="welcome-name">—</span> 👋</div>
           <div class="page-sub" id="today-date"></div>
@@ -2135,6 +2207,28 @@ async function updateUserRol(correo,nuevoRol){
     .catch(()=>toast('Error al actualizar rol',true));
 }
 
+// ── MOBILE MENU ───────────────────────────────────
+function openSidebarMobile(){
+  const sidebar = document.getElementById('sidebar-nav');
+  const overlay = document.getElementById('sidebar-overlay');
+  sidebar.classList.add('open');
+  overlay.classList.add('open');
+}
+
+function closeSidebarMobile(){
+  const sidebar = document.getElementById('sidebar-nav');
+  const overlay = document.getElementById('sidebar-overlay');
+  sidebar.classList.remove('open');
+  overlay.classList.remove('open');
+}
+
+// Cerrar sidebar al navegar en móvil
+const closeOnNavMobile = (screenId) => {
+  if(window.innerWidth <= 768){
+    closeSidebarMobile();
+  }
+};
+
 // ── NAV / MODAL ────────────────────────────────
 function go(s){
   document.querySelectorAll('.screen').forEach(e=>e.classList.remove('active'));
@@ -2145,6 +2239,7 @@ function go(s){
   document.getElementById('mob-'+s)?.classList.add('active');
   if(s==='accesos') loadAccesos();
   if(s==='config') loadConfigSheets();
+  closeOnNavMobile(s);
 }
 function openModal(id){document.getElementById(id)?.classList.add('open');}
 function closeModal(id){document.getElementById(id)?.classList.remove('open');}
