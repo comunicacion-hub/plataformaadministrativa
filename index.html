@@ -592,7 +592,7 @@
 
   
 
-/* ===== PATCH FINAL: escalas 1–5 + modal confirmar ===== */
+/* ===== PATCH FINAL RCR: escalas 1–5, porcentajes semáforo y modal confirmar ===== */
 .scale-num{min-width:42px!important;}
 .scale-max-note{font-size:10px;color:var(--text-dim);font-weight:600;margin-left:4px;}
 .modal-confirm {
@@ -636,7 +636,7 @@
   .modal-confirm-body { padding: 16px 20px !important; }
   .modal-confirm-foot { padding: 14px 20px calc(16px + env(safe-area-inset-bottom)) !important; }
 }
-/* ===== FIN PATCH FINAL ===== */
+/* ===== FIN PATCH FINAL RCR ===== */
 
 </style>
 </head>
@@ -989,15 +989,14 @@
           <div class="form-grp"><label class="form-lbl">Sentido/propósito</label><input class="form-inp" type="number" min="1" max="10" data-col="Sentido/propósito" placeholder="1-10"></div>
         </div>
         <div class="form-grp"><label class="form-lbl">Profundizar solo en la dimensión más baja</label><textarea class="form-inp" data-col="Profundizar solo en la dimensión más baja" rows="2"></textarea></div>
-        <div style="font-size:11px;font-weight:700;color:var(--text-dim);text-transform:uppercase;letter-spacing:.7px;margin:8px 0 4px;">Habilidades blandas (Manejo emocional, Escucha, Empatía y Comunicación asertiva: 1–5)</div>
+        <div style="font-size:11px;font-weight:700;color:var(--text-dim);text-transform:uppercase;letter-spacing:.7px;margin:8px 0 4px;">Habilidades blandas (1–5)</div>
         <div class="form-row">
           <div class="form-grp"><label class="form-lbl">Manejo emocional (1–5)</label><input class="form-inp" type="number" min="1" max="5" data-col="Manejo emocional" placeholder="1-5"></div>
           <div class="form-grp"><label class="form-lbl">Escucha (1–5)</label><input class="form-inp" type="number" min="1" max="5" data-col="Escucha" placeholder="1-5"></div>
         </div>
         <div class="form-row">
-          
-<label class="form-lbl">Comunicación asertiva (1–5)</label>
-<input class="form-inp" type="number" min="1" max="5" data-col="Comunicación asertiva" placeholder="1-5"></div>
+          <div class="form-grp"><label class="form-lbl">Empatía (1–5)</label><input class="form-inp" type="number" min="1" max="5" data-col="Empatía" placeholder="1-5"></div>
+          <div class="form-grp"><label class="form-lbl">Comunicación asertiva (1–5)</label><input class="form-inp" type="number" min="1" max="5" data-col="Comunicación asertiva" placeholder="1-5"></div>
         </div>
         <div class="form-grp"><label class="form-lbl">¿Cuál deberías fortalecer este semestre para mejorar tu impacto?</label><textarea class="form-inp" data-col="¿Cuál deberías fortalecer este semestre para mejorar tu impacto?" rows="2"></textarea></div>
         <div style="font-size:11px;font-weight:700;color:var(--text-dim);text-transform:uppercase;letter-spacing:.7px;margin:8px 0 4px;">Comunicación interna</div>
@@ -1006,7 +1005,7 @@
           <div class="form-grp"><label class="form-lbl">¿Revisas canales internos regularmente?</label><select class="form-inp" data-col="¿Revisas canales internos regularmente?"><option value="">Seleccionar...</option><option>Sí</option><option>No</option></select></div>
         </div>
         <div class="form-row">
-          <div class="form-grp"><label class="form-lbl">Nivel de interés en contenidos</label><input class="form-inp" type="number" min="1" max="5" data-col="Nivel de interés en contenidos" placeholder="1-5"></div>
+          <div class="form-grp"><label class="form-lbl">Nivel de interés en contenidos (1–5)</label><input class="form-inp" type="number" min="1" max="5" data-col="Nivel de interés en contenidos" placeholder="1-5"></div>
         </div>
         <div class="form-grp"><label class="form-lbl">¿Qué deberíamos mejorar como equipo en comunicación?</label><textarea class="form-inp" data-col="¿Qué deberíamos mejorar como equipo en comunicación?" rows="2"></textarea></div>
       </div>
@@ -1200,8 +1199,8 @@ const SCALE_MAX_BY_FIELD = {
   'Escucha': 5,
   'Empatía': 5,
   'Comunicación asertiva': 5,
-  'Claridad de la comunicación interna': 5
-  'Interés en contenidos': 5
+  'Claridad de la comunicación interna': 5,
+  'Nivel de interés en contenidos': 5
 };
 function scaleMax(field){ return SCALE_MAX_BY_FIELD[field] || 10; }
 function scalePct(value, field){
@@ -1209,14 +1208,6 @@ function scalePct(value, field){
   const max = scaleMax(field);
   if(!n || n < 0) return 0;
   return Math.max(0, Math.min(100, (n / max) * 100));
-}
-function scaleLabel(value, field){
-  const n = parseFloat(value) || 0;
-  return `${n}/${scaleMax(field)}`;
-}
-function scaleColorByPct(pct, c1, c2){
-  // Conserva gradiente visual del diseño, pero permite evaluar proporcionalmente 1–5 o 1–10.
-  return `linear-gradient(90deg,${c1},${c2})`;
 }
 function validateScaleFieldsInForm(){
   const invalid = [];
@@ -1231,6 +1222,39 @@ function validateScaleFieldsInForm(){
     }
   });
   return invalid;
+}
+
+// ── SEMÁFORO: clasificación textual o por emoji ─────────────
+function estadoSemaforo(valor){
+  const v = String(valor || '').trim().toLowerCase();
+  if(!v) return '';
+  // OJO: primero rojo, porque "No estoy bien" contiene "estoy bien".
+  if(v.includes('no estoy bien') || v.includes('🔴') || v === 'mal') return 'mal';
+  if(v.includes('más o menos') || v.includes('mas o menos') || v.includes('🟡') || v === 'regular') return 'regular';
+  if(v.includes('estoy bien') || v.includes('🟢') || v === 'bien') return 'bien';
+  return '';
+}
+function claseSemaforoRegistro(r){
+  const campos = ['Carga y ritmo de trabajo','Clima y relaciones','Estado emocional y energía','Liderazgo y apoyo'];
+  const estados = campos.map(c=>estadoSemaforo(r[c])).filter(Boolean);
+  if(estados.includes('mal')) return 'mal';
+  if(estados.includes('regular')) return 'regular';
+  if(estados.includes('bien')) return 'bien';
+  return 'sin';
+}
+function calcularResumenSemaforo(registros){
+  const campos = ['Carga y ritmo de trabajo','Clima y relaciones','Estado emocional y energía','Liderazgo y apoyo'];
+  const respuestas = [];
+  (registros || []).forEach(r=>campos.forEach(c=>{
+    const e = estadoSemaforo(r[c]);
+    if(e) respuestas.push(e);
+  }));
+  const total = respuestas.length;
+  const bien = respuestas.filter(e=>e==='bien').length;
+  const regular = respuestas.filter(e=>e==='regular').length;
+  const mal = respuestas.filter(e=>e==='mal').length;
+  const pct = n => total ? Math.round((n/total)*100)+'%' : '0%';
+  return {total,bien,regular,mal,pBien:pct(bien),pRegular:pct(regular),pMal:pct(mal)};
 }
 
 
@@ -2034,72 +2058,57 @@ function renderSema(){
   const q=(document.getElementById('sm-nombre')?.value||'').toLowerCase();
   const eq=document.getElementById('sm-equipo')?.value;
   const mes=document.getElementById('sm-mes')?.value;
+
   if(q)d=d.filter(r=>(r.Colaborador||'').toLowerCase().includes(q));
   if(eq)d=d.filter(r=>r.Equipo===eq||r['Programa/Proyecto']===eq);
   if(mes)d=d.filter(r=>r.Mes===mes);
+
   const meses=[...new Set(semaforo.map(r=>r.Mes).filter(Boolean))];
   const mSel=document.getElementById('sm-mes');
-  if(mSel.options.length<=1)meses.forEach(m=>{const o=document.createElement('option');o.textContent=m;mSel.appendChild(o);});
-  const estadoSemaforo = valor => {
-  const v = String(valor || '').trim().toLowerCase();
+  if(mSel && mSel.options.length<=1)meses.forEach(m=>{const o=document.createElement('option');o.textContent=m;mSel.appendChild(o);});
 
-  if (!v) return '';
+  // Porcentajes calculados por cada respuesta del semáforo, no solo por persona.
+  const resumen = calcularResumenSemaforo(d);
 
-  if (
-    v.includes('no estoy bien') ||
-    v.includes('🔴') ||
-    v === 'mal'
-  ) return 'mal';
+  // Sin respuesta calculado sobre activos visibles en el filtro actual.
+  let activosLista = colaboradores.filter(c=>c.Estado==='Activo');
+  if(q) activosLista = activosLista.filter(c=>(c.Colaborador||'').toLowerCase().includes(q));
+  if(eq) activosLista = activosLista.filter(c=>c.Equipo===eq||c['Programa/Proyecto']===eq);
+  const respondieron = new Set(d.map(r=>r.Colaborador));
+  const sinR = activosLista.filter(c=>!respondieron.has(c.Colaborador)).length;
 
-  if (
-    v.includes('más o menos') ||
-    v.includes('mas o menos') ||
-    v.includes('🟡') ||
-    v === 'regular'
-  ) return 'regular';
-
-  if (
-    v.includes('estoy bien') ||
-    v.includes('🟢') ||
-    v === 'bien'
-  ) return 'bien';
-
-  return '';
-};
-  const tot=d.length>0?d.length:1;
-  const bien=d.filter(r=>col(r)==='bien').length;
-  const reg=d.filter(r=>col(r)==='regular').length;
-  const mal=d.filter(r=>col(r)==='mal').length;
-  // FIX: sinR calculado con activos correctamente
-  const activos=colaboradores.filter(c=>c.Estado==='Activo').length;
-  const sinR=colaboradores.filter(c=>c.Estado==='Activo'&&!semaforo.find(s=>s.Colaborador===c.Colaborador)).length;
-  document.getElementById('p-bien').textContent=Math.round(bien/tot*100)+'%';
-  document.getElementById('p-reg').textContent=Math.round(reg/tot*100)+'%';
-  document.getElementById('p-mal').textContent=Math.round(mal/tot*100)+'%';
+  document.getElementById('p-bien').textContent=resumen.pBien;
+  document.getElementById('p-reg').textContent=resumen.pRegular;
+  document.getElementById('p-mal').textContent=resumen.pMal;
   document.getElementById('p-sinr').textContent=sinR;
+
   const grid=document.getElementById('sema-grid');
   const gr=['linear-gradient(135deg,#33A8DE,#506CFF)','linear-gradient(135deg,#18AE97,#0BC3FF)','linear-gradient(135deg,#F5AD21,#9FDA60)','linear-gradient(135deg,#F82D72,#FF85FF)','linear-gradient(135deg,#FF751F,#FF376F)'];
   const flds=[['Carga y ritmo','Carga y ritmo de trabajo'],['Clima','Clima y relaciones'],['Estado emocional','Estado emocional y energía'],['Liderazgo','Liderazgo y apoyo']];
+
   if(!d.length&&sinR===0){
     grid.innerHTML=`<div class="empty-state"><div class="e-ico">🚦</div><p>Sin datos de semáforo aún</p></div>`;
     return;
   }
+
   grid.innerHTML=d.map((r,i)=>{
-    const al=col(r)==='mal'?'border-color:rgba(220,38,90,.25);background:rgba(220,38,90,.03);':'';
+    const estadoRegistro=claseSemaforoRegistro(r);
+    const al=estadoRegistro==='mal'?'border-color:rgba(220,38,90,.25);background:rgba(220,38,90,.03);':estadoRegistro==='regular'?'border-color:rgba(245,173,33,.25);background:rgba(245,173,33,.03);':'';
     return`<div class="sema-card" style="${al}">
       <div class="sema-head"><div class="avatar" style="background:${gr[i%gr.length]};width:36px;height:36px;font-size:11px;">${ini(r.Colaborador)}</div><div><div class="sema-name">${x(r.Colaborador||'—')}</div><div class="sema-meta">${x(r.Mes||'—')} · ${x(r.Equipo||r['Programa/Proyecto']||'')}</div></div></div>
-      <div class="sema-items">${flds.map(([l,k])=>{if(!r[k])return'';const v=r[k];const cd=v==='Estoy bien'?'🟢':v==='Más o menos'?'🟡':v==='No estoy bien'?'🔴':'—';const cc=v==='Estoy bien'?'color:#15803d':v==='Más o menos'?'color:#b45309':v==='No estoy bien'?'color:#be123c':'color:var(--text-dim)';return`<div class="sema-item"><span class="sema-lbl">${l}</span><span style="font-size:18px;">${cd}</span></div>`;}).join('')}</div>
+      <div class="sema-items">${flds.map(([l,k])=>{if(!r[k])return'';const e=estadoSemaforo(r[k]);const cd=e==='bien'?'🟢':e==='regular'?'🟡':e==='mal'?'🔴':'—';return`<div class="sema-item"><span class="sema-lbl">${l}</span><span style="font-size:18px;">${cd}</span></div>`;}).join('')}</div>
       <div style="display:flex;gap:8px;margin-top:10px;padding-top:10px;border-top:1px solid var(--border);">
         <button class="btn btn-primary btn-sm" style="flex:1;" onclick="abrirFichaSema('${x(r.Colaborador)}')">Ver</button>
         <button class="btn btn-danger btn-sm" style="flex:1;" onclick="confirmDel('Semáforo','${r.RowID}','RowID')">Eliminar</button>
       </div>
     </div>`;
   }).join('');
+
   if(!q&&!eq&&!mes){
     colaboradores.filter(c=>c.Estado==='Activo'&&!semaforo.find(s=>s.Colaborador===c.Colaborador)).forEach(c=>{
       grid.innerHTML+=`<div class="sema-card" style="border-color:rgba(220,38,90,.2);background:rgba(220,38,90,.02);">
         <div class="sema-head"><div class="avatar" style="background:#e8e8f0;width:36px;height:36px;font-size:11px;color:var(--text-dim);">${ini(c.Colaborador)}</div><div><div class="sema-name" style="color:var(--text-muted);">${x(c.Colaborador)}</div><div class="sema-meta" style="color:#c91a44;">⚠️ Sin respuesta este mes</div></div></div>
-        <p style="font-size:12px;color:var(--text-dim);margin-top:6px;">No ha completado el formulario.</p>
+        <p style="font-size:12px;color:var(--text-dim);margin-top:8px;">No ha completado el formulario.</p>
       </div>`;
     });
   }
