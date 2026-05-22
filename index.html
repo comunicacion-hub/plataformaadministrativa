@@ -294,35 +294,40 @@
   @media(min-width:769px){#mobile-nav{display:none;}}
 
 
-/* ===== PRO UI MOBILE FINAL ===== */
+/* ===== PRO UI + MOBILE FIXES (v2) ===== */
+:root{ --text-secondary: var(--text-muted); }
 *,*::before,*::after{box-sizing:border-box}
 
-.form-grp{display:flex;flex-direction:column;gap:8px}
-.form-lbl{font-size:12px;font-weight:600;color:var(--text-secondary);text-transform:uppercase}
+.google-btn-wrap{width:100%;display:flex;flex-direction:column;gap:12px;align-items:center;justify-content:center;}
+#google-login-btn{width:100%;display:flex;justify-content:center;}
+.google-login-fallback{width:100%;padding:13px 20px;background:#fff;color:#3c4043;border:1px solid #dadce0;border-radius:12px;font-family:'Outfit',sans-serif;font-size:15px;font-weight:600;cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,0.1);}
 
-.form-inp{height:48px;padding:0 14px;border-radius:14px;border:1.5px solid var(--border);background:var(--surface);font-size:15px}
+.form-grp{display:flex;flex-direction:column;gap:8px;width:100%}
+.form-lbl{font-size:12px;font-weight:600;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.4px}
+.form-inp{width:100%;min-height:48px;height:48px;padding:0 14px;border-radius:14px;border:1.5px solid var(--border);background:var(--surface);font-size:15px;transition:all .2s ease}
 .form-inp:focus{outline:none;border-color:#3b82f6;box-shadow:0 0 0 3px rgba(59,130,246,.15)}
-textarea.form-inp{min-height:100px;padding-top:12px}
-
-.modal{display:flex;flex-direction:column}
+textarea.form-inp{height:auto;min-height:110px;padding:12px 14px;}
+select.form-inp{appearance:none;}
 
 @media(max-width:768px){
-.modal{width:100vw!important;height:100dvh!important;max-height:100dvh!important;border-radius:0!important}
-.modal-body{flex:1;overflow-y:auto;padding-bottom:120px}
-.modal-head{position:sticky;top:0;background:var(--surface);z-index:10;border-bottom:1px solid var(--border)}
-.modal-foot{position:fixed;bottom:0;left:0;right:0;background:var(--surface);padding:12px 16px;display:flex;gap:10px}
-.modal-foot .btn{flex:1}
+  .modal-overlay{align-items:stretch !important;justify-content:stretch !important;}
+  .modal{width:100vw!important;height:100dvh!important;max-height:100dvh!important;border-radius:0!important;padding:18px 16px calc(16px + env(safe-area-inset-bottom))!important;}
+  .modal-head{position:sticky;top:0;background:var(--surface);z-index:10;padding-bottom:10px;border-bottom:1px solid var(--border);}
+  .modal-body{flex:1;overflow-y:auto;max-height:none !important;padding-bottom:120px;gap:16px !important;}
+  .modal-foot{position:fixed;left:0;right:0;bottom:0;z-index:20;background:rgba(255,255,255,.96);backdrop-filter:blur(10px);border-top:1px solid var(--border);padding:12px 16px calc(12px + env(safe-area-inset-bottom));display:flex;gap:10px;}
+  .modal-foot .btn{flex:1;justify-content:center;height:46px;font-size:14px;}
 }
 
 @media(max-width:768px){
-.tbl-head{display:none}
-.tbl-row{display:flex;flex-direction:column;background:var(--surface);border-radius:16px;padding:14px;margin-bottom:10px}
-.row-acts{display:flex;gap:8px;margin-top:8px}
-.icon-btn{flex:1}
+  .tbl-head{display:none !important;}
+  .tbl-wrap{background:transparent;border:none;box-shadow:none;}
+  .tbl-row{display:flex !important;flex-direction:column !important;gap:10px;padding:14px 14px;border:1px solid var(--border);border-radius:16px;margin:0 0 10px;background:var(--surface);}
+  .row-acts{opacity:1 !important;display:flex !important;gap:8px;}
+  .icon-btn{flex:1;justify-content:center;padding:8px 10px;font-size:12px;border-radius:12px;}
 }
 
-#mobile-nav{backdrop-filter:blur(10px);background:rgba(255,255,255,0.85)}
-
+#mobile-nav{backdrop-filter:blur(10px);background:rgba(255,255,255,0.85);border-top:1px solid rgba(0,0,0,0.06)}
+.mob-nav-item{font-size:10px;gap:2px}
 
 </style>
 </head>
@@ -350,15 +355,10 @@ textarea.form-inp{min-height:100px;padding-top:12px}
       </div>
     </div>
     <div class="login-divider"></div>
-    <button class="google-btn" onclick="startGoogleLogin()">
-      <svg width="20" height="20" viewBox="0 0 24 24">
-        <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-        <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-        <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/>
-        <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
-      </svg>
-      Continuar con Google
-    </button>
+    <div class="google-btn-wrap" id="google-login-btn-wrap">
+  <div id="google-login-btn"></div>
+  <button class="google-login-fallback" id="google-login-fallback" onclick="startGoogleLogin()" style="display:none;">Continuar con Google</button>
+</div>
     <div class="login-hint">Una app de <strong>Redes Con Rostro</strong></div>
   </div>
 </div>
@@ -383,7 +383,7 @@ textarea.form-inp{min-height:100px;padding-top:12px}
       <div><div class="user-name" id="user-name">—</div><div class="user-role" id="user-role">—</div></div>
       <button class="logout-btn" onclick="doLogout()" title="Cerrar sesión">↩️</button>
     </div>
-  <div class="mob-nav-item" onclick="doLogout()" style="color:#ef4444"><span>🚪</span>Salir</div></nav>
+  </nav>
 
   <main class="main">
 
@@ -550,13 +550,15 @@ textarea.form-inp{min-height:100px;padding-top:12px}
 </div>
 
 <div id="mobile-nav">
-  <div class="mob-nav-item active" id="mob-inicio"        onclick="go('inicio')">        <span>🏠</span>Inicio</div>
-  <div class="mob-nav-item"        id="mob-colaboradores" onclick="go('colaboradores')"> <span>👥</span>Colabs</div>
-  <div class="mob-nav-item"        id="mob-seguimiento"   onclick="go('seguimiento')">   <span>💬</span>Bienestar</div>
-  <div class="mob-nav-item"        id="mob-semaforo"      onclick="go('semaforo')">      <span>🚦</span>Semáforo</div>
-  <div class="mob-nav-item"        id="mob-accesos"       onclick="go('accesos')">       <span>🔗</span>Accesos</div>
-  <div class="mob-nav-item"        id="mob-config"        onclick="go('config')" style="display:none;">       <span>⚙️</span>Config</div>
+  <div class="mob-nav-item active" id="mob-inicio" onclick="go('inicio')"><span>🏠</span>Inicio</div>
+  <div class="mob-nav-item" id="mob-colaboradores" onclick="go('colaboradores')"><span>👥</span>Colabs</div>
+  <div class="mob-nav-item" id="mob-seguimiento" onclick="go('seguimiento')"><span>💬</span>Bienestar</div>
+  <div class="mob-nav-item" id="mob-semaforo" onclick="go('semaforo')"><span>🚦</span>Semáforo</div>
+  <div class="mob-nav-item" id="mob-accesos" onclick="go('accesos')"><span>🔗</span>Accesos</div>
+  <div class="mob-nav-item" id="mob-config" onclick="go('config')" style="display:none;"><span>⚙️</span>Config</div>
+  <div class="mob-nav-item" id="mob-logout" onclick="doLogout()" style="color:#ef4444;"><span>🚪</span>Salir</div>
 </div>
+
 
 <!-- MODAL: COLABORADOR (dinámico) -->
 <div class="modal-overlay" id="m-colab">
@@ -904,29 +906,84 @@ function loadSession(){try{const s=sessionStorage.getItem(SESSION_KEY);return s?
 function clearSession(){try{sessionStorage.removeItem(SESSION_KEY);}catch(e){}}
 
 // ── GOOGLE LOGIN ───────────────────────────────
-function startGoogleLogin(){
-  if(typeof google==='undefined'){toast('Cargando Google... intenta de nuevo en un segundo',true);return;}
-  google.accounts.id.initialize({client_id:G_CLIENT,callback:handleCredential});
-  // removed prompt(n=>{
-    if(n.isNotDisplayed()||n.isSkippedMoment()){
-      const d=document.createElement('div');
-      d.style.cssText='position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:9999;';
-      document.body.appendChild(d);
-      google.accounts.id.renderButton(d,{theme:'outline',size:'large'});
-      setTimeout(()=>d.querySelector('div[role="button"]')?.click(),100);
+// PRO FIX: se elimina el prompt flotante y se usa el botón oficial renderizado en el login.
+let googleBtnRendered = false;
+
+function cancelGooglePrompt(){
+  try{
+    if(window.google && google.accounts && google.accounts.id){
+      google.accounts.id.cancel();
+      google.accounts.id.disableAutoSelect();
     }
+  }catch(e){}
+}
+
+function initGoogleButton(){
+  if(typeof google==='undefined' || !google.accounts || !google.accounts.id) return false;
+
+  google.accounts.id.initialize({
+    client_id: G_CLIENT,
+    callback: handleCredential,
+    auto_select: false,
+    cancel_on_tap_outside: true,
+    use_fedcm_for_prompt: false
   });
+
+  const target = document.getElementById('google-login-btn');
+  const fallback = document.getElementById('google-login-fallback');
+
+  if(target && !googleBtnRendered){
+    target.innerHTML = '';
+    google.accounts.id.renderButton(target, {
+      theme: 'outline',
+      size: 'large',
+      type: 'standard',
+      shape: 'rectangular',
+      text: 'continue_with',
+      width: 320
+    });
+    googleBtnRendered = true;
+    if(fallback) fallback.style.display = 'none';
+  }
+
+  if(!target && fallback){
+    fallback.style.display = 'block';
+  }
+
+  return true;
+}
+
+function startGoogleLogin(){
+  // Fallback si el botón oficial no alcanzó a renderizarse.
+  if(typeof google==='undefined'){
+    toast('Cargando Google... intenta de nuevo en un segundo', true);
+    return;
+  }
+  if(!initGoogleButton()){
+    toast('No se pudo inicializar Google. Recarga la página.', true);
+    return;
+  }
+  toast('Toca el botón de Google para continuar.', false);
 }
 
 async function handleCredential(resp){
   try{
-    const p=JSON.parse(atob(resp.credential.split('.')[1]));
-    const email=p.email||'',name=p.name||email,pic=p.picture||'';
-    if(!email.endsWith('@'+DOMAIN)){toast('Solo cuentas @'+DOMAIN+' pueden acceder',true);return;}
+    cancelGooglePrompt();
+    const p = JSON.parse(atob(resp.credential.split('.')[1]));
+    const email = p.email || '';
+    const name  = p.name || email;
+    const pic   = p.picture || '';
+
+    if(!email.endsWith('@'+DOMAIN)){
+      toast('Solo cuentas @'+DOMAIN+' pueden acceder', true);
+      return;
+    }
 
     if(email===ADMIN_EMAIL){
       currentUser={email,nombre:name,rol:'Admin',picture:pic};
-      saveSession(currentUser);enterApp();return;
+      saveSession(currentUser);
+      enterApp();
+      return;
     }
 
     let rol='Visualizador';
@@ -934,61 +991,73 @@ async function handleCredential(resp){
       const controller=new AbortController();
       const timeout=setTimeout(()=>controller.abort(),4000);
       const u=new URL(SCRIPT_URL);
-      u.searchParams.set('action','login');u.searchParams.set('correo',email);u.searchParams.set('googleToken','true');
+      u.searchParams.set('action','login');
+      u.searchParams.set('correo',email);
+      u.searchParams.set('googleToken','true');
       const r=await fetch(u.toString(),{signal:controller.signal});
       clearTimeout(timeout);
       const res=await r.json();
       if(res.success){rol=res.rol||'Visualizador';}
       else{toast('Tu cuenta no está autorizada. Pide acceso al administrador.',true);return;}
     }catch(e){
-      toast('No se pudo verificar tu cuenta. Intenta de nuevo.',true);return;
+      toast('No se pudo verificar tu cuenta. Intenta de nuevo.',true);
+      return;
     }
 
     currentUser={email,nombre:name,rol,picture:pic};
-    saveSession(currentUser);enterApp();
-  }catch(e){toast('Error al procesar la cuenta de Google',true);}
+    saveSession(currentUser);
+    enterApp();
+  }catch(e){
+    toast('Error al procesar la cuenta de Google', true);
+  }
 }
 
 function enterApp(){
-  const{nombre,rol,picture}=currentUser;
-  const fn=nombre.split(' ')[0];
-  document.getElementById('user-name').textContent=fn;
-  document.getElementById('user-role').textContent=({Admin:'🔑',Editor:'✏️',Visualizador:'👁️'}[rol]||'👤')+' '+rol;
-  document.getElementById('welcome-name').textContent=fn;
+  cancelGooglePrompt();
+  const {nombre,rol,picture} = currentUser;
+  const fn = (nombre||'').split(' ')[0] || '—';
+  document.getElementById('user-name').textContent = fn;
+  document.getElementById('user-role').textContent = ({Admin:'🔑',Editor:'✏️',Visualizador:'👁️'}[rol]||'👤')+' '+rol;
+  document.getElementById('welcome-name').textContent = fn;
   const av=document.getElementById('user-avatar');
-  if(picture){av.innerHTML=`<img src="${picture}" alt="${fn}">`;}
-  else{av.textContent=ini(nombre);}
+  if(picture){av.innerHTML = `<img src="${picture}" alt="${fn}">`;}
+  else{av.textContent = ini(nombre);}
+
   if(rol==='Admin'){
     document.getElementById('admin-actions').style.display='flex';
     document.getElementById('nav-config').style.display='flex';
-    const mobConfig=document.getElementById('mob-config');if(mobConfig)mobConfig.style.display='flex';
+    const mobConfig=document.getElementById('mob-config');
+    if(mobConfig) mobConfig.style.display='flex';
     document.getElementById('btn-nuevo-acceso').style.display='inline-flex';
   }
+
   document.getElementById('login-screen').style.display='none';
   document.getElementById('app').style.display='flex';
   initApp();
 }
 
 function doLogout(){
-  currentUser=null;clearSession();
-  if(typeof google!=='undefined')google.accounts.id.disableAutoSelect();
+  currentUser=null;
+  clearSession();
+  cancelGooglePrompt();
   document.getElementById('app').style.display='none';
   document.getElementById('login-screen').style.display='flex';
+  googleBtnRendered=false;
+  setTimeout(initGoogleButton, 100);
 }
 
 // ── AUTO-LOGIN ─────────────────────────────────
 window.addEventListener('load',()=>{
   const saved=loadSession();
-  if(saved){currentUser=saved;enterApp();}
-  else{
-    const waitGoogle=setInterval(()=>{
-      if(typeof google!=='undefined'){
-        clearInterval(waitGoogle);
-        google.accounts.id.initialize({client_id:G_CLIENT,callback:handleCredential});
-        // removed prompt();
-      }
-    },300);
-  }
+  if(saved){currentUser=saved;enterApp();return;}
+
+  const waitGoogle=setInterval(()=>{
+    if(typeof google!=='undefined' && google.accounts && google.accounts.id){
+      clearInterval(waitGoogle);
+      initGoogleButton();
+      // Sin prompt flotante.
+    }
+  },300);
 });
 
 // ── API ────────────────────────────────────────
