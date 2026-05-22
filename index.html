@@ -294,74 +294,35 @@
   @media(min-width:769px){#mobile-nav{display:none;}}
 
 
-/* =========================================================
-   PATCH APLICADO — BIENESTAR360 MOBILE + RENDIMIENTO + GOOGLE LOGIN
-   Corregido por M365 Copilot
-   ========================================================= */
+/* ===== PRO UI MOBILE FINAL ===== */
+*,*::before,*::after{box-sizing:border-box}
 
-html, body{max-width:100%;overflow-x:hidden;}
-body{-webkit-text-size-adjust:100%;text-size-adjust:100%;}
-*{min-width:0;}
-img, svg, canvas, video{max-width:100%;}
+.form-grp{display:flex;flex-direction:column;gap:8px}
+.form-lbl{font-size:12px;font-weight:600;color:var(--text-secondary);text-transform:uppercase}
 
-/* Contenedor del botón oficial de Google: evita el popup flotante One Tap */
-.google-btn-wrap{width:100%;display:flex;justify-content:center;align-items:center;min-height:44px;}
-.google-btn-wrap > div{width:100%;display:flex;justify-content:center;}
-.google-login-fallback{width:100%;padding:13px 20px;background:#fff;color:#3c4043;border:1px solid #dadce0;border-radius:12px;font-family:'Outfit',sans-serif;font-size:15px;font-weight:600;cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,0.1);}
+.form-inp{height:48px;padding:0 14px;border-radius:14px;border:1.5px solid var(--border);background:var(--surface);font-size:15px}
+.form-inp:focus{outline:none;border-color:#3b82f6;box-shadow:0 0 0 3px rgba(59,130,246,.15)}
+textarea.form-inp{min-height:100px;padding-top:12px}
+
+.modal{display:flex;flex-direction:column}
 
 @media(max-width:768px){
-  #app{height:auto !important;min-height:100dvh;width:100%;overflow-x:hidden;}
-  .main{width:100%;min-width:0;padding:18px 14px 108px !important;gap:20px;overflow-x:hidden;}
-  .screen{width:100%;gap:18px;}
-  .screen.active{animation:none !important;}
-  .page-header{flex-direction:column !important;align-items:stretch !important;justify-content:flex-start !important;gap:12px !important;width:100%;}
-  .page-title{font-size:22px !important;line-height:1.18;overflow-wrap:anywhere;}
-  .page-sub{font-size:12px;line-height:1.35;}
-  .hdr-actions{width:100%;display:flex;flex-wrap:wrap;gap:8px;}
-  .hdr-actions .btn,.hdr-actions > button,.hdr-actions > div{flex:1 1 auto;}
-  .hdr-actions .btn{justify-content:center;}
-  .filters-row{flex-direction:column !important;align-items:stretch !important;width:100%;gap:8px !important;}
-  .search-wrap,.filter-sel,.filters-row select,.filters-row button{width:100% !important;max-width:none !important;}
-  .form-row,.form-row-3{grid-template-columns:1fr !important;gap:10px !important;}
-  .form-inp{font-size:16px;}
-  textarea.form-inp{min-height:96px;}
-  .modal-overlay{align-items:flex-end !important;justify-content:center !important;padding:0 !important;overflow:hidden;}
-  .modal,.modal.wide,.modal.xl{width:100vw !important;max-width:100vw !important;max-height:92dvh !important;border-radius:22px 22px 0 0 !important;padding:20px 16px calc(20px + env(safe-area-inset-bottom)) !important;overflow-y:auto !important;overscroll-behavior:contain;}
-  .modal-head{align-items:flex-start !important;gap:12px;}
-  .modal-title{line-height:1.25;overflow-wrap:anywhere;}
-  .modal-body{gap:14px !important;}
-  .modal-foot{position:sticky;bottom:0;z-index:5;margin:10px -16px calc(-20px - env(safe-area-inset-bottom));padding:12px 16px calc(12px + env(safe-area-inset-bottom));background:var(--surface);border-top:1px solid var(--border);flex-direction:column-reverse !important;gap:8px !important;}
-  .modal-foot .btn{width:100%;justify-content:center;min-height:42px;}
-  #f-body{grid-template-columns:1fr !important;}
-  .tbl-wrap{width:100%;overflow-x:auto !important;-webkit-overflow-scrolling:touch;border-radius:16px;}
-  .tbl-head,.tbl-row{grid-template-columns:minmax(180px,2fr) minmax(86px,1fr) minmax(104px,auto) !important;min-width:430px;gap:8px !important;padding-left:14px !important;padding-right:14px !important;}
-  .tbl-head{font-size:10px;}
-  .tbl-row{align-items:center;}
-  .col-name{gap:8px;overflow:hidden;}
-  .col-name > div:last-child,.col-txt,.sema-name,.sema-meta,.f-val{overflow-wrap:anywhere;}
-  .row-acts{opacity:1 !important;display:flex;flex-wrap:wrap;justify-content:flex-end;gap:4px;}
-  .icon-btn{padding:5px 8px !important;font-size:10px !important;}
-  .stats-grid,.sum-row{grid-template-columns:1fr 1fr !important;gap:10px !important;}
-  .inicio-cards,.panels-wrap,.sema-grid{grid-template-columns:1fr !important;}
-  .panel-card,.sema-card,.inicio-card,.stat-card,.sum-card,.tbl-wrap{box-shadow:none !important;}
-  .empty-state{padding:36px 16px !important;}
-  #accesos-grid{grid-template-columns:1fr !important;}
-  #login-screen{padding:16px;}
-  .login-card{width:min(92vw,420px) !important;padding:34px 22px !important;border-radius:24px !important;}
-  .blob,.login-circle{display:none !important;}
-  #mobile-nav{padding:7px 0 calc(10px + env(safe-area-inset-bottom)) !important;z-index:150 !important;}
-  .mob-nav-item{flex:1 1 0;padding:4px 2px !important;font-size:9.5px !important;}
-  .mob-nav-item span{font-size:20px !important;}
-  #toast{left:14px !important;right:14px !important;bottom:calc(78px + env(safe-area-inset-bottom)) !important;max-width:none !important;text-align:center;}
+.modal{width:100vw!important;height:100dvh!important;max-height:100dvh!important;border-radius:0!important}
+.modal-body{flex:1;overflow-y:auto;padding-bottom:120px}
+.modal-head{position:sticky;top:0;background:var(--surface);z-index:10;border-bottom:1px solid var(--border)}
+.modal-foot{position:fixed;bottom:0;left:0;right:0;background:var(--surface);padding:12px 16px;display:flex;gap:10px}
+.modal-foot .btn{flex:1}
 }
-@media(max-width:390px){
-  .stats-grid,.sum-row{grid-template-columns:1fr !important;}
-  .tbl-head,.tbl-row{min-width:400px;grid-template-columns:minmax(168px,2fr) minmax(78px,1fr) minmax(96px,auto) !important;}
-  .page-title{font-size:20px !important;}
+
+@media(max-width:768px){
+.tbl-head{display:none}
+.tbl-row{display:flex;flex-direction:column;background:var(--surface);border-radius:16px;padding:14px;margin-bottom:10px}
+.row-acts{display:flex;gap:8px;margin-top:8px}
+.icon-btn{flex:1}
 }
-@media(prefers-reduced-motion:reduce){
-  *,*::before,*::after{animation-duration:0.01ms !important;animation-iteration-count:1 !important;transition-duration:0.01ms !important;scroll-behavior:auto !important;}
-}
+
+#mobile-nav{backdrop-filter:blur(10px);background:rgba(255,255,255,0.85)}
+
 
 </style>
 </head>
@@ -389,10 +350,15 @@ img, svg, canvas, video{max-width:100%;}
       </div>
     </div>
     <div class="login-divider"></div>
-    <div class="google-btn-wrap" id="google-login-btn-wrap">
-      <div id="google-login-btn"></div>
-      <button class="google-login-fallback" id="google-login-fallback" onclick="startGoogleLogin()" style="display:none;">Continuar con Google</button>
-    </div>
+    <button class="google-btn" onclick="startGoogleLogin()">
+      <svg width="20" height="20" viewBox="0 0 24 24">
+        <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+        <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+        <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/>
+        <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+      </svg>
+      Continuar con Google
+    </button>
     <div class="login-hint">Una app de <strong>Redes Con Rostro</strong></div>
   </div>
 </div>
@@ -417,7 +383,7 @@ img, svg, canvas, video{max-width:100%;}
       <div><div class="user-name" id="user-name">—</div><div class="user-role" id="user-role">—</div></div>
       <button class="logout-btn" onclick="doLogout()" title="Cerrar sesión">↩️</button>
     </div>
-  </nav>
+  <div class="mob-nav-item" onclick="doLogout()" style="color:#ef4444"><span>🚪</span>Salir</div></nav>
 
   <main class="main">
 
@@ -457,7 +423,7 @@ img, svg, canvas, video{max-width:100%;}
         </div>
       </div>
       <div class="filters-row">
-        <div class="search-wrap"><span class="search-icon">🔍</span><input class="search-input" type="text" placeholder="Buscar por nombre..." id="f-nombre"></div>
+        <div class="search-wrap"><span class="search-icon">🔍</span><input class="search-input" type="text" placeholder="Buscar por nombre..." id="f-nombre" oninput="clearTimeout(window._dbColabs);window._dbColabs=setTimeout(renderColabs,250)"></div>
         <select class="filter-sel" id="f-cargo" onchange="renderColabs()">
           <option value="">Todos los cargos</option>
           <option>Coordinador</option><option>Gestor de Proyectos</option>
@@ -504,7 +470,7 @@ img, svg, canvas, video{max-width:100%;}
         </div>
       </div>
       <div class="filters-row">
-        <div class="search-wrap"><span class="search-icon">🔍</span><input class="search-input" type="text" placeholder="Buscar colaborador..." id="sm-nombre"></div>
+        <div class="search-wrap"><span class="search-icon">🔍</span><input class="search-input" type="text" placeholder="Buscar colaborador..." id="sm-nombre" oninput="renderSema();updateSemaBtnVer()"></div>
         <button class="btn btn-primary btn-sm" id="btn-ver-sema" style="display:none;" onclick="openSemaModal()">📋 Ver formulario</button>
         <select class="filter-sel" id="sm-equipo" onchange="renderSema()"><option value="">Todos los equipos</option><option>General</option><option>ReCircula</option><option>Vidrio Mejor Planeta</option><option>Juntos Por La Vida</option><option>Otros</option></select>
         <select class="filter-sel" id="sm-mes" onchange="renderSema()"><option value="">Todos los meses</option></select>
@@ -938,66 +904,22 @@ function loadSession(){try{const s=sessionStorage.getItem(SESSION_KEY);return s?
 function clearSession(){try{sessionStorage.removeItem(SESSION_KEY);}catch(e){}}
 
 // ── GOOGLE LOGIN ───────────────────────────────
-// Corrección: se eliminó el prompt automático de Google para que no aparezca
-// el popup flotante de Google encima del dashboard.
-let googleBtnRendered=false;
-
-function cancelGooglePrompt(){
-  try{
-    if(window.google && google.accounts && google.accounts.id){
-      google.accounts.id.cancel();
-      google.accounts.id.disableAutoSelect();
-    }
-  }catch(e){}
-}
-
-function initGoogleButton(){
-  if(typeof google==='undefined' || !google.accounts || !google.accounts.id) return false;
-
-  google.accounts.id.initialize({
-    client_id:G_CLIENT,
-    callback:handleCredential,
-    auto_select:false,
-    cancel_on_tap_outside:true,
-    use_fedcm_for_prompt:false
-  });
-
-  const target=document.getElementById('google-login-btn');
-  const fallback=document.getElementById('google-login-fallback');
-  if(target && !googleBtnRendered){
-    target.innerHTML='';
-    google.accounts.id.renderButton(target,{
-      theme:'outline',
-      size:'large',
-      type:'standard',
-      shape:'rectangular',
-      text:'continue_with',
-      width:320
-    });
-    googleBtnRendered=true;
-    if(fallback) fallback.style.display='none';
-  }else if(fallback && !target){
-    fallback.style.display='block';
-  }
-  return true;
-}
-
 function startGoogleLogin(){
-  // Fallback si por alguna razón el botón oficial no se renderizó.
-  if(typeof google==='undefined'){
-    toast('Cargando Google... intenta de nuevo en un segundo',true);
-    return;
-  }
-  if(!initGoogleButton()){
-    toast('No se pudo cargar el botón de Google. Recarga la página.',true);
-    return;
-  }
-  toast('Usa el botón oficial de Google para continuar.',false);
+  if(typeof google==='undefined'){toast('Cargando Google... intenta de nuevo en un segundo',true);return;}
+  google.accounts.id.initialize({client_id:G_CLIENT,callback:handleCredential});
+  // removed prompt(n=>{
+    if(n.isNotDisplayed()||n.isSkippedMoment()){
+      const d=document.createElement('div');
+      d.style.cssText='position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:9999;';
+      document.body.appendChild(d);
+      google.accounts.id.renderButton(d,{theme:'outline',size:'large'});
+      setTimeout(()=>d.querySelector('div[role="button"]')?.click(),100);
+    }
+  });
 }
 
 async function handleCredential(resp){
   try{
-    cancelGooglePrompt();
     const p=JSON.parse(atob(resp.credential.split('.')[1]));
     const email=p.email||'',name=p.name||email,pic=p.picture||'';
     if(!email.endsWith('@'+DOMAIN)){toast('Solo cuentas @'+DOMAIN+' pueden acceder',true);return;}
@@ -1028,7 +950,6 @@ async function handleCredential(resp){
 }
 
 function enterApp(){
-  cancelGooglePrompt();
   const{nombre,rol,picture}=currentUser;
   const fn=nombre.split(' ')[0];
   document.getElementById('user-name').textContent=fn;
@@ -1049,26 +970,25 @@ function enterApp(){
 }
 
 function doLogout(){
-  currentUser=null;clearSession();cancelGooglePrompt();
+  currentUser=null;clearSession();
+  if(typeof google!=='undefined')google.accounts.id.disableAutoSelect();
   document.getElementById('app').style.display='none';
   document.getElementById('login-screen').style.display='flex';
-  googleBtnRendered=false;
-  setTimeout(initGoogleButton,100);
 }
 
 // ── AUTO-LOGIN ─────────────────────────────────
 window.addEventListener('load',()=>{
   const saved=loadSession();
-  if(saved){currentUser=saved;enterApp();return;}
-
-  const waitGoogle=setInterval(()=>{
-    if(typeof google!=='undefined' && google.accounts && google.accounts.id){
-      clearInterval(waitGoogle);
-      initGoogleButton();
-      // Importante: NO llamar el prompt automático de Google.
-      // Ese prompt era el bug visual que se montaba sobre el dashboard.
-    }
-  },300);
+  if(saved){currentUser=saved;enterApp();}
+  else{
+    const waitGoogle=setInterval(()=>{
+      if(typeof google!=='undefined'){
+        clearInterval(waitGoogle);
+        google.accounts.id.initialize({client_id:G_CLIENT,callback:handleCredential});
+        // removed prompt();
+      }
+    },300);
+  }
 });
 
 // ── API ────────────────────────────────────────
@@ -2651,78 +2571,6 @@ function openFichaSeg(nombre, rowId){
 
   document.getElementById('mfs-body').innerHTML = html || '<div class="empty-state"><p>Sin datos para este registro</p></div>';
   openModal('m-ficha-seg');
-}
-
-
-
-/* =========================================================
-   PATCH APLICADO — BIENESTAR360 JS PERFORMANCE + MOBILE UX
-   Corregido por M365 Copilot
-   ========================================================= */
-
-function debounceB360(fn, delay = 250){
-  let timer;
-  return function(...args){
-    clearTimeout(timer);
-    timer = setTimeout(() => fn.apply(this, args), delay);
-  };
-}
-
-function readyB360(fn){
-  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', fn, {once:true});
-  else fn();
-}
-
-readyB360(() => {
-  const fNombre = document.getElementById('f-nombre');
-  if(fNombre){
-    fNombre.removeAttribute('oninput');
-    fNombre.addEventListener('input', debounceB360(() => { if(typeof renderColabs === 'function') renderColabs(); }, 250));
-  }
-
-  const smNombre = document.getElementById('sm-nombre');
-  if(smNombre){
-    smNombre.removeAttribute('oninput');
-    smNombre.addEventListener('input', debounceB360(() => {
-      if(typeof renderSema === 'function') renderSema();
-      if(typeof updateSemaBtnVer === 'function') updateSemaBtnVer();
-    }, 250));
-  }
-
-  document.querySelectorAll('.modal-overlay').forEach(overlay => {
-    if(overlay.dataset.b360Bound === '1') return;
-    overlay.dataset.b360Bound = '1';
-    overlay.addEventListener('click', function(e){
-      if(e.target === this){
-        this.classList.remove('open');
-        this.style.display = 'none';
-      }
-    });
-  });
-
-  document.addEventListener('keydown', (e) => {
-    if(e.key !== 'Escape') return;
-    document.querySelectorAll('.modal-overlay.open').forEach(m => {
-      m.classList.remove('open');
-      m.style.display = 'none';
-    });
-  });
-
-  const setVH = () => document.documentElement.style.setProperty('--vh', `${window.innerHeight * 0.01}px`);
-  setVH();
-  window.addEventListener('resize', debounceB360(setVH, 150));
-});
-
-function renderBatchB360(callback){
-  if(typeof requestAnimationFrame === 'function') requestAnimationFrame(callback);
-  else setTimeout(callback, 0);
-}
-
-function setHTMLFastB360(container, html){
-  if(!container) return;
-  const tmp = document.createElement('template');
-  tmp.innerHTML = html.trim();
-  container.replaceChildren(tmp.content.cloneNode(true));
 }
 
 </script>
