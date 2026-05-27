@@ -61,53 +61,128 @@
     }
   }
 
-  #app{position:relative;z-index:1;display:flex;height:100vh;width:100%;}
+  #app{position:relative;z-index:1;width:100%;min-height:100vh;}
 
-  /* ── SIDEBAR ── */
-  .sidebar{width:var(--sidebar-w);min-width:var(--sidebar-w);height:100dvh;display:flex;flex-direction:column;padding:24px 14px 20px;gap:2px;background:#fff;border-right:1px solid var(--border);flex-shrink:0;position:sticky;top:0;}
-  .sidebar-brand{display:flex;align-items:center;gap:10px;padding:0 10px 20px;}
-  .brand-icon{width:36px;height:36px;border-radius:10px;background:#fff;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;box-shadow:var(--shadow-sm);}
-  .brand-name{font-size:16px;font-weight:600;color:var(--text);}
-  .brand-sub{font-size:10px;color:var(--text-dim);}
-  .nav-lbl{font-size:10px;font-weight:700;color:var(--text-dim);text-transform:uppercase;letter-spacing:1px;padding:12px 12px 5px;}
-  .nav-item{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:var(--radius-sm);cursor:pointer;font-size:14px;color:var(--text-muted);transition:all 0.15s;font-weight:400;position:relative;user-select:none;}
-  .nav-item:hover{background:var(--surface-hover);color:var(--text);}
-  .nav-item.active{background:rgba(51,168,222,0.09);color:#2d8fb8;font-weight:600;}
-  .nav-item.active::before{content:'';position:absolute;left:0;top:20%;bottom:20%;width:3px;border-radius:2px;background:var(--grad-b);}
-  .nav-icon{font-size:17px;width:22px;text-align:center;flex-shrink:0;}
-  .sidebar-spacer{flex:1;}
-  .user-chip{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:var(--radius-sm);background:var(--surface-hover);border:1px solid var(--border);cursor:pointer;transition:background 0.15s;}
-  .user-chip:hover{background:#e8e8f0;}
-  .user-avatar{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;color:#fff;overflow:hidden;}
-  .user-avatar img{width:100%;height:100%;object-fit:cover;}
-  .user-name{font-size:13px;font-weight:600;color:var(--text);}
-  .user-role{font-size:10px;color:var(--text-dim);}
-  .logout-btn{background:none;border:none;cursor:pointer;font-size:14px;color:var(--text-dim);transition:color 0.15s;margin-left:auto;}
-  .logout-btn:hover{color:#e53e6d;}
+  /* ══════════════════════════════════════════════════════════ */
+  /* BOTTOM NAV FLOTANTE — píldora centrada, siempre visible    */
+  /* ══════════════════════════════════════════════════════════ */
+  .bottom-nav{
+    position:fixed;
+    bottom:24px;
+    left:50%;
+    transform:translateX(-50%);
+    z-index:100;
+    display:flex;
+    align-items:center;
+    gap:6px;
+    padding:10px 14px;
+    background:rgba(255,255,255,0.95);
+    backdrop-filter:blur(20px);
+    -webkit-backdrop-filter:blur(20px);
+    border:1px solid rgba(255,255,255,0.8);
+    border-radius:100px;
+    box-shadow:0 8px 32px rgba(31,38,135,0.12),0 2px 8px rgba(0,0,0,0.04);
+  }
+  .bn-item{
+    width:46px;height:46px;
+    border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    cursor:pointer;
+    transition:all 0.2s;
+    color:#8a8a99;
+    background:transparent;
+    border:none;
+    flex-shrink:0;
+    position:relative;
+  }
+  .bn-item svg{width:22px;height:22px;stroke-width:2;transition:transform 0.2s;}
+  .bn-item:hover{background:rgba(0,0,0,0.04);color:var(--text);}
+  .bn-item:hover svg{transform:scale(1.08);}
+  .bn-item.active{
+    background:var(--grad-b);
+    color:#fff;
+    box-shadow:0 4px 14px rgba(80,108,255,0.4);
+  }
+  .bn-item.active:hover{color:#fff;}
+  .bn-item:active{transform:scale(0.92);}
 
-  /* ── SYNC BUTTON ── */
-  .sync-btn{display:flex;align-items:center;gap:6px;padding:7px 13px;border-radius:var(--radius-sm);background:var(--surface);border:1px solid var(--border);font-family:'Outfit',sans-serif;font-size:12px;font-weight:600;color:var(--text-muted);cursor:pointer;transition:all 0.15s;box-shadow:var(--shadow-sm);}
-  .sync-btn:hover{background:var(--surface-hover);color:var(--text);}
-  .sync-btn.syncing .sync-icon{animation:spin 0.8s linear infinite;}
+  @media(max-width:768px){
+    .bottom-nav{bottom:calc(14px + env(safe-area-inset-bottom));padding:8px 10px;gap:2px;}
+    .bn-item{width:42px;height:42px;}
+    .bn-item svg{width:20px;height:20px;}
+  }
+
+  /* ══════════════════════════════════════════════════════════ */
+  /* HEADER FLOTANTE — botones circulares                       */
+  /* ══════════════════════════════════════════════════════════ */
+  .hdr-circle{
+    width:46px;height:46px;
+    border-radius:50%;
+    background:#fff;
+    border:none;
+    display:flex;align-items:center;justify-content:center;
+    cursor:pointer;
+    color:var(--text-muted);
+    box-shadow:0 2px 8px rgba(0,0,0,0.06),0 1px 3px rgba(0,0,0,0.04);
+    transition:all 0.18s;
+    flex-shrink:0;
+    padding:0;
+    overflow:hidden;
+  }
+  .hdr-circle svg{width:20px;height:20px;stroke-width:2;}
+  .hdr-circle:hover{
+    transform:translateY(-1px);
+    box-shadow:0 6px 18px rgba(0,0,0,0.1),0 2px 6px rgba(0,0,0,0.05);
+    color:var(--text);
+  }
+  .hdr-circle:active{transform:translateY(0) scale(0.95);}
+  .hdr-circle.syncing svg{animation:spin 0.8s linear infinite;}
+  .hdr-circle-primary{
+    background:var(--grad-b);
+    color:#fff;
+    box-shadow:0 4px 14px rgba(80,108,255,0.32);
+  }
+  .hdr-circle-primary:hover{color:#fff;box-shadow:0 6px 20px rgba(80,108,255,0.42);}
+  .hdr-circle-danger:hover{color:#c91a44;}
+  .hdr-circle-avatar{font-size:14px;font-weight:700;color:#fff;background:linear-gradient(135deg,#33A8DE,#506CFF);}
+  .hdr-circle-avatar img{width:100%;height:100%;object-fit:cover;border-radius:50%;}
   @keyframes spin{to{transform:rotate(360deg)}}
-  .sync-icon{display:inline-block;font-size:14px;}
 
-  /* ── MAIN ── */
-  .main{flex:1;overflow-y:auto;padding:32px 36px;display:flex;flex-direction:column;gap:26px;min-width:0;background:transparent;}
-  .main::-webkit-scrollbar{width:4px;}
-  .main::-webkit-scrollbar-thumb{background:var(--border-strong);border-radius:2px;}
+  @media(max-width:768px){
+    .hdr-circle{width:42px;height:42px;}
+    .hdr-circle svg{width:18px;height:18px;}
+  }
+
+  /* ── MAIN ── padding inferior para el bottom-nav */
+  .main{
+    padding:36px 48px 120px;
+    display:flex;flex-direction:column;
+    gap:28px;
+    min-width:0;
+    background:transparent;
+    max-width:1400px;
+    margin:0 auto;
+  }
+  @media(max-width:768px){
+    .main{padding:20px 16px calc(100px + env(safe-area-inset-bottom));gap:22px;}
+  }
 
   .screen{display:none;flex-direction:column;gap:24px;}
   .screen.active{display:flex;animation:fadeIn 0.22s ease;}
   @keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
 
-  .page-header{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;}
-  .page-title{font-size:26px;font-weight:600;letter-spacing:-0.5px;color:var(--text);}
-  .page-sub{font-size:13px;color:var(--text-muted);margin-top:3px;}
+  .page-header{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap;}
+  .page-title{font-size:34px;font-weight:700;letter-spacing:-1px;color:var(--text);line-height:1.1;}
+  .page-sub{font-size:14px;color:var(--text-muted);margin-top:6px;}
   .hdr-actions{display:flex;gap:10px;align-items:center;flex-shrink:0;}
 
+  @media(max-width:768px){
+    .page-title{font-size:26px;}
+    .page-sub{font-size:13px;}
+  }
+
   /* ── BUTTONS ── */
-  .btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:11px 22px;border-radius:12px;font-family:'Outfit',sans-serif;font-size:14px;font-weight:600;cursor:pointer;transition:all 0.18s;white-space:nowrap;background:#fff;border:1.5px solid var(--border);min-height:44px;}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:11px 22px;border-radius:14px;font-family:'Outfit',sans-serif;font-size:14px;font-weight:600;cursor:pointer;transition:all 0.18s;white-space:nowrap;background:#fff;border:1.5px solid var(--border);min-height:44px;}
   .btn-primary{
     background:var(--grad-b);
     color:#ffffff;
@@ -124,91 +199,248 @@
   .btn-primary:active{transform:translateY(0);}
   .btn-glass{background:#fff;color:var(--text-muted);border:1.5px solid var(--border);}
   .btn-glass:hover{background:var(--surface-hover);color:var(--text);}
-  .btn-sm{padding:7px 13px;font-size:12px;border-radius:8px;}
+  .btn-sm{padding:8px 16px;font-size:13px;border-radius:10px;min-height:38px;}
   .btn-danger{background:#fff;color:#c91a44;border:1.5px solid rgba(220,38,90,0.35);}
   .btn-danger:hover,.btn-danger:active{background:rgba(220,38,90,0.05);}
   .btn:active{transform:scale(0.97);}
-  .nav-item:active{opacity:0.7;}
 
-  /* ── STATS ── */
-  .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;}
-  .stat-card{padding:20px 18px;border-radius:var(--radius-md);background:var(--surface);border:1px solid var(--border);box-shadow:var(--shadow-sm);}
-  .stat-value{font-size:30px;font-weight:700;letter-spacing:-1.2px;color:var(--text);}
-  .stat-label{font-size:12px;color:var(--text-muted);margin-top:4px;}
-  .stat-bar{height:3px;border-radius:2px;margin-top:14px;}
-  .bar-a{background:var(--grad-a);} .bar-b{background:var(--grad-b);} .bar-c{background:var(--grad-c);} .bar-d{background:var(--grad-d);}
+  /* ── STATS ── tarjetas más redondeadas y suaves */
+  .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;}
+  .stat-card{
+    padding:26px 24px;
+    border-radius:24px;
+    background:var(--surface);
+    border:none;
+    box-shadow:0 1px 3px rgba(0,0,0,0.04),0 4px 16px rgba(0,0,0,0.04);
+    transition:transform 0.18s,box-shadow 0.18s;
+  }
+  .stat-card:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,0.06),0 12px 32px rgba(0,0,0,0.06);}
+  .stat-value{font-size:44px;font-weight:700;letter-spacing:-1.8px;color:var(--text);line-height:1;}
+  .stat-label{font-size:13px;color:var(--text-muted);margin-top:8px;}
+  .stat-bar{height:3px;border-radius:2px;margin-top:18px;width:65%;}
+  .bar-a{background:var(--grad-a);} .bar-b{background:var(--grad-b);} .bar-c{background:var(--grad-c);} .bar-d{background:var(--grad-d);} .bar-e{background:var(--grad-e);}
 
-  /* ── FILTERS ── */
-  .filters-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
-  .search-wrap{position:relative;flex:1;max-width:300px;min-width:160px;}
-  .search-icon{position:absolute;left:11px;top:50%;transform:translateY(-50%);font-size:13px;color:var(--text-dim);pointer-events:none;}
-  .search-input{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:9px 14px 9px 33px;color:var(--text);font-family:'Outfit',sans-serif;font-size:13px;outline:none;transition:all 0.15s;box-shadow:var(--shadow-sm);}
+  /* ── FILTERS ── inputs estilo píldora */
+  .filters-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+  .search-wrap{position:relative;flex:1;max-width:300px;min-width:180px;}
+  .search-icon{position:absolute;right:16px;top:50%;transform:translateY(-50%);font-size:14px;color:var(--text-dim);pointer-events:none;display:flex;align-items:center;}
+  .search-icon svg{width:18px;height:18px;stroke-width:2;}
+  .search-input{
+    width:100%;
+    background:var(--surface);
+    border:none;
+    border-radius:100px;
+    padding:13px 44px 13px 22px;
+    color:var(--text);
+    font-family:'Outfit',sans-serif;
+    font-size:14px;
+    outline:none;
+    transition:all 0.15s;
+    box-shadow:0 1px 3px rgba(0,0,0,0.04),0 2px 8px rgba(0,0,0,0.03);
+  }
   .search-input::placeholder{color:var(--text-dim);}
-  .search-input:focus{border-color:#33A8DE;box-shadow:0 0 0 3px rgba(51,168,222,0.12);}
-  .filter-sel{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:9px 13px;color:var(--text-muted);font-family:'Outfit',sans-serif;font-size:13px;outline:none;cursor:pointer;box-shadow:var(--shadow-sm);}
-  .filter-sel:focus{border-color:#33A8DE;}
+  .search-input:focus{box-shadow:0 1px 3px rgba(0,0,0,0.04),0 2px 8px rgba(0,0,0,0.03),0 0 0 3px rgba(51,168,222,0.18);}
+  .filter-sel{
+    background:var(--surface);
+    border:none;
+    border-radius:100px;
+    padding:13px 44px 13px 22px;
+    color:var(--text);
+    font-family:'Outfit',sans-serif;
+    font-size:14px;
+    outline:none;
+    cursor:pointer;
+    box-shadow:0 1px 3px rgba(0,0,0,0.04),0 2px 8px rgba(0,0,0,0.03);
+    appearance:none;-webkit-appearance:none;
+    background-image:url("data:image/svg+xml;charset=US-ASCII,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' stroke='%236b6b80' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' viewBox='0 0 24 24'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat:no-repeat;
+    background-position:right 16px center;
+    background-size:16px;
+    transition:box-shadow 0.15s;
+  }
+  .filter-sel:focus{box-shadow:0 1px 3px rgba(0,0,0,0.04),0 2px 8px rgba(0,0,0,0.03),0 0 0 3px rgba(51,168,222,0.18);}
 
-  /* ── TABLE ── */
-  .tbl-wrap{border-radius:var(--radius-lg);overflow:hidden;border:1px solid var(--border);box-shadow:var(--shadow);background:var(--surface);}
-  .tbl-head{display:grid;grid-template-columns:2.2fr 1.4fr 1.2fr 0.9fr 110px;gap:12px;padding:11px 20px;background:#f8f8fc;border-bottom:1px solid var(--border);font-size:11px;font-weight:700;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.7px;}
-  .tbl-row{display:grid;grid-template-columns:2.2fr 1.4fr 1.2fr 0.9fr 110px;gap:12px;padding:13px 20px;border-bottom:1px solid rgba(0,0,0,0.05);align-items:center;transition:background 0.12s;cursor:pointer;}
-  .tbl-row:hover{background:#fafafa;}
+  /* ── TABLE ── sin bordes, más suave, radius generoso */
+  .tbl-wrap{
+    border-radius:24px;
+    overflow:hidden;
+    border:none;
+    box-shadow:0 1px 3px rgba(0,0,0,0.04),0 4px 16px rgba(0,0,0,0.04);
+    background:var(--surface);
+  }
+  .tbl-head{display:grid;grid-template-columns:2.2fr 1.4fr 1.4fr 0.9fr 110px;gap:12px;padding:14px 26px;background:#f8f8fc;border-bottom:1px solid var(--border);font-size:11px;font-weight:700;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.8px;}
+  .tbl-row{display:grid;grid-template-columns:2.2fr 1.4fr 1.4fr 0.9fr 110px;gap:12px;padding:16px 26px;border-bottom:1px solid rgba(0,0,0,0.04);align-items:center;transition:background 0.12s;cursor:pointer;}
+  .tbl-row:hover{background:#fafbfd;}
   .tbl-row:last-child{border-bottom:none;}
-  .col-name{display:flex;align-items:center;gap:10px;font-size:14px;font-weight:500;color:var(--text);}
+  .col-name{display:flex;align-items:center;gap:12px;font-size:14px;font-weight:600;color:var(--text);min-width:0;}
+  .col-name > span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
   .col-txt{font-size:13px;color:var(--text-muted);}
   .row-acts{display:flex;gap:6px;opacity:0;transition:opacity 0.12s;}
   .tbl-row:hover .row-acts{opacity:1;}
-  .icon-btn{background:var(--surface-hover);border:1px solid var(--border);border-radius:7px;padding:4px 10px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:11px;font-weight:600;color:var(--text-muted);transition:all 0.12s;font-family:'Outfit',sans-serif;white-space:nowrap;}
+  .icon-btn{
+    background:var(--surface-hover);
+    border:none;
+    border-radius:10px;
+    padding:7px 10px;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    color:var(--text-muted);
+    transition:all 0.12s;
+    font-family:'Outfit',sans-serif;
+    font-size:12px;
+    font-weight:600;
+  }
+  .icon-btn svg{width:15px;height:15px;stroke-width:2;}
   .icon-btn:hover{background:#e8e8f0;color:var(--text);}
-  .icon-btn.del:hover{background:rgba(220,38,90,0.1);border-color:rgba(220,38,90,0.2);color:#c91a44;}
+  .icon-btn.del:hover{background:rgba(220,38,90,0.1);color:#c91a44;}
 
-  .avatar{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;color:#fff;}
+  .avatar{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0;color:#fff;}
   .avatar-lg{width:46px;height:46px;font-size:15px;}
-  .badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;}
-  .badge-on{background:rgba(24,174,151,0.1);color:#0a9e83;border:1px solid rgba(24,174,151,0.2);}
+  .badge{display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border-radius:20px;font-size:12px;font-weight:600;}
+  .badge-on{background:rgba(24,174,151,0.1);color:#0a9e83;border:1px solid rgba(24,174,151,0.22);}
+  .badge-on::before{content:'';width:6px;height:6px;border-radius:50%;background:#18AE97;}
   .badge-off{background:rgba(0,0,0,0.05);color:var(--text-muted);border:1px solid var(--border);}
+  .badge-off::before{content:'';width:6px;height:6px;border-radius:50%;background:#a0a0b0;}
 
-  /* ── INICIO CARDS ── */
-  .inicio-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
-  .inicio-card{padding:28px 22px;border-radius:var(--radius-xl);cursor:pointer;transition:all 0.2s;display:flex;flex-direction:column;align-items:flex-start;gap:12px;border:1px solid var(--border);background:var(--surface);box-shadow:var(--shadow-sm);position:relative;overflow:hidden;}
-  .inicio-card::after{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
-  .ic-a::after{background:var(--grad-b);}
-  .ic-b::after{background:var(--grad-c);}
-  .ic-c::after{background:var(--grad-d);}
-  .inicio-card:hover{transform:translateY(-3px);box-shadow:var(--shadow);}
-  .ic-title{font-size:16px;font-weight:600;color:var(--text);}
-  .ic-desc{font-size:12px;color:var(--text-muted);line-height:1.5;}
-  .ic-arrow{font-size:16px;color:var(--text-dim);margin-top:auto;align-self:flex-end;transition:transform 0.15s;}
-  .inicio-card:hover .ic-arrow{transform:translate(3px,-3px);}
+  /* ── INICIO — nuevo layout: stats apiladas + panel semáforo ── */
+  .inicio-layout{
+    display:grid;
+    grid-template-columns:1fr 2fr;
+    gap:18px;
+    align-items:start;
+  }
+  .inicio-stats-col{display:flex;flex-direction:column;gap:16px;}
+  .inicio-stat{
+    padding:32px 28px;
+    border-radius:28px;
+    background:var(--surface);
+    box-shadow:0 1px 3px rgba(0,0,0,0.04),0 4px 16px rgba(0,0,0,0.04);
+    transition:transform 0.18s,box-shadow 0.18s;
+    cursor:default;
+  }
+  .inicio-stat:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,0.06),0 12px 32px rgba(0,0,0,0.06);}
+  .inicio-stat-value{font-size:64px;font-weight:700;letter-spacing:-3px;color:var(--text);line-height:0.95;}
+  .inicio-stat-label{font-size:14px;color:var(--text-muted);margin-top:12px;}
+  .inicio-stat-bar{height:3px;border-radius:2px;margin-top:18px;width:70%;}
+
+  .inicio-sema-card{
+    padding:30px 28px;
+    border-radius:28px;
+    background:var(--surface);
+    box-shadow:0 1px 3px rgba(0,0,0,0.04),0 4px 16px rgba(0,0,0,0.04);
+    display:flex;flex-direction:column;
+    height:100%;
+    min-height:340px;
+  }
+  .inicio-sema-title{font-size:28px;font-weight:700;color:var(--text);letter-spacing:-0.8px;line-height:1.1;margin-bottom:24px;}
+  .inicio-sema-list{display:flex;flex-direction:column;gap:14px;flex:1;}
+  .inicio-sema-row{display:flex;align-items:center;justify-content:space-between;font-size:15px;color:var(--text);font-weight:500;}
+  .inicio-sema-row span:last-child{font-size:18px;}
+  .inicio-sema-footer{
+    margin-top:20px;padding-top:16px;
+    border-top:2px solid;
+    border-image:var(--grad-e) 1;
+    font-size:13px;color:var(--text-muted);
+  }
+  .inicio-sema-footer strong{color:var(--text);font-weight:700;}
+
+  @media(max-width:900px){
+    .inicio-layout{grid-template-columns:1fr;}
+    .inicio-stats-col{flex-direction:row;}
+    .inicio-stat{flex:1;}
+  }
+  @media(max-width:560px){
+    .inicio-stats-col{flex-direction:column;}
+    .inicio-stat-value{font-size:52px;}
+    .inicio-sema-title{font-size:24px;}
+  }
 
   /* ── PANELS ── */
-  .panels-wrap{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
-  .panel-card{border-radius:var(--radius-lg);border:1px solid var(--border);overflow:hidden;background:var(--surface);box-shadow:var(--shadow-sm);}
-  .panel-head{padding:13px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:13px;font-weight:600;color:var(--text);background:#f8f8fc;}
-  .panel-sel{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:5px 10px;color:var(--text);font-family:'Outfit',sans-serif;font-size:12px;outline:none;cursor:pointer;}
-  .panel-body{padding:18px;display:flex;flex-direction:column;gap:14px;}
-  .f-block{display:flex;flex-direction:column;gap:4px;}
-  .f-lbl{font-size:10px;font-weight:700;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.6px;}
-  .f-val{font-size:13px;color:var(--text);line-height:1.5;}
-  .scale-row{display:flex;align-items:center;gap:10px;}
-  .scale-track{flex:1;height:5px;background:#e8e8f0;border-radius:3px;overflow:hidden;}
-  .scale-fill{height:100%;border-radius:3px;}
-  .scale-num{font-size:14px;font-weight:700;min-width:28px;text-align:right;color:var(--text);}
+  .panels-wrap{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
+  .panel-card{
+    border-radius:24px;
+    border:none;
+    overflow:hidden;
+    background:var(--surface);
+    box-shadow:0 1px 3px rgba(0,0,0,0.04),0 4px 16px rgba(0,0,0,0.04);
+  }
+  .panel-head{padding:16px 22px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:14px;font-weight:600;color:var(--text);}
+  .panel-sel{
+    background:var(--surface-hover);
+    border:none;
+    border-radius:12px;
+    padding:7px 32px 7px 14px;
+    color:var(--text);
+    font-family:'Outfit',sans-serif;
+    font-size:12px;font-weight:500;
+    outline:none;cursor:pointer;
+    appearance:none;-webkit-appearance:none;
+    background-image:url("data:image/svg+xml;charset=US-ASCII,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' stroke='%236b6b80' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' viewBox='0 0 24 24'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat:no-repeat;background-position:right 10px center;background-size:14px;
+  }
+  .panel-body{padding:22px;display:flex;flex-direction:column;gap:16px;}
+  .f-block{display:flex;flex-direction:column;gap:6px;}
+  .f-lbl{font-size:10px;font-weight:700;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.7px;}
+  .f-val{font-size:14px;color:var(--text);line-height:1.5;}
+  .scale-row{display:flex;align-items:center;gap:12px;}
+  .scale-track{flex:1;height:6px;background:#eaeaf2;border-radius:4px;overflow:hidden;}
+  .scale-fill{height:100%;border-radius:4px;}
+  .scale-num{font-size:15px;font-weight:700;min-width:42px;text-align:right;color:var(--text);}
 
   /* ── SEMAFORO ── */
-  .sum-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
-  .sum-card{padding:18px 14px;border-radius:var(--radius-md);text-align:center;border:1px solid var(--border);background:var(--surface);box-shadow:var(--shadow-sm);}
-  .sum-val{font-size:26px;font-weight:700;color:var(--text);}
-  .sum-lbl{font-size:11px;color:var(--text-muted);margin-top:2px;}
-  .sema-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;}
-  .sema-card{padding:18px;border-radius:var(--radius-md);background:var(--surface);border:1px solid var(--border);box-shadow:var(--shadow-sm);transition:all 0.18s;cursor:pointer;}
-  .sema-card:hover{transform:translateY(-2px);box-shadow:var(--shadow);}
-  .sema-head{display:flex;align-items:center;gap:10px;margin-bottom:14px;}
-  .sema-name{font-size:14px;font-weight:600;color:var(--text);}
-  .sema-meta{font-size:11px;color:var(--text-dim);margin-top:2px;}
-  .sema-items{display:flex;flex-direction:column;gap:8px;}
+  .sum-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;}
+  .sum-card{
+    padding:22px 16px;
+    border-radius:20px;
+    text-align:center;
+    border:none;
+    background:var(--surface);
+    box-shadow:0 1px 3px rgba(0,0,0,0.04),0 4px 16px rgba(0,0,0,0.04);
+  }
+  .sum-val{font-size:30px;font-weight:700;color:var(--text);letter-spacing:-1px;}
+  .sum-lbl{font-size:12px;color:var(--text-muted);margin-top:4px;}
+  .sema-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;}
+  .sema-card{
+    padding:22px;
+    border-radius:24px;
+    background:var(--surface);
+    border:none;
+    box-shadow:0 1px 3px rgba(0,0,0,0.04),0 4px 16px rgba(0,0,0,0.04);
+    transition:transform 0.18s,box-shadow 0.18s;
+    display:flex;flex-direction:column;
+    gap:16px;
+  }
+  .sema-card:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,0.06),0 12px 32px rgba(0,0,0,0.06);}
+  .sema-head{display:flex;align-items:center;gap:12px;}
+  .sema-name{font-size:15px;font-weight:700;color:var(--text);}
+  .sema-meta{font-size:12px;color:var(--text-dim);margin-top:2px;}
+  .sema-items{display:flex;flex-direction:column;gap:10px;}
   .sema-item{display:flex;align-items:center;justify-content:space-between;}
-  .sema-lbl{font-size:12px;color:var(--text-muted);}
+  .sema-lbl{font-size:13px;color:var(--text);font-weight:500;}
+  .sema-actions{display:flex;gap:10px;margin-top:4px;}
+  .sema-actions .btn{flex:1;}
+
+  /* ── ACCESOS ── cards más limpias */
+  .acc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;}
+  .acc-card{
+    padding:22px;
+    border-radius:24px;
+    background:var(--surface);
+    box-shadow:0 1px 3px rgba(0,0,0,0.04),0 4px 16px rgba(0,0,0,0.04);
+    position:relative;
+    overflow:hidden;
+    transition:transform 0.18s,box-shadow 0.18s;
+    display:flex;flex-direction:column;gap:10px;
+  }
+  .acc-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--acc-grad,var(--grad-b));}
+  .acc-card:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,0.06),0 12px 32px rgba(0,0,0,0.06);}
+  .acc-emoji{font-size:28px;line-height:1;}
+  .acc-title{font-size:15px;font-weight:700;color:var(--text);}
+  .acc-url{font-size:12px;color:var(--text-dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .acc-acts{display:flex;gap:8px;margin-top:6px;opacity:0;transition:opacity 0.15s;}
+  .acc-card:hover .acc-acts{opacity:1;}
 
   /* ── FORM ── */
   /* ── FORMS — Look Ficha Nodal: limpio, espacioso, 1 columna ── */
@@ -469,92 +701,53 @@
   .grad-c-text{background:var(--grad-c);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
   .grad-d-text{background:var(--grad-d);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
   .grad-a-text{background:var(--grad-a);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+  .grad-e-text{background:var(--grad-e);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
 
-  /* ── MOBILE ── */
+  /* ── DRAG ── */
   .drag-row{cursor:grab;transition:background 0.15s;}
   .drag-row:active{cursor:grabbing;}
   .drag-row.dragging{opacity:0.4;background:#f0f4ff;}
   .drag-row.drag-over{border-top:2px solid #33A8DE;}
 
-  /* Botón hamburger — solo visible en móvil */
-  .mob-menu-btn{
-    display:none;
-    width:42px;height:42px;
-    border:1px solid var(--border);
-    background:var(--surface);
-    border-radius:var(--radius-sm);
-    cursor:pointer;
-    font-size:20px;
-    align-items:center;justify-content:center;
-    flex-shrink:0;
-    box-shadow:var(--shadow-sm);
-  }
-
-  /* Overlay del sidebar — solo móvil */
-  .sidebar-overlay{
-    display:none;
-    position:fixed;inset:0;
-    background:rgba(0,0,0,0.4);
-    z-index:150;
-    backdrop-filter:blur(2px);
-  }
-  .sidebar-overlay.open{display:block;}
-
+  /* ── MOBILE ── */
   @media(max-width:768px){
-    /* Sidebar deslizable (drawer) */
-    .sidebar{
-      position:fixed;
-      left:-260px;
-      top:0;
-      width:240px;
-      min-width:240px;
-      height:100dvh;
-      z-index:200;
-      transition:left 0.28s cubic-bezier(0.4,0,0.2,1);
-      box-shadow:2px 0 16px rgba(0,0,0,0.12);
-    }
-    .sidebar.open{left:0;}
-    .mob-menu-btn{display:flex;}
-
-    /* Bottom nav ELIMINADO — ahora se usa el sidebar drawer */
-    #mobile-nav{display:none !important;}
-
-    /* Layout general móvil */
-    .main{padding:18px 14px 24px;}
-    .stats-grid{grid-template-columns:1fr 1fr;}
-    .inicio-cards{grid-template-columns:1fr;}
+    .stats-grid{grid-template-columns:1fr 1fr;gap:12px;}
+    .stat-card{padding:20px 18px;border-radius:20px;}
+    .stat-value{font-size:32px;}
     .panels-wrap{grid-template-columns:1fr;}
     .sema-grid{grid-template-columns:1fr;}
+    .acc-grid{grid-template-columns:1fr;}
     .login-card{width:92vw;padding:36px 24px;}
-    .sum-row{grid-template-columns:1fr 1fr;}
-    .page-title{font-size:22px;}
+    .sum-row{grid-template-columns:1fr 1fr;gap:10px;}
+    .sum-card{padding:18px 12px;border-radius:18px;}
     .row-acts{opacity:1;}
+    .acc-acts{opacity:1;}
 
-    /* Forms en móvil — labels y inputs más grandes */
+    /* Forms en móvil */
     .form-lbl{font-size:14px;}
     .form-inp{font-size:16px;}
 
     /* Tablas como cards horizontales en móvil */
     .tbl-head{display:none;}
-    .tbl-wrap{background:transparent;border:none;box-shadow:none;padding:0;}
+    .tbl-wrap{background:transparent;border:none;box-shadow:none;padding:0;border-radius:0;}
     .tbl-row{
       display:grid !important;
       grid-template-columns:auto 1fr auto !important;
       grid-template-rows:auto auto;
       gap:10px 12px;
-      padding:14px;
-      border:1px solid var(--border);
-      border-radius:14px;
-      margin:0 0 10px;
+      padding:18px;
+      border:none;
+      border-radius:20px;
+      margin:0 0 12px;
       background:var(--surface);
+      box-shadow:0 1px 3px rgba(0,0,0,0.04),0 4px 12px rgba(0,0,0,0.04);
       align-items:center;
     }
-    /* Fila 1: avatar + nombre + badge */
     .tbl-row .col-name{
       grid-column:1 / 3;
       display:flex;
       align-items:center;
-      gap:10px;
+      gap:12px;
       font-size:15px;
       font-weight:600;
       text-align:left;
@@ -565,13 +758,11 @@
       text-overflow:ellipsis;
       white-space:nowrap;
     }
-    /* Badge a la derecha en la fila 1 */
     .tbl-row > div:nth-child(4){
       grid-column:3 / 4;
       grid-row:1;
       justify-self:end;
     }
-    /* Botones en fila 2, full-width */
     .tbl-row .row-acts{
       grid-column:1 / 4;
       grid-row:2;
@@ -583,12 +774,12 @@
     .tbl-row .icon-btn{
       flex:1;
       justify-content:center;
-      padding:9px 12px;
+      padding:10px 12px;
       font-size:13px;
-      border-radius:10px;
+      border-radius:12px;
     }
+    .tbl-row .col-txt{display:none;}
   }
-  @media(min-width:769px){#mobile-nav{display:none;}}
 
   
 
@@ -660,7 +851,7 @@
       <div class="login-icon-wrap">🌐</div>
       <div>
         <div class="login-welcome">Bienvenido(a)</div>
-        <div class="login-title"><br>Bienestar360</div>
+        <div class="login-title grad-b-text" style="font-size:28px;font-weight:700;letter-spacing:-0.8px;">Bienestar360</div>
       </div>
     </div>
     <div class="login-divider"></div>
@@ -674,26 +865,6 @@
 
 <!-- APP -->
 <div id="app" style="display:none;">
-  <div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebarMobile()"></div>
-  <nav class="sidebar" id="sidebar-nav">
-    <div class="sidebar-brand">
-      <div class="brand-icon">🌐</div>
-      <div><div class="brand-name">Bienestar360</div><div class="brand-sub">Redes Con Rostro</div></div>
-    </div>
-    <div class="nav-lbl">Principal</div>
-    <div class="nav-item active" id="nav-inicio"        onclick="go('inicio')">        <span class="nav-icon">🏠</span> Inicio</div>
-    <div class="nav-item"        id="nav-colaboradores" onclick="go('colaboradores')"> <span class="nav-icon">👥</span> Colaboradores</div>
-    <div class="nav-item"        id="nav-seguimiento"   onclick="go('seguimiento')">   <span class="nav-icon">💬</span> Bienestar</div>
-    <div class="nav-item"        id="nav-semaforo"      onclick="go('semaforo')">      <span class="nav-icon">🚦</span> Semáforo</div>
-    <div class="nav-item"        id="nav-accesos"       onclick="go('accesos')">       <span class="nav-icon">🔗</span> Accesos</div>
-    <div class="nav-item"        id="nav-config"        onclick="go('config')" style="display:none;"> <span class="nav-icon">⚙️</span> Configuración</div>
-    <div class="sidebar-spacer"></div>
-    <div class="user-chip">
-      <div class="user-avatar" id="user-avatar" style="background:linear-gradient(135deg,#33A8DE,#506CFF);">?</div>
-      <div><div class="user-name" id="user-name">—</div><div class="user-role" id="user-role">—</div></div>
-      <button class="logout-btn" onclick="doLogout()" title="Cerrar sesión">↩️</button>
-    </div>
-  </nav>
 
   <main class="main">
 
@@ -704,22 +875,43 @@
           <div class="page-title">Bienvenido/a, <span class="grad-b-text" id="welcome-name">—</span> 👋</div>
           <div class="page-sub" id="today-date"></div>
         </div>
-        <div class="hdr-actions">
-          <div id="admin-actions" style="display:none;">
-            <button class="btn btn-glass btn-sm" onclick="openModal('m-usuario')">Nuevo usuario</button>
-          </div>
+        <div class="hdr-actions" id="hdr-inicio">
+          <button class="hdr-circle" id="sync-btn" onclick="syncAll()" title="Sincronizar">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><polyline points="21 3 21 8 16 8"/><polyline points="3 21 3 16 8 16"/></svg>
+          </button>
+          <button class="hdr-circle hdr-circle-avatar" id="user-avatar-btn" title="Mi cuenta">
+            <span id="user-avatar">?</span>
+          </button>
+          <button class="hdr-circle hdr-circle-danger" onclick="doLogout()" title="Cerrar sesión">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+          </button>
         </div>
       </div>
-      <div class="stats-grid">
-        <div class="stat-card"><div class="stat-value" id="s-colabs">—</div><div class="stat-label">Número de colaboradores</div><div class="stat-bar bar-b"></div></div>
-        <div class="stat-card"><div class="stat-value" id="s-segs">—</div><div class="stat-label">Seguimientos registrados</div><div class="stat-bar bar-c"></div></div>
-        <div class="stat-card"><div class="stat-value" id="s-bien">—</div><div class="stat-label">Semáforo: bien este mes</div><div class="stat-bar bar-c"></div></div>
-        <div class="stat-card"><div class="stat-value" id="s-alert">—</div><div class="stat-label">Sin respuesta semáforo</div><div class="stat-bar bar-d"></div></div>
-      </div>
-      <div class="inicio-cards">
-        <div class="inicio-card ic-a" onclick="go('colaboradores')"><div class="ic-title">Colaboradores</div><div class="ic-desc">Gestiona el directorio completo del equipo de Redes Con Rostro</div><div class="ic-arrow">↗</div></div>
-        <div class="inicio-card ic-b" onclick="go('seguimiento')"><div class="ic-title">Seguimiento</div><div class="ic-desc">Registra y compara sesiones de bienestar organizacional</div><div class="ic-arrow">↗</div></div>
-        <div class="inicio-card ic-c" onclick="go('semaforo')"><div class="ic-title">Semáforo</div><div class="ic-desc">Visualiza la autopercepción mensual del equipo</div><div class="ic-arrow">↗</div></div>
+
+      <div class="inicio-layout">
+        <div class="inicio-stats-col">
+          <div class="inicio-stat">
+            <div class="inicio-stat-value" id="s-colabs">—</div>
+            <div class="inicio-stat-label">Número de colaboradores</div>
+            <div class="inicio-stat-bar bar-b"></div>
+          </div>
+          <div class="inicio-stat">
+            <div class="inicio-stat-value" id="s-segs">—</div>
+            <div class="inicio-stat-label">Seguimientos registrados</div>
+            <div class="inicio-stat-bar bar-d"></div>
+          </div>
+        </div>
+
+        <div class="inicio-sema-card">
+          <div class="inicio-sema-title">Semáforo<br>Mensual</div>
+          <div class="inicio-sema-list" id="inicio-sema-list">
+            <div class="inicio-sema-row"><span>Carga y ritmo</span><span id="is-carga">—</span></div>
+            <div class="inicio-sema-row"><span>Clima y relaciones</span><span id="is-clima">—</span></div>
+            <div class="inicio-sema-row"><span>Estado emocional</span><span id="is-emo">—</span></div>
+            <div class="inicio-sema-row"><span>Liderazgo</span><span id="is-lid">—</span></div>
+          </div>
+          <div class="inicio-sema-footer" id="inicio-sema-footer">Sin datos del mes actual</div>
+        </div>
       </div>
     </div>
 
@@ -728,12 +920,19 @@
       <div class="page-header">
         <div><div class="page-title">Colaboradores</div><div class="page-sub" id="colab-sub">Cargando...</div></div>
         <div class="hdr-actions">
-          <button class="btn btn-glass btn-sm" onclick="generarPDFConsolidado()">PDF Consolidado</button>
-          <button class="btn btn-primary btn-sm" onclick="abrirNuevoColab()">+ Agregar</button>
+          <button class="hdr-circle hdr-circle-primary" onclick="abrirNuevoColab()" title="Agregar colaborador">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          </button>
+          <button class="hdr-circle" onclick="generarPDFConsolidado()" title="Descargar PDF Consolidado">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          </button>
         </div>
       </div>
       <div class="filters-row">
-        <div class="search-wrap"><span class="search-icon">🔍</span><input class="search-input" type="text" placeholder="Buscar por nombre..." id="f-nombre" oninput="clearTimeout(window._dbColabs);window._dbColabs=setTimeout(renderColabs,250)"></div>
+        <div class="search-wrap">
+          <input class="search-input" type="text" placeholder="Búsqueda por nombre" id="f-nombre" oninput="clearTimeout(window._dbColabs);window._dbColabs=setTimeout(renderColabs,250)">
+          <span class="search-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span>
+        </div>
         <select class="filter-sel" id="f-cargo" onchange="renderColabs()">
           <option value="">Todos los cargos</option>
           <option>Coordinador</option><option>Gestor de Proyectos</option>
@@ -758,14 +957,16 @@
     <!-- SEGUIMIENTO -->
     <div class="screen" id="screen-seguimiento">
       <div class="page-header">
-        <div><div class="page-title">Seguimiento de Bienestar</div><div class="page-sub">Compara registros lado a lado</div></div>
+        <div><div class="page-title">Bienestar</div><div class="page-sub">Seguimiento</div></div>
         <div class="hdr-actions">
-          <button class="btn btn-glass btn-sm" onclick="generarPDFSeguimiento(document.getElementById('seg-colab').value)">PDF</button>
-          <button class="btn btn-primary btn-sm" onclick="renderSegForm();openModal('m-seg')">+ Nuevo registro</button>
+          <button class="hdr-circle hdr-circle-primary" onclick="renderSegForm();openModal('m-seg')" title="Nuevo registro">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          </button>
+          <button class="hdr-circle" onclick="generarPDFSeguimiento(document.getElementById('seg-colab').value)" title="Descargar PDF">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          </button>
+          <select class="filter-sel" id="seg-colab" onchange="loadPanels()" style="min-width:220px;"><option value="">Seleccionar colaborador</option></select>
         </div>
-      </div>
-      <div class="filters-row">
-        <select class="filter-sel" id="seg-colab" onchange="loadPanels()" style="flex:1;max-width:320px;"><option value="">— Selecciona colaborador —</option></select>
       </div>
       <div class="panels-wrap" id="seg-panels">
         <div class="empty-state" style="grid-column:span 2;"><div class="e-ico">💬</div><p>Selecciona un colaborador para ver sus registros</p></div>
@@ -775,88 +976,71 @@
     <!-- SEMÁFORO -->
     <div class="screen" id="screen-semaforo">
       <div class="page-header">
-        <div><div class="page-title">Semáforo de Satisfacción</div><div class="page-sub">Autopercepción del equipo</div></div>
+        <div><div class="page-title">Semáforo</div><div class="page-sub">Autopercepción mensual</div></div>
         <div class="hdr-actions">
+          <button class="hdr-circle" onclick="window.print && window.print()" title="Imprimir / Exportar" style="display:none;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          </button>
         </div>
       </div>
       <div class="filters-row">
-        <div class="search-wrap"><span class="search-icon">🔍</span><input class="search-input" type="text" placeholder="Buscar colaborador..." id="sm-nombre" oninput="renderSema();updateSemaBtnVer()"></div>
-        <button class="btn btn-primary btn-sm" id="btn-ver-sema" style="display:none;" onclick="openSemaModal()">📋 Ver formulario</button>
+        <div class="search-wrap">
+          <input class="search-input" type="text" placeholder="Búsqueda por nombre" id="sm-nombre" oninput="renderSema();updateSemaBtnVer()">
+          <span class="search-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span>
+        </div>
+        <button class="btn btn-primary btn-sm" id="btn-ver-sema" style="display:none;" onclick="openSemaModal()">Ver formulario</button>
         <select class="filter-sel" id="sm-equipo" onchange="renderSema()"><option value="">Todos los equipos</option><option>General</option><option>ReCircula</option><option>Vidrio Mejor Planeta</option><option>Juntos Por La Vida</option><option>Otros</option></select>
         <select class="filter-sel" id="sm-mes" onchange="renderSema()"><option value="">Todos los meses</option></select>
-        <button class="btn btn-glass btn-sm" onclick="clearSema()">Ver todos</button>
       </div>
       <div class="sum-row">
-        <div class="sum-card"><div style="font-size:20px;">🟢</div><div class="sum-val grad-c-text" id="p-bien">—</div><div class="sum-lbl">Bien</div></div>
-        <div class="sum-card"><div style="font-size:20px;">🟡</div><div class="sum-val grad-d-text" id="p-reg">—</div><div class="sum-lbl">Regular</div></div>
-        <div class="sum-card"><div style="font-size:20px;">🔴</div><div class="sum-val grad-a-text" id="p-mal">—</div><div class="sum-lbl">Mal</div></div>
-        <div class="sum-card"><div style="font-size:20px;">⚪</div><div class="sum-val" id="p-sinr">—</div><div class="sum-lbl">Sin respuesta</div></div>
+        <div class="sum-card"><div style="font-size:22px;">🟢</div><div class="sum-val grad-c-text" id="p-bien">—</div><div class="sum-lbl">Bien</div></div>
+        <div class="sum-card"><div style="font-size:22px;">🟡</div><div class="sum-val grad-d-text" id="p-reg">—</div><div class="sum-lbl">Regular</div></div>
+        <div class="sum-card"><div style="font-size:22px;">🔴</div><div class="sum-val grad-a-text" id="p-mal">—</div><div class="sum-lbl">Mal</div></div>
+        <div class="sum-card"><div style="font-size:22px;">⚪</div><div class="sum-val" id="p-sinr">—</div><div class="sum-lbl">Sin respuesta</div></div>
       </div>
       <div class="sema-grid" id="sema-grid"><div class="empty-state"><span class="spinner"></span><p>Cargando...</p></div></div>
-    </div>
-
-    <!-- CONFIGURACIÓN -->
-    <div class="screen" id="screen-config">
-      <div class="page-header">
-        <div><div class="page-title">Configuración</div><div class="page-sub">Editor de columnas y gestión de usuarios</div></div>
-      </div>
-
-      <!-- Pestañas -->
-      <div style="display:flex;gap:0;border-bottom:2px solid var(--border);margin-bottom:4px;">
-        <button id="tab-columnas" onclick="switchConfigTab('columnas')" style="padding:10px 20px;border:none;background:none;font-family:'Outfit',sans-serif;font-size:13px;font-weight:600;color:#33A8DE;border-bottom:2px solid #33A8DE;margin-bottom:-2px;cursor:pointer;">Editor de columnas</button>
-        <button id="tab-usuarios" onclick="switchConfigTab('usuarios')" style="padding:10px 20px;border:none;background:none;font-family:'Outfit',sans-serif;font-size:13px;font-weight:600;color:var(--text-muted);cursor:pointer;">Usuarios</button>
-      </div>
-
-      <!-- TAB: COLUMNAS -->
-      <div id="config-columnas">
-        <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap;">
-          <select class="filter-sel" id="cfg-sheet-sel" onchange="loadSheetColumns(this.value)" style="min-width:180px;">
-            <option value="">Cargando hojas...</option>
-          </select>
-          <button class="btn btn-primary btn-sm" onclick="cfgEditingCol=null;document.getElementById('m-col-title').textContent='Nueva columna';document.getElementById('col-nombre').value='';document.getElementById('col-tipo').value='texto';document.getElementById('col-options').value='';toggleColOptions();openModal('m-nueva-col')" id="btn-nueva-col" style="display:none;">+ Nueva columna</button>
-          <span id="cfg-saving" style="font-size:12px;color:var(--text-muted);display:none;">Guardando...</span>
-        </div>
-
-        <div id="cfg-cols-wrap">
-          <div class="empty-state"><div class="e-ico">⚙️</div><p>Selecciona una hoja para ver sus columnas</p></div>
-        </div>
-      </div>
-
-      <!-- TAB: USUARIOS -->
-      <div id="config-usuarios" style="display:none;">
-        <div style="display:flex;justify-content:flex-end;margin-bottom:16px;">
-          <button class="btn btn-primary btn-sm" onclick="openModal('m-usuario')">+ Nuevo usuario</button>
-        </div>
-        <div class="tbl-wrap">
-          <div style="display:grid;grid-template-columns:2fr 2fr 1fr 1fr;gap:12px;padding:11px 20px;background:#f8f8fc;border-bottom:1px solid var(--border);font-size:11px;font-weight:700;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.7px;">
-            <div>Nombre</div><div>Correo</div><div>Rol</div><div>Estado</div>
-          </div>
-          <div id="cfg-users-body"><div class="empty-state"><span class="spinner spinner-dark"></span><p>Cargando...</p></div></div>
-        </div>
-      </div>
     </div>
 
     <!-- ACCESOS -->
     <div class="screen" id="screen-accesos">
       <div class="page-header">
-        <div><div class="page-title">Tablero de Accesos</div><div class="page-sub">Links y recursos del equipo RCR</div></div>
+        <div><div class="page-title">Accesos</div><div class="page-sub">Links y recursos del equipo</div></div>
         <div class="hdr-actions">
-          <button class="btn btn-primary btn-sm" id="btn-nuevo-acceso" style="display:none;" onclick="abrirNuevoAcceso()">+ Agregar link</button>
+          <button class="hdr-circle hdr-circle-primary" id="btn-nuevo-acceso" style="display:none;" onclick="abrirNuevoAcceso()" title="Agregar link">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          </button>
         </div>
       </div>
 
-      <!-- Filtro por categoría -->
       <div class="filters-row" id="accesos-filtros" style="display:none;">
         <div style="display:flex;gap:8px;flex-wrap:wrap;" id="accesos-cats"></div>
       </div>
 
-      <!-- Grid de links -->
-      <div id="accesos-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px;">
+      <div id="accesos-grid" class="acc-grid">
         <div class="empty-state"><span class="spinner spinner-dark"></span><p>Cargando accesos...</p></div>
       </div>
     </div>
 
   </main>
+
+  <!-- BOTTOM NAV FLOTANTE -->
+  <nav class="bottom-nav" id="bottom-nav">
+    <button class="bn-item active" id="nav-inicio" onclick="go('inicio')" title="Inicio">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5L12 3l9 6.5V20a2 2 0 0 1-2 2h-4v-7h-6v7H5a2 2 0 0 1-2-2V9.5z"/></svg>
+    </button>
+    <button class="bn-item" id="nav-colaboradores" onclick="go('colaboradores')" title="Colaboradores">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+    </button>
+    <button class="bn-item" id="nav-seguimiento" onclick="go('seguimiento')" title="Bienestar">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+    </button>
+    <button class="bn-item" id="nav-semaforo" onclick="go('semaforo')" title="Semáforo">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+    </button>
+    <button class="bn-item" id="nav-accesos" onclick="go('accesos')" title="Accesos">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+    </button>
+  </nav>
 </div>
 
 
@@ -882,7 +1066,7 @@
       </div>
       <!-- Campos fijos Colaboradores -->
       <div id="c-dynamic-fields">
-        <div class="form-grp"><label class="form-lbl">Nombre completo *</label><input class="form-inp" data-col="Colaborador" placeholder="Ej. Laura Pérez" oninput="const el=document.getElementById('c-photo-initials');if(el)el.textContent=ini(this.value)||'?'" value=""></div>
+        <div class="form-grp"><label class="form-lbl">Nombre completo *</label><input class="form-inp" data-col="Colaborador" placeholder="Ej. Laura Pérez" oninput="const el=document.getElementById('c-photo-initials');if(el)el.textContent=ini(this.value)||'?';const pv=document.getElementById('c-photo-preview');if(pv && !pv.querySelector('img'))pv.style.background=gradFromName(this.value);" value=""></div>
         <div class="form-row">
           <div class="form-grp"><label class="form-lbl">Cargo</label><select class="form-inp" data-col="Cargo"><option value="">Seleccionar...</option><option>Coordinador</option><option>Gestor de Proyectos</option><option>Directora/Director</option><option>Socio</option><option>Profesional de la Salud</option><option>Otros</option></select></div>
           <div class="form-grp"><label class="form-lbl">Programa/Proyecto</label><select class="form-inp" data-col="Programa/Proyecto"><option value="">Seleccionar...</option><option>General</option><option>ReCircula</option><option>Vidrio Mejor Planeta</option><option>Juntos Por La Vida</option><option>Dirección Creativa</option><option>Contabilidad y Transparencia</option><option>Bienestar Organizacional</option><option>Otros</option></select></div>
@@ -1017,63 +1201,6 @@
   </div>
 </div>
 
-<!-- MODAL: USUARIO -->
-<div class="modal-overlay" id="m-usuario">
-  <div class="modal">
-    <div class="modal-head"><div class="modal-title">Nuevo usuario</div><button class="modal-close" onclick="closeModal('m-usuario')">✕</button></div>
-    <div class="modal-body">
-      <div class="form-grp"><label class="form-lbl">Nombre completo</label><input class="form-inp" id="u-nombre" placeholder="Nombre y apellido"></div>
-      <div class="form-grp"><label class="form-lbl">Correo @redesconrostro.org</label><input class="form-inp" id="u-email" type="email" placeholder="correo@redesconrostro.org"></div>
-      <div class="form-grp"><label class="form-lbl">Rol</label><select class="form-inp" id="u-rol"><option>Visualizador</option><option>Editor</option><option>Admin</option></select></div>
-    </div>
-    <div class="modal-foot">
-      <button class="btn btn-glass" onclick="closeModal('m-usuario')">Cancelar</button>
-      <button class="btn btn-primary" onclick="saveUsuario()">Crear usuario</button>
-    </div>
-  </div>
-</div>
-
-<!-- MODAL: NUEVA COLUMNA -->
-<div class="modal-overlay" id="m-nueva-col">
-  <div class="modal">
-    <div class="modal-head"><div class="modal-title" id="m-col-title">Nueva columna</div><button class="modal-close" onclick="closeModal('m-nueva-col')">✕</button></div>
-    <div class="modal-body">
-      <div class="form-grp"><label class="form-lbl">Nombre de la columna *</label><input class="form-inp" id="col-nombre" placeholder="Ej. Área de trabajo"></div>
-      <div class="form-grp">
-        <label class="form-lbl">Tipo de campo</label>
-        <select class="form-inp" id="col-tipo" onchange="toggleColOptions()">
-          <option value="texto">Texto</option>
-          <option value="numero">Número</option>
-          <option value="fecha">Fecha</option>
-          <option value="desplegable">Desplegable (una opción)</option>
-          <option value="multiple">Opción múltiple</option>
-        </select>
-      </div>
-      <div id="col-options-wrap" style="display:none;">
-        <div class="form-grp">
-          <label class="form-lbl">Opciones (una por línea)</label>
-          <textarea class="form-inp" id="col-options" rows="5" placeholder="Opción 1&#10;Opción 2&#10;Opción 3"></textarea>
-        </div>
-      </div>
-    </div>
-    <div class="modal-foot">
-      <button class="btn btn-glass" onclick="closeModal('m-nueva-col')">Cancelar</button>
-      <button class="btn btn-primary" id="col-save-btn" onclick="saveColumn()">Guardar</button>
-    </div>
-  </div>
-</div>
-
-<!-- MODAL: CONFIRMAR ELIMINAR COLUMNA -->
-<div class="modal-overlay" id="m-del-col">
-  <div class="modal" style="width:400px;">
-    <div class="modal-head"><div class="modal-title">⚠️ Eliminar columna</div><button class="modal-close" onclick="closeModal('m-del-col')">✕</button></div>
-    <p style="font-size:14px;color:var(--text-muted);line-height:1.6;" id="del-col-msg"></p>
-    <div class="modal-foot">
-      <button class="btn btn-glass" onclick="closeModal('m-del-col')">Cancelar</button>
-      <button class="btn btn-danger" id="del-col-ok">Eliminar columna</button>
-    </div>
-  </div>
-</div>
 <!-- MODAL: CONFIRMAR -->
 <div class="modal-overlay" id="m-confirm">
   <div class="modal modal-confirm">
@@ -1388,23 +1515,28 @@ function enterApp(){
   cancelGooglePrompt();
   const {nombre,rol,picture} = currentUser;
   const fn = (nombre||'').split(' ')[0] || '—';
-  document.getElementById('user-name').textContent = fn;
-  document.getElementById('user-role').textContent = ({Admin:'🔑',Editor:'✏️',Visualizador:'👁️'}[rol]||'👤')+' '+rol;
   document.getElementById('welcome-name').textContent = fn;
-  const av=document.getElementById('user-avatar');
-  if(picture){av.innerHTML = `<img src="${picture}" alt="${fn}">`;}
-  else{av.textContent = ini(nombre);}
 
-  if(rol==='Admin'){
-    document.getElementById('admin-actions').style.display='flex';
-    document.getElementById('nav-config').style.display='flex';
-    document.getElementById('btn-nuevo-acceso').style.display='inline-flex';
+  // Avatar del header (botón circular)
+  const av = document.getElementById('user-avatar');
+  const avBtn = document.getElementById('user-avatar-btn');
+  if(picture){
+    av.outerHTML = `<img id="user-avatar" src="${picture}" alt="${fn}">`;
+    if(avBtn) avBtn.style.background = '#fff';
+  } else {
+    av.textContent = ini(nombre);
+    if(avBtn) avBtn.style.background = gradFromName(nombre);
+  }
+  if(avBtn) avBtn.title = `${nombre} · ${rol}`;
+
+  // Permisos por rol
+  if(rol==='Admin' || rol==='Editor'){
+    const btnAcc = document.getElementById('btn-nuevo-acceso');
+    if(btnAcc) btnAcc.style.display='inline-flex';
   }
 
   document.getElementById('login-screen').style.display='none';
-  document.getElementById('app').style.display='flex';
-  // Inyectar botones hamburger en cada page-header
-  if(typeof injectMobileMenuButtons === 'function') injectMobileMenuButtons();
+  document.getElementById('app').style.display='block';
   initApp();
 }
 
@@ -1412,10 +1544,8 @@ function doLogout(){
   currentUser=null;
   clearSession();
   cancelGooglePrompt();
-  // Cerrar cualquier modal y el sidebar móvil
+  // Cerrar cualquier modal abierto
   document.querySelectorAll('.modal-overlay.open').forEach(m=>m.classList.remove('open'));
-  document.getElementById('sidebar-nav')?.classList.remove('open');
-  document.getElementById('sidebar-overlay')?.classList.remove('open');
   document.getElementById('app').style.display='none';
   document.getElementById('login-screen').style.display='flex';
   googleBtnRendered=false;
@@ -1483,13 +1613,11 @@ function enqueue(i){
 async function syncAll(){
   if(!currentUser){toast('Sesión no válida',true);return;}
   const btn=document.getElementById('sync-btn');
-  btn.classList.add('syncing');
-  btn.innerHTML='<span class="sync-icon">🔄</span> Sincronizando...';
+  if(btn) btn.classList.add('syncing');
   syncQ();
   await Promise.all([loadColabs(true),loadSegs(true),loadSema(true)]);
-  btn.classList.remove('syncing');
-  btn.innerHTML='<span class="sync-icon">🔄</span> Sincronizar';
-  toast('✅ Datos actualizados','','ok');
+  if(btn) btn.classList.remove('syncing');
+  toast('Datos actualizados','','ok');
 }
 
 // ── INIT — carga caché primero, luego actualiza en fondo ──
@@ -1529,6 +1657,21 @@ async function loadColabs(forceFresh=false){
   renderColabs();updateStats();fillSegColabSel();
 }
 
+// Devuelve un gradiente CSS determinístico a partir del nombre (siempre el mismo color por persona)
+function gradFromName(name){
+  const gradients=[
+    'linear-gradient(135deg,#33A8DE,#506CFF)', // B - azul
+    'linear-gradient(135deg,#18AE97,#0BC3FF)', // C - teal-cyan
+    'linear-gradient(135deg,#F5AD21,#9FDA60)', // D - amarillo-verde
+    'linear-gradient(135deg,#F82D72,#FF85FF)', // E - rosa-magenta
+    'linear-gradient(135deg,#FF751F,#FF376F)', // A - naranja-rosa
+  ];
+  const s=(name||'').trim().toLowerCase();
+  let h=0;
+  for(let i=0;i<s.length;i++){ h=(h*31 + s.charCodeAt(i)) >>> 0; }
+  return gradients[h % gradients.length];
+}
+
 function renderColabs(){
   let d=colaboradores;
   const q=(document.getElementById('f-nombre')?.value||'').toLowerCase();
@@ -1546,24 +1689,25 @@ function renderColabs(){
     body.innerHTML=`<div class="empty-state"><div class="e-ico">👥</div><p>${colaboradores.length?'Sin resultados':'Aún no hay colaboradores registrados'}</p></div>`;
     return;
   }
-  const gr=['linear-gradient(135deg,#33A8DE,#506CFF)','linear-gradient(135deg,#18AE97,#0BC3FF)','linear-gradient(135deg,#F5AD21,#9FDA60)','linear-gradient(135deg,#F82D72,#FF85FF)','linear-gradient(135deg,#FF751F,#FF376F)'];
-  // FIX: usar DocumentFragment para render más eficiente
+  const svgPencil = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>';
+  const svgTrash = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1.5 14a2 2 0 0 1-2 2H8.5a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>';
   const frag=document.createDocumentFragment();
   const tmp=document.createElement('div');
-  tmp.innerHTML=d.map((r,i)=>{
+  tmp.innerHTML=d.map(r=>{
     const n=r.Colaborador||'—',c=r.Cargo||'—',p=r['Programa/Proyecto']||'—',e=r.Estado||'Activo';
     const foto=r['Foto']||'';
+    const grad=gradFromName(n);
     const av=foto
-      ? `<div class="avatar" style="background:${gr[i%gr.length]};overflow:hidden;padding:0;"><img src="${foto}" style="width:100%;height:100%;object-fit:cover;" onerror="this.parentElement.textContent='${ini(n)}'"></div>`
-      : `<div class="avatar" style="background:${gr[i%gr.length]};">${ini(n)}</div>`;
+      ? `<div class="avatar" style="background:${grad};overflow:hidden;padding:0;"><img src="${foto}" style="width:100%;height:100%;object-fit:cover;" onerror="this.parentElement.textContent='${ini(n)}'"></div>`
+      : `<div class="avatar" style="background:${grad};">${ini(n)}</div>`;
     return `<div class="tbl-row" onclick="openFicha('${x(n)}')">
       <div class="col-name">${av}<span>${x(n)}</span></div>
       <div class="col-txt col-cargo">${x(c)}</div>
-      <div class="col-txt col-prog" style="font-size:12px;">${x(p)}</div>
-      <div><span class="badge ${e==='Activo'?'badge-on':'badge-off'}">${e==='Activo'?'🟢':'⚫'} ${x(e)}</span></div>
+      <div class="col-txt col-prog" style="font-size:13px;">${x(p)}</div>
+      <div><span class="badge ${e==='Activo'?'badge-on':'badge-off'}">${x(e)}</span></div>
       <div class="row-acts">
-        <button class="icon-btn" onclick="event.stopPropagation();editColab('${x(n)}')">Editar</button>
-        <button class="icon-btn del" onclick="event.stopPropagation();confirmDel('Colaboradores','${x(n)}','Colaborador')">Eliminar</button>
+        <button class="icon-btn" onclick="event.stopPropagation();editColab('${x(n)}')" title="Editar">${svgPencil}</button>
+        <button class="icon-btn del" onclick="event.stopPropagation();confirmDel('Colaboradores','${x(n)}','Colaborador')" title="Eliminar">${svgTrash}</button>
       </div>
     </div>`;
   }).join('');
@@ -1595,9 +1739,7 @@ function editColab(name){
   if(fotoUrl){
     preview.innerHTML=`<img src="${fotoUrl}" style="width:100%;height:100%;object-fit:cover;" onerror="this.parentElement.innerHTML='<span>${ini(r.Colaborador)}</span>'">`;
   } else {
-    const gr=['linear-gradient(135deg,#33A8DE,#506CFF)','linear-gradient(135deg,#18AE97,#0BC3FF)','linear-gradient(135deg,#F5AD21,#9FDA60)','linear-gradient(135deg,#F82D72,#FF85FF)','linear-gradient(135deg,#FF751F,#FF376F)'];
-    const idx=colaboradores.indexOf(r);
-    preview.style.background=gr[idx%gr.length];
+    preview.style.background=gradFromName(r.Colaborador);
     preview.innerHTML=`<span id="c-photo-initials">${ini(r.Colaborador)}</span>`;
   }
   document.getElementById('c-photo-input').value='';
@@ -1613,9 +1755,7 @@ function openFicha(name){
   if(!r)return;
   editingColab=name;
 
-  const gr=['linear-gradient(135deg,#33A8DE,#506CFF)','linear-gradient(135deg,#18AE97,#0BC3FF)','linear-gradient(135deg,#F5AD21,#9FDA60)','linear-gradient(135deg,#F82D72,#FF85FF)','linear-gradient(135deg,#FF751F,#FF376F)'];
-  const idx=colaboradores.indexOf(r);
-  const grad=gr[idx%gr.length];
+  const grad=gradFromName(r.Colaborador);
 
   // Foto o iniciales
   const photoWrap=document.getElementById('f-photo-wrap');
@@ -1665,9 +1805,7 @@ function editColab(name){
   if(fotoUrl){
     preview.innerHTML=`<img src="${fotoUrl}" style="width:100%;height:100%;object-fit:cover;" onerror="this.parentElement.innerHTML='<span>${ini(r.Colaborador)}</span>'">`;
   } else {
-    const gr=['linear-gradient(135deg,#33A8DE,#506CFF)','linear-gradient(135deg,#18AE97,#0BC3FF)','linear-gradient(135deg,#F5AD21,#9FDA60)','linear-gradient(135deg,#F82D72,#FF85FF)','linear-gradient(135deg,#FF751F,#FF376F)'];
-    const idx=colaboradores.indexOf(r);
-    preview.style.background=gr[idx%gr.length];
+    preview.style.background=gradFromName(r.Colaborador);
     preview.innerHTML=`<span id="c-photo-initials">${ini(r.Colaborador)}</span>`;
   }
   renderColabForm(r);
@@ -1687,8 +1825,7 @@ async function deleteColabPhoto(){
 
   // Reset preview
   const preview=document.getElementById('c-photo-preview');
-  const gr=['linear-gradient(135deg,#33A8DE,#506CFF)','linear-gradient(135deg,#18AE97,#0BC3FF)','linear-gradient(135deg,#F5AD21,#9FDA60)','linear-gradient(135deg,#F82D72,#FF85FF)','linear-gradient(135deg,#FF751F,#FF376F)'];
-  preview.style.background=gr[idx%gr.length];
+  preview.style.background=gradFromName(editingColab);
   preview.innerHTML=`<span id="c-photo-initials">${ini(editingColab)}</span>`;
   document.getElementById('c-photo-delete-btn').style.display='none';
   document.getElementById('c-photo-input').value='';
@@ -2083,7 +2220,6 @@ function renderSema(){
   document.getElementById('p-sinr').textContent=sinR;
 
   const grid=document.getElementById('sema-grid');
-  const gr=['linear-gradient(135deg,#33A8DE,#506CFF)','linear-gradient(135deg,#18AE97,#0BC3FF)','linear-gradient(135deg,#F5AD21,#9FDA60)','linear-gradient(135deg,#F82D72,#FF85FF)','linear-gradient(135deg,#FF751F,#FF376F)'];
   const flds=[['Carga y ritmo','Carga y ritmo de trabajo'],['Clima','Clima y relaciones'],['Estado emocional','Estado emocional y energía'],['Liderazgo','Liderazgo y apoyo']];
 
   if(!d.length&&sinR===0){
@@ -2091,23 +2227,23 @@ function renderSema(){
     return;
   }
 
-  grid.innerHTML=d.map((r,i)=>{
-    // Tarjeta respondida siempre en blanco/neutra. El estado se ve solo en los puntos.
-    return`<div class="sema-card" style="background:var(--surface);border-color:var(--border);">
-      <div class="sema-head"><div class="avatar" style="background:${gr[i%gr.length]};width:36px;height:36px;font-size:11px;">${ini(r.Colaborador)}</div><div><div class="sema-name">${x(r.Colaborador||'—')}</div><div class="sema-meta">${x(r.Mes||'—')} · ${x(r.Equipo||r['Programa/Proyecto']||'')}</div></div></div>
+  grid.innerHTML=d.map(r=>{
+    const grad=gradFromName(r.Colaborador);
+    return`<div class="sema-card">
+      <div class="sema-head"><div class="avatar" style="background:${grad};">${ini(r.Colaborador)}</div><div><div class="sema-name">${x(r.Colaborador||'—')}</div><div class="sema-meta">${x(r.Mes||'—')}${r.Equipo||r['Programa/Proyecto']?' · '+x(r.Equipo||r['Programa/Proyecto']):''}</div></div></div>
       <div class="sema-items">${flds.map(([l,k])=>{if(!r[k])return'';const e=estadoSemaforo(r[k]);const cd=e==='bien'?'🟢':e==='regular'?'🟡':e==='mal'?'🔴':'—';return`<div class="sema-item"><span class="sema-lbl">${l}</span><span style="font-size:18px;">${cd}</span></div>`;}).join('')}</div>
-      <div style="display:flex;gap:8px;margin-top:10px;padding-top:10px;border-top:1px solid var(--border);">
-        <button class="btn btn-primary btn-sm" style="flex:1;" onclick="abrirFichaSema('${x(r.Colaborador)}')">Ver</button>
-        <button class="btn btn-danger btn-sm" style="flex:1;" onclick="confirmDel('Semáforo','${r.RowID}','RowID')">Eliminar</button>
+      <div class="sema-actions">
+        <button class="btn btn-primary btn-sm" onclick="abrirFichaSema('${x(r.Colaborador)}')">Ver</button>
+        <button class="btn btn-danger btn-sm" onclick="confirmDel('Semáforo','${r.RowID}','RowID')">Eliminar</button>
       </div>
     </div>`;
   }).join('');
 
   if(!q&&!eq&&!mes){
     colaboradores.filter(c=>c.Estado==='Activo'&&!semaforo.find(s=>s.Colaborador===c.Colaborador)).forEach(c=>{
-      grid.innerHTML+=`<div class="sema-card" style="border-color:rgba(220,38,90,.2);background:rgba(220,38,90,.02);">
-        <div class="sema-head"><div class="avatar" style="background:#e8e8f0;width:36px;height:36px;font-size:11px;color:var(--text-dim);">${ini(c.Colaborador)}</div><div><div class="sema-name" style="color:var(--text-muted);">${x(c.Colaborador)}</div><div class="sema-meta" style="color:#c91a44;">⚠️ Sin respuesta este mes</div></div></div>
-        <p style="font-size:12px;color:var(--text-dim);margin-top:8px;">No ha completado el formulario.</p>
+      grid.innerHTML+=`<div class="sema-card" style="background:rgba(220,38,90,0.025);">
+        <div class="sema-head"><div class="avatar" style="background:#e8e8f0;color:var(--text-dim);">${ini(c.Colaborador)}</div><div><div class="sema-name" style="color:var(--text-muted);">${x(c.Colaborador)}</div><div class="sema-meta" style="color:#c91a44;">⚠️ Sin respuesta este mes</div></div></div>
+        <p style="font-size:13px;color:var(--text-dim);">No ha completado el formulario.</p>
       </div>`;
     });
   }
@@ -2118,16 +2254,6 @@ function clearSema(){
   document.getElementById('sm-equipo').value='';
   document.getElementById('sm-mes').value='';
   renderSema();
-}
-
-// ── USUARIOS ───────────────────────────────────
-async function saveUsuario(){
-  const nombre=document.getElementById('u-nombre').value.trim(),email=document.getElementById('u-email').value.trim(),rol=document.getElementById('u-rol').value;
-  if(!nombre||!email){toast('Nombre y correo son obligatorios',true);return;}
-  if(!email.endsWith('@'+DOMAIN)){toast('Solo correos @'+DOMAIN,true);return;}
-  closeModal('m-usuario');
-  toast('Usuario creado','','ok');
-  apiPost({action:'createRow',sheet:'Usuarios',data:{Nombre:nombre,Correo:email,Rol:rol,Activo:'TRUE'}}).catch(()=>{});
 }
 
 // ── DELETE ─────────────────────────────────────
@@ -2181,14 +2307,53 @@ function updateStats(){
   document.getElementById('s-colabs').textContent=colaboradores.length;
   document.getElementById('s-segs').textContent=seguimientos.length;
 
-  // Semáforo bien se calcula igual que el dashboard: por cada respuesta individual.
-  const resumen=calcularResumenSemaforo(semaforo||[]);
-  document.getElementById('s-bien').textContent=resumen.pBien;
+  // Calcular semáforo del mes actual para el panel de inicio
+  updateInicioSemaforo();
+}
 
-  const activos=colaboradores.filter(r=>r.Estado==='Activo').length;
-  const respondieron=[...new Set((semaforo||[]).map(r=>r.Colaborador))].length;
-  const sinRespuesta=activos-respondieron;
-  document.getElementById('s-alert').textContent=Math.max(0,sinRespuesta);
+// Resume el semáforo mensual: para cada dimensión, calcula el ánimo predominante
+// y muestra una bolita (🔴 mal / 🟡 regular / 🟢 bien / ⚪ sin datos)
+function updateInicioSemaforo(){
+  const meses=[...new Set((semaforo||[]).map(r=>r.Mes).filter(Boolean))].sort();
+  const mesActual=meses.length?meses[meses.length-1]:null;
+  const datos=mesActual?(semaforo||[]).filter(r=>r.Mes===mesActual):[];
+
+  const dims=[
+    ['is-carga','Carga y ritmo de trabajo'],
+    ['is-clima','Clima y relaciones'],
+    ['is-emo','Estado emocional y energía'],
+    ['is-lid','Liderazgo y apoyo'],
+  ];
+
+  dims.forEach(([id,campo])=>{
+    const el=document.getElementById(id);
+    if(!el) return;
+    if(!datos.length){ el.textContent='⚪'; return; }
+    // Contar respuestas por color
+    let r=0,a=0,v=0;
+    datos.forEach(reg=>{
+      const val=reg[campo]||'';
+      if(val.includes('🔴'))r++;
+      else if(val.includes('🟡'))a++;
+      else if(val.includes('🟢'))v++;
+    });
+    const tot=r+a+v;
+    if(!tot){ el.textContent='⚪'; return; }
+    // Color predominante
+    if(r>=a && r>=v && r>0) el.textContent='🔴';
+    else if(a>=v && a>0) el.textContent='🟡';
+    else if(v>0) el.textContent='🟢';
+    else el.textContent='⚪';
+  });
+
+  const footer=document.getElementById('inicio-sema-footer');
+  if(footer){
+    if(!datos.length){
+      footer.innerHTML='Sin datos del mes actual';
+    } else {
+      footer.innerHTML=`Se han registrado <strong>${datos.length} respuesta${datos.length===1?'':'s'}</strong> en ${mesActual}`;
+    }
+  }
 }
 
 // ── COLUMNAS DINÁMICAS ────────────────────────
@@ -2273,37 +2438,40 @@ function renderAccesos(){
   const cats=[...new Set(visible.map(a=>a.Categoría).filter(Boolean))];
   if(cats.length>1){
     filtros.style.display='flex';
-    catsDiv.innerHTML=`<button onclick="accesoCatFilter='';renderAccesos()" style="padding:6px 14px;border-radius:20px;border:1.5px solid ${!accesoCatFilter?'#33A8DE':'var(--border)'};background:${!accesoCatFilter?'rgba(51,168,222,0.08)':'#fff'};color:${!accesoCatFilter?'#33A8DE':'var(--text-muted)'};font-family:'Outfit',sans-serif;font-size:12px;font-weight:600;cursor:pointer;">Todos</button>
-    ${cats.map(c=>`<button onclick="accesoCatFilter='${c}';renderAccesos()" style="padding:6px 14px;border-radius:20px;border:1.5px solid ${accesoCatFilter===c?'#33A8DE':'var(--border)'};background:${accesoCatFilter===c?'rgba(51,168,222,0.08)':'#fff'};color:${accesoCatFilter===c?'#33A8DE':'var(--text-muted)'};font-family:'Outfit',sans-serif;font-size:12px;font-weight:600;cursor:pointer;">${c}</button>`).join('')}`;
+    catsDiv.innerHTML=`<button onclick="accesoCatFilter='';renderAccesos()" style="padding:8px 16px;border-radius:100px;border:none;background:${!accesoCatFilter?'var(--grad-b)':'#fff'};color:${!accesoCatFilter?'#fff':'var(--text-muted)'};font-family:'Outfit',sans-serif;font-size:13px;font-weight:600;cursor:pointer;box-shadow:0 1px 3px rgba(0,0,0,0.04),0 2px 8px rgba(0,0,0,0.03);">Todos</button>
+    ${cats.map(c=>`<button onclick="accesoCatFilter='${c}';renderAccesos()" style="padding:8px 16px;border-radius:100px;border:none;background:${accesoCatFilter===c?'var(--grad-b)':'#fff'};color:${accesoCatFilter===c?'#fff':'var(--text-muted)'};font-family:'Outfit',sans-serif;font-size:13px;font-weight:600;cursor:pointer;box-shadow:0 1px 3px rgba(0,0,0,0.04),0 2px 8px rgba(0,0,0,0.03);">${c}</button>`).join('')}`;
   } else { filtros.style.display='none'; }
   if(accesoCatFilter) visible=visible.filter(a=>a.Categoría===accesoCatFilter);
   if(!visible.length){grid.innerHTML='<div class="empty-state" style="grid-column:1/-1;"><div class="e-ico">🔗</div><p>No hay accesos disponibles</p></div>';return;}
   const grupos={};
   visible.forEach(a=>{const cat=a.Categoría||'Sin categoría';if(!grupos[cat])grupos[cat]=[];grupos[cat].push(a);});
-  const colors=['#33A8DE','#18AE97','#F5AD21','#F82D72','#506CFF','#FF751F'];
+  const gradients=['var(--grad-b)','var(--grad-c)','var(--grad-d)','var(--grad-e)','var(--grad-a)'];
+  const svgPencil = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>';
+  const svgTrash = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1.5 14a2 2 0 0 1-2 2H8.5a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>';
   let html='';
   Object.entries(grupos).forEach(([cat,items],gi)=>{
-    const color=colors[gi%colors.length];
-    html+=`<div style="grid-column:1/-1;font-size:11px;font-weight:700;color:var(--text-dim);text-transform:uppercase;letter-spacing:1px;margin-top:${gi>0?'8px':'0'};">${cat}</div>`;
+    const grad=gradients[gi%gradients.length];
+    html+=`<div style="grid-column:1/-1;font-size:11px;font-weight:700;color:var(--text-dim);text-transform:uppercase;letter-spacing:1.2px;margin-top:${gi>0?'12px':'0'};">${cat}</div>`;
     items.forEach(a=>{
       const soloAdmin=a['Visible para']==='Solo admin';
-      html+=`<div style="padding:18px;border-radius:var(--radius-md);background:#fff;border:1px solid var(--border);box-shadow:var(--shadow-sm);transition:all 0.18s;cursor:pointer;position:relative;overflow:hidden;"
-        onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='var(--shadow)'"
-        onmouseout="this.style.transform='';this.style.boxShadow='var(--shadow-sm)'"
-        onclick="window.open(this.dataset.href,'_blank')" data-href="${x(a.URL)}">
-        <div style="position:absolute;top:0;left:0;right:0;height:3px;background:${color};"></div>
-        ${soloAdmin?`<span style="position:absolute;top:10px;right:10px;font-size:9px;font-weight:700;padding:2px 7px;border-radius:10px;background:rgba(80,108,255,0.1);color:#506CFF;">ADMIN</span>`:''}
-        <div style="font-size:28px;margin-bottom:10px;">${a.Emoji||'🔗'}</div>
-        <div style="font-size:14px;font-weight:600;color:var(--text);margin-bottom:4px;">${x(a.Nombre||'—')}</div>
-        <div style="font-size:11px;color:var(--text-dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${x(a.URL||'')}</div>
-        ${isAdmin?`<div style="display:flex;gap:6px;margin-top:12px;" onclick="event.stopPropagation()">
-          <button class="icon-btn" onclick="editAcceso('${x(a.ID)}')">✏️</button>
-          <button class="icon-btn del" onclick="confirmDelAcceso('${x(a.ID)}','${x(a.Nombre)}')">🗑️</button>
+      html+=`<div class="acc-card" onclick="window.open(this.dataset.href,'_blank')" data-href="${x(a.URL)}" style="--acc-grad:${grad};">
+        ${soloAdmin?`<span style="position:absolute;top:14px;right:14px;font-size:9px;font-weight:700;padding:3px 9px;border-radius:10px;background:rgba(80,108,255,0.1);color:#506CFF;letter-spacing:0.5px;">ADMIN</span>`:''}
+        <div class="acc-emoji">${a.Emoji||'🔗'}</div>
+        <div class="acc-title">${x(a.Nombre||'—')}</div>
+        <div class="acc-url">${x(a.URL||'')}</div>
+        ${isAdmin?`<div class="acc-acts" onclick="event.stopPropagation()">
+          <button class="icon-btn" onclick="editAcceso('${x(a.ID)}')" title="Editar">${svgPencil}</button>
+          <button class="icon-btn del" onclick="confirmDelAcceso('${x(a.ID)}','${x(a.Nombre)}')" title="Eliminar">${svgTrash}</button>
         </div>`:''}
       </div>`;
     });
   });
   grid.innerHTML=html;
+  // Aplicar el gradiente del grupo a la franja superior de cada card
+  grid.querySelectorAll('.acc-card').forEach(card=>{
+    const g=card.style.getPropertyValue('--acc-grad');
+    if(g){ card.style.setProperty('--acc-grad',g); }
+  });
 }
 
 function abrirNuevoAcceso(){
@@ -2363,224 +2531,16 @@ function confirmDelAcceso(id,nombre){
   openModal('m-confirm');
 }
 
-async function loadConfigSheets(){
-  try{
-    const res = await api({action:'getSheets'});
-    if(res.success){
-      const sel = document.getElementById('cfg-sheet-sel');
-      sel.innerHTML = '<option value="">Seleccionar hoja...</option>' +
-        res.data.map(s=>`<option value="${x(s)}">${x(s)}</option>`).join('');
-    }
-  } catch(e){ console.error('Error cargando hojas',e); }
-}
-
-let cfgCurrentSheet='',cfgColumns=[],cfgEditingCol=null,cfgUsers=[];
-
-function switchConfigTab(tab){
-  document.getElementById('config-columnas').style.display=tab==='columnas'?'block':'none';
-  document.getElementById('config-usuarios').style.display=tab==='usuarios'?'block':'none';
-  const bc=document.getElementById('tab-columnas'),bu=document.getElementById('tab-usuarios');
-  if(tab==='columnas'){bc.style.color='#33A8DE';bc.style.borderBottom='2px solid #33A8DE';bu.style.color='var(--text-muted)';bu.style.borderBottom='none';}
-  else{bu.style.color='#33A8DE';bu.style.borderBottom='2px solid #33A8DE';bc.style.color='var(--text-muted)';bc.style.borderBottom='none';loadConfigUsers();}
-}
-
-async function loadSheetColumns(sheetName){
-  if(!sheetName)return;
-  cfgCurrentSheet=sheetName;
-  document.getElementById('btn-nueva-col').style.display='inline-flex';
-  const wrap=document.getElementById('cfg-cols-wrap');
-  wrap.innerHTML='<div class="empty-state"><span class="spinner spinner-dark"></span><p>Cargando columnas...</p></div>';
-  try{
-    const res=await api({action:'getHeaders',sheet:sheetName});
-    if(res.success){cfgColumns=res.data||[];renderCfgColumns();}
-    else throw new Error();
-  }catch(e){wrap.innerHTML='<div class="empty-state"><div class="e-ico">⚠️</div><p>Error al cargar columnas</p></div>';}
-}
-
-function renderCfgColumns(){
-  const wrap=document.getElementById('cfg-cols-wrap');
-  if(!cfgColumns.length){wrap.innerHTML='<div class="empty-state"><div class="e-ico">📋</div><p>No hay columnas en esta hoja</p></div>';return;}
-  const tl={texto:'Texto',numero:'Número',fecha:'Fecha',desplegable:'Desplegable',multiple:'Opción múltiple'};
-  const tc={texto:'#33A8DE',numero:'#506CFF',fecha:'#18AE97',desplegable:'#F5AD21',multiple:'#F82D72'};
-  wrap.innerHTML=`<div id="cfg-cols-list" style="border-radius:var(--radius-lg);overflow:hidden;border:1px solid var(--border);background:var(--surface);box-shadow:var(--shadow);">
-    <div style="display:grid;grid-template-columns:32px 2fr 1fr 2fr 100px;gap:12px;padding:11px 20px;background:#f8f8fc;border-bottom:1px solid var(--border);font-size:11px;font-weight:700;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.7px;">
-      <div></div><div>Columna</div><div>Tipo</div><div>Opciones</div><div></div>
-    </div>
-    ${cfgColumns.map((col,i)=>`
-    <div class="drag-row" draggable="true" data-idx="${i}" style="display:grid;grid-template-columns:32px 2fr 1fr 2fr 100px;gap:12px;padding:13px 20px;border-bottom:${i<cfgColumns.length-1?'1px solid rgba(0,0,0,0.05)':'none'};align-items:center;">
-      <div style="color:var(--text-dim);font-size:18px;cursor:grab;user-select:none;">⠿</div>
-      <div style="font-size:14px;font-weight:500;color:var(--text);">${x(col.name)}</div>
-      <div><span style="display:inline-flex;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;background:${tc[col.type]||'#33A8DE'}18;color:${tc[col.type]||'#33A8DE'};border:1px solid ${tc[col.type]||'#33A8DE'}33;">${tl[col.type]||'Texto'}</span></div>
-      <div style="font-size:12px;color:var(--text-muted);">${col.options&&col.options.length?col.options.slice(0,3).join(', ')+(col.options.length>3?' +'+(col.options.length-3)+' más':''):'—'}</div>
-      <div style="display:flex;gap:6px;">
-        <button class="icon-btn" onclick="editColumn(${i})">✏️</button>
-        <button class="icon-btn del" onclick="confirmDeleteColumn('${x(col.name)}')">🗑️</button>
-      </div>
-    </div>`).join('')}
-  </div>`;
-  initDragDrop();
-}
-
-function initDragDrop(){
-  const list = document.getElementById('cfg-cols-list');
-  if(!list) return;
-  let dragIdx = null;
-  list.querySelectorAll('.drag-row').forEach(row=>{
-    row.addEventListener('dragstart', e=>{
-      dragIdx = parseInt(row.dataset.idx);
-      row.classList.add('dragging');
-      e.dataTransfer.effectAllowed='move';
-    });
-    row.addEventListener('dragend', ()=> row.classList.remove('dragging'));
-    row.addEventListener('dragover', e=>{
-      e.preventDefault();
-      list.querySelectorAll('.drag-row').forEach(r=>r.classList.remove('drag-over'));
-      row.classList.add('drag-over');
-    });
-    row.addEventListener('drop', async e=>{
-      e.preventDefault();
-      row.classList.remove('drag-over');
-      const dropIdx = parseInt(row.dataset.idx);
-      if(dragIdx===null||dragIdx===dropIdx) return;
-      // Reordenar localmente
-      const moved = cfgColumns.splice(dragIdx,1)[0];
-      cfgColumns.splice(dropIdx,0,moved);
-      renderCfgColumns();
-      // Guardar en Sheet
-      const status=document.getElementById('cfg-saving');
-      status.style.display='inline';
-      try{
-        const res=await apiPost({action:'reorderColumns',sheet:cfgCurrentSheet,order:cfgColumns.map(c=>c.name)});
-        if(res.success) toast('Orden guardado','','ok');
-        else throw new Error();
-      }catch(e){ toast('Error al guardar orden',true); }
-      status.style.display='none';
-      dragIdx=null;
-    });
-  });
-}
-
-function editColumn(idx){
-  cfgEditingCol=cfgColumns[idx];
-  document.getElementById('m-col-title').textContent='Editar columna';
-  document.getElementById('col-nombre').value=cfgEditingCol.name;
-  document.getElementById('col-tipo').value=cfgEditingCol.type||'texto';
-  document.getElementById('col-options').value=(cfgEditingCol.options||[]).join('\n');
-  toggleColOptions();openModal('m-nueva-col');
-}
-
-function toggleColOptions(){
-  const t=document.getElementById('col-tipo').value;
-  document.getElementById('col-options-wrap').style.display=(t==='desplegable'||t==='multiple')?'block':'none';
-}
-
-async function saveColumn(){
-  const nombre=document.getElementById('col-nombre').value.trim();
-  const tipo=document.getElementById('col-tipo').value;
-  const options=document.getElementById('col-options').value.split('\n').map(o=>o.trim()).filter(Boolean);
-  if(!nombre){toast('El nombre es obligatorio',true);return;}
-  const btn=document.getElementById('col-save-btn');btn.innerHTML='<span class="spinner"></span>';btn.disabled=true;
-  try{
-    let res;
-    if(cfgEditingCol){
-      if(cfgEditingCol.name!==nombre){
-        res=await apiPost({action:'renameColumn',sheet:cfgCurrentSheet,oldName:cfgEditingCol.name,newName:nombre});
-        if(!res.success)throw new Error(res.message);
-      }
-      res=await apiPost({action:'updateColumnType',sheet:cfgCurrentSheet,columnName:nombre,columnType:tipo,options});
-    }else{
-      res=await apiPost({action:'addColumn',sheet:cfgCurrentSheet,columnName:nombre,columnType:tipo,options});
-    }
-    if(res&&res.success){toast(cfgEditingCol?'Columna actualizada':'Columna agregada','','ok');closeModal('m-nueva-col');cfgEditingCol=null;await loadSheetColumns(cfgCurrentSheet);}
-    else throw new Error(res?.message||'Error');
-  }catch(e){toast('Error: '+e.message,true);}
-  btn.innerHTML='Guardar';btn.disabled=false;
-}
-
-function confirmDeleteColumn(colName){
-  document.getElementById('del-col-msg').innerHTML=`¿Eliminar la columna <strong>"${colName}"</strong>?<br><br><span style="color:#c91a44;">⚠️ Se eliminarán todos los datos de esa columna. No se puede deshacer.</span>`;
-  document.getElementById('del-col-ok').onclick=()=>executeDeleteColumn(colName);
-  openModal('m-del-col');
-}
-
-async function executeDeleteColumn(colName){
-  try{
-    const res=await apiPost({action:'deleteColumn',sheet:cfgCurrentSheet,columnName:colName});
-    if(res.success){toast('Columna eliminada','','ok');closeModal('m-del-col');await loadSheetColumns(cfgCurrentSheet);}
-    else throw new Error(res.message);
-  }catch(e){toast('Error: '+e.message,true);}
-}
-
-async function loadConfigUsers(){
-  try{const res=await api({action:'getAll',sheet:'Usuarios'});cfgUsers=res.success?(res.data||[]):[];}
-  catch(e){cfgUsers=[];}
-  renderConfigUsers();
-}
-
-function renderConfigUsers(){
-  const body=document.getElementById('cfg-users-body');
-  if(!cfgUsers.length){body.innerHTML='<div class="empty-state"><div class="e-ico">👤</div><p>No hay usuarios registrados</p></div>';return;}
-  body.innerHTML=cfgUsers.map((u,i)=>`
-    <div style="display:grid;grid-template-columns:2fr 2fr 1fr 1fr;gap:12px;padding:13px 20px;border-bottom:${i<cfgUsers.length-1?'1px solid rgba(0,0,0,0.05)':'none'};align-items:center;">
-      <div style="font-size:14px;font-weight:500;color:var(--text);">${x(u.Nombre||u['Nombre completo']||'—')}</div>
-      <div style="font-size:13px;color:var(--text-muted);">${x(u.Correo||'—')}</div>
-      <div><select onchange="updateUserRol('${x(u.Correo)}',this.value)" style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:4px 8px;font-family:'Outfit',sans-serif;font-size:12px;outline:none;cursor:pointer;">
-        <option value="Visualizador" ${u.Rol==='Visualizador'?'selected':''}>Visualizador</option>
-        <option value="Editor"       ${u.Rol==='Editor'?'selected':''}>Editor</option>
-        <option value="Admin"        ${u.Rol==='Admin'?'selected':''}>Admin</option>
-      </select></div>
-      <div><span style="padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;${u.Activo==='TRUE'||u.Activo==='true'?'background:rgba(24,174,151,0.1);color:#0a9e83;border:1px solid rgba(24,174,151,0.2);':'background:rgba(0,0,0,0.05);color:var(--text-muted);border:1px solid var(--border);'}">${u.Activo==='TRUE'||u.Activo==='true'?'Activo':'Inactivo'}</span></div>
-    </div>`).join('');
-}
-
-async function updateUserRol(correo,nuevoRol){
-  apiPost({action:'updateRow',sheet:'Usuarios',data:{Rol:nuevoRol},identifier:correo})
-    .then(()=>toast('Rol actualizado','','ok'))
-    .catch(()=>toast('Error al actualizar rol',true));
-}
 
 // ── NAV / MODAL ────────────────────────────────
-// ── SIDEBAR MÓVIL (drawer) ─────────────────────
-function openSidebarMobile(){
-  document.getElementById('sidebar-nav')?.classList.add('open');
-  document.getElementById('sidebar-overlay')?.classList.add('open');
-}
-function closeSidebarMobile(){
-  document.getElementById('sidebar-nav')?.classList.remove('open');
-  document.getElementById('sidebar-overlay')?.classList.remove('open');
-}
-// Inyecta el botón hamburger en cada page-header (una sola vez)
-function injectMobileMenuButtons(){
-  document.querySelectorAll('.page-header').forEach(h=>{
-    if(h.querySelector('.mob-menu-btn')) return;
-    const btn = document.createElement('button');
-    btn.className = 'mob-menu-btn';
-    btn.setAttribute('onclick','openSidebarMobile()');
-    btn.setAttribute('title','Menú');
-    btn.innerHTML = '☰';
-    // Envolver el primer div en un flex container con el botón a la izquierda
-    const firstDiv = h.firstElementChild;
-    if(firstDiv){
-      const wrapper = document.createElement('div');
-      wrapper.style.cssText = 'display:flex;align-items:center;gap:12px;flex:1;min-width:0;';
-      h.insertBefore(wrapper, firstDiv);
-      wrapper.appendChild(btn);
-      wrapper.appendChild(firstDiv);
-    } else {
-      h.insertBefore(btn, h.firstChild);
-    }
-  });
-}
-
 function go(s){
   document.querySelectorAll('.screen').forEach(e=>e.classList.remove('active'));
-  document.querySelectorAll('.nav-item').forEach(e=>e.classList.remove('active'));
+  document.querySelectorAll('.bn-item').forEach(e=>e.classList.remove('active'));
   document.getElementById('screen-'+s)?.classList.add('active');
   document.getElementById('nav-'+s)?.classList.add('active');
   if(s==='accesos') loadAccesos();
-  if(s==='config') loadConfigSheets();
-  // Cerrar sidebar al navegar en móvil
-  if(window.innerWidth <= 768) closeSidebarMobile();
+  // Scroll al top en cada cambio de pantalla
+  window.scrollTo({top:0,behavior:'smooth'});
 }
 function openModal(id){
   document.getElementById(id)?.classList.add('open');
