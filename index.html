@@ -275,26 +275,28 @@
   .col-name{display:flex;align-items:center;gap:12px;font-size:14px;font-weight:600;color:var(--text);min-width:0;}
   .col-name > span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
   .col-txt{font-size:13px;color:var(--text-muted);}
-  .row-acts{display:flex;gap:6px;opacity:0;transition:opacity 0.12s;}
-  .tbl-row:hover .row-acts{opacity:1;}
+  .row-acts{display:flex;gap:6px;}
   .icon-btn{
     background:var(--surface-hover);
     border:none;
-    border-radius:10px;
-    padding:7px 10px;
+    border-radius:50%;
+    width:34px;
+    height:34px;
     display:inline-flex;
     align-items:center;
     justify-content:center;
     cursor:pointer;
     color:var(--text-muted);
-    transition:all 0.12s;
+    transition:all 0.15s;
     font-family:'Outfit',sans-serif;
-    font-size:12px;
-    font-weight:600;
+    padding:0;
+    flex-shrink:0;
   }
-  .icon-btn svg{width:15px;height:15px;stroke-width:2;}
-  .icon-btn:hover{background:#e8e8f0;color:var(--text);}
-  .icon-btn.del:hover{background:rgba(220,38,90,0.1);color:#c91a44;}
+  .icon-btn svg{width:16px;height:16px;stroke-width:2;}
+  .icon-btn:hover{background:#e8e8f0;color:var(--text);transform:translateY(-1px);}
+  .icon-btn:active{transform:translateY(0) scale(0.94);}
+  .icon-btn.del{color:#c91a44;}
+  .icon-btn.del:hover{background:rgba(220,38,90,0.12);color:#c91a44;}
 
   .avatar{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0;color:#fff;}
   .avatar-lg{width:46px;height:46px;font-size:15px;}
@@ -401,6 +403,14 @@
   }
   .sum-val{font-size:30px;font-weight:700;color:var(--text);letter-spacing:-1px;}
   .sum-lbl{font-size:12px;color:var(--text-muted);margin-top:4px;}
+
+  /* Sum-cards por dimensión (consolidado del semáforo) */
+  .sum-dim{display:flex;flex-direction:column;gap:14px;text-align:left;align-items:stretch;}
+  .sum-dim-title{font-size:13px;font-weight:700;color:var(--text);line-height:1.2;}
+  .sum-dim-stats{display:flex;justify-content:space-between;gap:8px;align-items:center;}
+  .sum-dim-stat{display:flex;align-items:center;gap:6px;font-size:15px;font-weight:700;color:var(--text);}
+  .sum-dim-stat span:first-child{font-size:14px;line-height:1;}
+  .sum-dim-stat.dim{opacity:0.35;}
   .sema-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;}
   .sema-card{
     padding:22px;
@@ -419,8 +429,7 @@
   .sema-items{display:flex;flex-direction:column;gap:10px;}
   .sema-item{display:flex;align-items:center;justify-content:space-between;}
   .sema-lbl{font-size:13px;color:var(--text);font-weight:500;}
-  .sema-actions{display:flex;gap:10px;margin-top:4px;}
-  .sema-actions .btn{flex:1;}
+  .sema-actions{display:flex;gap:8px;margin-top:4px;justify-content:flex-end;}
 
   /* ── ACCESOS ── cards más limpias */
   .acc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;}
@@ -439,8 +448,7 @@
   .acc-emoji{font-size:28px;line-height:1;}
   .acc-title{font-size:15px;font-weight:700;color:var(--text);}
   .acc-url{font-size:12px;color:var(--text-dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-  .acc-acts{display:flex;gap:8px;margin-top:6px;opacity:0;transition:opacity 0.15s;}
-  .acc-card:hover .acc-acts{opacity:1;}
+  .acc-acts{display:flex;gap:8px;margin-top:6px;}
 
   /* ── FORM ── */
   /* ── FORMS — Look Ficha Nodal: limpio, espacioso, 1 columna ── */
@@ -656,10 +664,14 @@
     }
     .modal-foot .btn{flex:1;height:52px;font-size:15px;}
     .modal-foot .btn-primary{padding:14px 20px;}
+    .modal-foot .icon-btn{width:44px;height:44px;}
+    .modal-foot .icon-btn svg{width:18px;height:18px;}
   }
   @media(min-width:769px){
     .modal-foot{justify-content:flex-end;}
     .modal-foot .btn{min-width:140px;}
+    .modal-foot .icon-btn{width:40px;height:40px;}
+    .modal-foot .icon-btn svg{width:18px;height:18px;}
   }
 
   /* ── TOAST ── */
@@ -720,8 +732,6 @@
     .login-card{width:92vw;padding:36px 24px;}
     .sum-row{grid-template-columns:1fr 1fr;gap:10px;}
     .sum-card{padding:18px 12px;border-radius:18px;}
-    .row-acts{opacity:1;}
-    .acc-acts{opacity:1;}
 
     /* Forms en móvil */
     .form-lbl{font-size:14px;}
@@ -767,17 +777,14 @@
       grid-column:1 / 4;
       grid-row:2;
       display:flex;
-      gap:8px;
-      width:100%;
-      opacity:1;
+      gap:10px;
+      justify-content:flex-end;
     }
     .tbl-row .icon-btn{
-      flex:1;
-      justify-content:center;
-      padding:10px 12px;
-      font-size:13px;
-      border-radius:12px;
+      width:40px;
+      height:40px;
     }
+    .tbl-row .icon-btn svg{width:18px;height:18px;}
     .tbl-row .col-txt{display:none;}
   }
 
@@ -992,11 +999,39 @@
         <select class="filter-sel" id="sm-equipo" onchange="renderSema()"><option value="">Todos los equipos</option><option>General</option><option>ReCircula</option><option>Vidrio Mejor Planeta</option><option>Juntos Por La Vida</option><option>Otros</option></select>
         <select class="filter-sel" id="sm-mes" onchange="renderSema()"><option value="">Todos los meses</option></select>
       </div>
-      <div class="sum-row">
-        <div class="sum-card"><div style="font-size:22px;">🟢</div><div class="sum-val grad-c-text" id="p-bien">—</div><div class="sum-lbl">Bien</div></div>
-        <div class="sum-card"><div style="font-size:22px;">🟡</div><div class="sum-val grad-d-text" id="p-reg">—</div><div class="sum-lbl">Regular</div></div>
-        <div class="sum-card"><div style="font-size:22px;">🔴</div><div class="sum-val grad-a-text" id="p-mal">—</div><div class="sum-lbl">Mal</div></div>
-        <div class="sum-card"><div style="font-size:22px;">⚪</div><div class="sum-val" id="p-sinr">—</div><div class="sum-lbl">Sin respuesta</div></div>
+      <div class="sum-row" id="sema-resumen">
+        <div class="sum-card sum-dim">
+          <div class="sum-dim-title">Carga y ritmo</div>
+          <div class="sum-dim-stats">
+            <div class="sum-dim-stat"><span>🟢</span><span id="d-carga-bien">—</span></div>
+            <div class="sum-dim-stat"><span>🟡</span><span id="d-carga-reg">—</span></div>
+            <div class="sum-dim-stat"><span>🔴</span><span id="d-carga-mal">—</span></div>
+          </div>
+        </div>
+        <div class="sum-card sum-dim">
+          <div class="sum-dim-title">Clima y relaciones</div>
+          <div class="sum-dim-stats">
+            <div class="sum-dim-stat"><span>🟢</span><span id="d-clima-bien">—</span></div>
+            <div class="sum-dim-stat"><span>🟡</span><span id="d-clima-reg">—</span></div>
+            <div class="sum-dim-stat"><span>🔴</span><span id="d-clima-mal">—</span></div>
+          </div>
+        </div>
+        <div class="sum-card sum-dim">
+          <div class="sum-dim-title">Estado emocional</div>
+          <div class="sum-dim-stats">
+            <div class="sum-dim-stat"><span>🟢</span><span id="d-emo-bien">—</span></div>
+            <div class="sum-dim-stat"><span>🟡</span><span id="d-emo-reg">—</span></div>
+            <div class="sum-dim-stat"><span>🔴</span><span id="d-emo-mal">—</span></div>
+          </div>
+        </div>
+        <div class="sum-card sum-dim">
+          <div class="sum-dim-title">Liderazgo</div>
+          <div class="sum-dim-stats">
+            <div class="sum-dim-stat"><span>🟢</span><span id="d-lid-bien">—</span></div>
+            <div class="sum-dim-stat"><span>🟡</span><span id="d-lid-reg">—</span></div>
+            <div class="sum-dim-stat"><span>🔴</span><span id="d-lid-mal">—</span></div>
+          </div>
+        </div>
       </div>
       <div class="sema-grid" id="sema-grid"><div class="empty-state"><span class="spinner"></span><p>Cargando...</p></div></div>
     </div>
@@ -1121,9 +1156,9 @@
     </div>
     <div class="modal-body" style="display:grid;grid-template-columns:1fr 1fr;gap:14px;" id="f-body"></div>
     <div class="modal-foot">
-      <button class="btn btn-glass btn-sm" onclick="generarPDFFicha(editingColab)">PDF Ficha</button>
-      <button class="btn btn-glass btn-sm" onclick="editCurrentColab()">Editar</button>
-      <button class="btn btn-danger btn-sm" onclick="confirmDelColab()">Eliminar</button>
+      <button class="icon-btn" onclick="generarPDFFicha(editingColab)" title="Descargar PDF"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></button>
+      <button class="icon-btn" onclick="editCurrentColab()" title="Editar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></button>
+      <button class="icon-btn del" onclick="confirmDelColab()" title="Eliminar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1.5 14a2 2 0 0 1-2 2H8.5a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg></button>
     </div>
   </div>
 </div>
@@ -1658,6 +1693,14 @@ async function loadColabs(forceFresh=false){
 }
 
 // Devuelve un gradiente CSS determinístico a partir del nombre (siempre el mismo color por persona)
+// ── ÍCONOS SVG UNIFICADOS — usar en TODA la app ──
+const ICONS = {
+  view:     '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>',
+  edit:     '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>',
+  download: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>',
+  trash:    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1.5 14a2 2 0 0 1-2 2H8.5a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>',
+};
+
 function gradFromName(name){
   const gradients=[
     'linear-gradient(135deg,#33A8DE,#506CFF)', // B - azul
@@ -1689,8 +1732,6 @@ function renderColabs(){
     body.innerHTML=`<div class="empty-state"><div class="e-ico">👥</div><p>${colaboradores.length?'Sin resultados':'Aún no hay colaboradores registrados'}</p></div>`;
     return;
   }
-  const svgPencil = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>';
-  const svgTrash = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1.5 14a2 2 0 0 1-2 2H8.5a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>';
   const frag=document.createDocumentFragment();
   const tmp=document.createElement('div');
   tmp.innerHTML=d.map(r=>{
@@ -1706,8 +1747,8 @@ function renderColabs(){
       <div class="col-txt col-prog" style="font-size:13px;">${x(p)}</div>
       <div><span class="badge ${e==='Activo'?'badge-on':'badge-off'}">${x(e)}</span></div>
       <div class="row-acts">
-        <button class="icon-btn" onclick="event.stopPropagation();editColab('${x(n)}')" title="Editar">${svgPencil}</button>
-        <button class="icon-btn del" onclick="event.stopPropagation();confirmDel('Colaboradores','${x(n)}','Colaborador')" title="Eliminar">${svgTrash}</button>
+        <button class="icon-btn" onclick="event.stopPropagation();editColab('${x(n)}')" title="Editar">${ICONS.edit}</button>
+        <button class="icon-btn del" onclick="event.stopPropagation();confirmDel('Colaboradores','${x(n)}','Colaborador')" title="Eliminar">${ICONS.trash}</button>
       </div>
     </div>`;
   }).join('');
@@ -2068,7 +2109,7 @@ function loadPanels(){
     });
     const textFields=[['Inicio del semestre','¿Cómo inicias este semestre a nivel personal y laboral?'],['Asuntos personales','Asuntos personales / familiares / salud que debamos considerar'],['Metas laborales','Metas laborales'],['Retos laborales','Retos laborales']];
     textFields.forEach(([l,k])=>{if(r[k])html+=`<div class="f-block"><div class="f-lbl">${l}</div><div class="f-val">${x(r[k])}</div></div>`;});
-    html+=`<div style="display:flex;gap:8px;margin-top:4px;flex-wrap:wrap;"><button class="btn btn-primary btn-sm" onclick="openFichaSeg('${name}','${r.RowID}')">Ver ficha</button><button class="btn btn-glass btn-sm" onclick="editSeg('${r.RowID}')">Editar</button><button class="btn btn-glass btn-sm" onclick="generarPDFSeguimiento('${name}')">PDF</button><button class="btn btn-danger btn-sm" onclick="confirmDel('Seguimiento','${r.RowID}','RowID')">Eliminar</button></div>`;
+    html+=`<div style="display:flex;gap:8px;margin-top:8px;justify-content:flex-end;"><button class="icon-btn" onclick="openFichaSeg('${name}','${r.RowID}')" title="Ver ficha">${ICONS.view}</button><button class="icon-btn" onclick="editSeg('${r.RowID}')" title="Editar">${ICONS.edit}</button><button class="icon-btn" onclick="generarPDFSeguimiento('${name}')" title="Descargar PDF">${ICONS.download}</button><button class="icon-btn del" onclick="confirmDel('Seguimiento','${r.RowID}','RowID')" title="Eliminar">${ICONS.trash}</button></div>`;
     return html;
   }
   window._pb=pb;
@@ -2204,20 +2245,34 @@ function renderSema(){
   const mSel=document.getElementById('sm-mes');
   if(mSel && mSel.options.length<=1)meses.forEach(m=>{const o=document.createElement('option');o.textContent=m;mSel.appendChild(o);});
 
-  // Porcentajes calculados por cada respuesta del semáforo, no solo por persona.
-  const resumen = calcularResumenSemaforo(d);
+  // Cálculo por dimensión: % bien / regular / mal de cada una
+  const dims=[
+    {prefix:'d-carga',campo:'Carga y ritmo de trabajo'},
+    {prefix:'d-clima',campo:'Clima y relaciones'},
+    {prefix:'d-emo',  campo:'Estado emocional y energía'},
+    {prefix:'d-lid',  campo:'Liderazgo y apoyo'},
+  ];
+  dims.forEach(({prefix,campo})=>{
+    let b=0,r=0,m=0;
+    d.forEach(reg=>{
+      const e=estadoSemaforo(reg[campo]);
+      if(e==='bien')b++;
+      else if(e==='regular')r++;
+      else if(e==='mal')m++;
+    });
+    const tot=b+r+m;
+    const fmt=v=>tot? Math.round((v/tot)*100)+'%' : '—';
+    document.getElementById(prefix+'-bien').textContent = fmt(b);
+    document.getElementById(prefix+'-reg').textContent  = fmt(r);
+    document.getElementById(prefix+'-mal').textContent  = fmt(m);
+  });
 
-  // Sin respuesta calculado sobre activos visibles en el filtro actual.
+  // Activos sin respuesta (para mostrar cards huérfanas abajo)
   let activosLista = colaboradores.filter(c=>c.Estado==='Activo');
   if(q) activosLista = activosLista.filter(c=>(c.Colaborador||'').toLowerCase().includes(q));
   if(eq) activosLista = activosLista.filter(c=>c.Equipo===eq||c['Programa/Proyecto']===eq);
   const respondieron = new Set(d.map(r=>r.Colaborador));
   const sinR = activosLista.filter(c=>!respondieron.has(c.Colaborador)).length;
-
-  document.getElementById('p-bien').textContent=resumen.pBien;
-  document.getElementById('p-reg').textContent=resumen.pRegular;
-  document.getElementById('p-mal').textContent=resumen.pMal;
-  document.getElementById('p-sinr').textContent=sinR;
 
   const grid=document.getElementById('sema-grid');
   const flds=[['Carga y ritmo','Carga y ritmo de trabajo'],['Clima','Clima y relaciones'],['Estado emocional','Estado emocional y energía'],['Liderazgo','Liderazgo y apoyo']];
@@ -2233,8 +2288,8 @@ function renderSema(){
       <div class="sema-head"><div class="avatar" style="background:${grad};">${ini(r.Colaborador)}</div><div><div class="sema-name">${x(r.Colaborador||'—')}</div><div class="sema-meta">${x(r.Mes||'—')}${r.Equipo||r['Programa/Proyecto']?' · '+x(r.Equipo||r['Programa/Proyecto']):''}</div></div></div>
       <div class="sema-items">${flds.map(([l,k])=>{if(!r[k])return'';const e=estadoSemaforo(r[k]);const cd=e==='bien'?'🟢':e==='regular'?'🟡':e==='mal'?'🔴':'—';return`<div class="sema-item"><span class="sema-lbl">${l}</span><span style="font-size:18px;">${cd}</span></div>`;}).join('')}</div>
       <div class="sema-actions">
-        <button class="btn btn-primary btn-sm" onclick="abrirFichaSema('${x(r.Colaborador)}')">Ver</button>
-        <button class="btn btn-danger btn-sm" onclick="confirmDel('Semáforo','${r.RowID}','RowID')">Eliminar</button>
+        <button class="icon-btn" onclick="abrirFichaSema('${x(r.Colaborador)}')" title="Ver">${ICONS.view}</button>
+        <button class="icon-btn del" onclick="confirmDel('Semáforo','${r.RowID}','RowID')" title="Eliminar">${ICONS.trash}</button>
       </div>
     </div>`;
   }).join('');
@@ -2329,13 +2384,13 @@ function updateInicioSemaforo(){
     const el=document.getElementById(id);
     if(!el) return;
     if(!datos.length){ el.textContent='⚪'; return; }
-    // Contar respuestas por color
+    // Contar respuestas por estado usando la función centralizada
     let r=0,a=0,v=0;
     datos.forEach(reg=>{
-      const val=reg[campo]||'';
-      if(val.includes('🔴'))r++;
-      else if(val.includes('🟡'))a++;
-      else if(val.includes('🟢'))v++;
+      const e=estadoSemaforo(reg[campo]);
+      if(e==='mal')r++;
+      else if(e==='regular')a++;
+      else if(e==='bien')v++;
     });
     const tot=r+a+v;
     if(!tot){ el.textContent='⚪'; return; }
@@ -2446,8 +2501,6 @@ function renderAccesos(){
   const grupos={};
   visible.forEach(a=>{const cat=a.Categoría||'Sin categoría';if(!grupos[cat])grupos[cat]=[];grupos[cat].push(a);});
   const gradients=['var(--grad-b)','var(--grad-c)','var(--grad-d)','var(--grad-e)','var(--grad-a)'];
-  const svgPencil = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>';
-  const svgTrash = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1.5 14a2 2 0 0 1-2 2H8.5a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>';
   let html='';
   Object.entries(grupos).forEach(([cat,items],gi)=>{
     const grad=gradients[gi%gradients.length];
@@ -2460,8 +2513,8 @@ function renderAccesos(){
         <div class="acc-title">${x(a.Nombre||'—')}</div>
         <div class="acc-url">${x(a.URL||'')}</div>
         ${isAdmin?`<div class="acc-acts" onclick="event.stopPropagation()">
-          <button class="icon-btn" onclick="editAcceso('${x(a.ID)}')" title="Editar">${svgPencil}</button>
-          <button class="icon-btn del" onclick="confirmDelAcceso('${x(a.ID)}','${x(a.Nombre)}')" title="Eliminar">${svgTrash}</button>
+          <button class="icon-btn" onclick="editAcceso('${x(a.ID)}')" title="Editar">${ICONS.edit}</button>
+          <button class="icon-btn del" onclick="confirmDelAcceso('${x(a.ID)}','${x(a.Nombre)}')" title="Eliminar">${ICONS.trash}</button>
         </div>`:''}
       </div>`;
     });
