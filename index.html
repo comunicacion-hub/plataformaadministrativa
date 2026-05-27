@@ -338,8 +338,11 @@
   }
   .inicio-sema-title{font-size:28px;font-weight:700;color:var(--text);letter-spacing:-0.8px;line-height:1.1;margin-bottom:24px;}
   .inicio-sema-list{display:flex;flex-direction:column;gap:14px;flex:1;}
-  .inicio-sema-row{display:flex;align-items:center;justify-content:space-between;font-size:15px;color:var(--text);font-weight:500;}
-  .inicio-sema-row span:last-child{font-size:18px;}
+  .inicio-sema-row{display:flex;align-items:center;justify-content:space-between;gap:14px;font-size:15px;color:var(--text);font-weight:500;}
+  .inicio-sema-label{flex:1;min-width:0;}
+  .inicio-sema-pcts{display:flex;align-items:center;gap:14px;flex-shrink:0;}
+  .inicio-sema-pct{display:inline-flex;align-items:center;gap:5px;font-size:14px;font-weight:700;color:var(--text);}
+  .inicio-sema-pct span:first-child{font-size:13px;line-height:1;}
   .inicio-sema-footer{
     margin-top:20px;padding-top:16px;
     border-top:2px solid;
@@ -356,6 +359,9 @@
   @media(max-width:560px){
     .inicio-stats-col{flex-direction:column;}
     .inicio-stat-value{font-size:52px;}
+    .inicio-sema-row{font-size:14px;gap:8px;}
+    .inicio-sema-pcts{gap:8px;}
+    .inicio-sema-pct{font-size:13px;}
     .inicio-sema-title{font-size:24px;}
   }
 
@@ -912,10 +918,38 @@
         <div class="inicio-sema-card">
           <div class="inicio-sema-title">Semáforo<br>Mensual</div>
           <div class="inicio-sema-list" id="inicio-sema-list">
-            <div class="inicio-sema-row"><span>Carga y ritmo</span><span id="is-carga">—</span></div>
-            <div class="inicio-sema-row"><span>Clima y relaciones</span><span id="is-clima">—</span></div>
-            <div class="inicio-sema-row"><span>Estado emocional</span><span id="is-emo">—</span></div>
-            <div class="inicio-sema-row"><span>Liderazgo</span><span id="is-lid">—</span></div>
+            <div class="inicio-sema-row">
+              <span class="inicio-sema-label">Carga y ritmo</span>
+              <span class="inicio-sema-pcts">
+                <span class="inicio-sema-pct"><span>🟢</span><span id="is-carga-bien">—</span></span>
+                <span class="inicio-sema-pct"><span>🟡</span><span id="is-carga-reg">—</span></span>
+                <span class="inicio-sema-pct"><span>🔴</span><span id="is-carga-mal">—</span></span>
+              </span>
+            </div>
+            <div class="inicio-sema-row">
+              <span class="inicio-sema-label">Clima y relaciones</span>
+              <span class="inicio-sema-pcts">
+                <span class="inicio-sema-pct"><span>🟢</span><span id="is-clima-bien">—</span></span>
+                <span class="inicio-sema-pct"><span>🟡</span><span id="is-clima-reg">—</span></span>
+                <span class="inicio-sema-pct"><span>🔴</span><span id="is-clima-mal">—</span></span>
+              </span>
+            </div>
+            <div class="inicio-sema-row">
+              <span class="inicio-sema-label">Estado emocional</span>
+              <span class="inicio-sema-pcts">
+                <span class="inicio-sema-pct"><span>🟢</span><span id="is-emo-bien">—</span></span>
+                <span class="inicio-sema-pct"><span>🟡</span><span id="is-emo-reg">—</span></span>
+                <span class="inicio-sema-pct"><span>🔴</span><span id="is-emo-mal">—</span></span>
+              </span>
+            </div>
+            <div class="inicio-sema-row">
+              <span class="inicio-sema-label">Liderazgo</span>
+              <span class="inicio-sema-pcts">
+                <span class="inicio-sema-pct"><span>🟢</span><span id="is-lid-bien">—</span></span>
+                <span class="inicio-sema-pct"><span>🟡</span><span id="is-lid-reg">—</span></span>
+                <span class="inicio-sema-pct"><span>🔴</span><span id="is-lid-mal">—</span></span>
+              </span>
+            </div>
           </div>
           <div class="inicio-sema-footer" id="inicio-sema-footer">Sin datos del mes actual</div>
         </div>
@@ -2233,17 +2267,38 @@ async function loadSema(){
 
 function renderSema(){
   let d=semaforo;
-  const q=(document.getElementById('sm-nombre')?.value||'').toLowerCase();
-  const eq=document.getElementById('sm-equipo')?.value;
-  const mes=document.getElementById('sm-mes')?.value;
+  const q=(document.getElementById('sm-nombre')?.value||'').toLowerCase().trim();
+  const eq=document.getElementById('sm-equipo')?.value||'';
+  const mes=document.getElementById('sm-mes')?.value||'';
+
+  // Helper: dado un nombre de colaborador, devuelve su Programa/Proyecto (desde la hoja Colaboradores)
+  const getProg = (nombre) => {
+    const c = colaboradores.find(x=>x.Colaborador===nombre);
+    return c ? (c['Programa/Proyecto']||c.Equipo||'') : '';
+  };
 
   if(q)d=d.filter(r=>(r.Colaborador||'').toLowerCase().includes(q));
-  if(eq)d=d.filter(r=>r.Equipo===eq||r['Programa/Proyecto']===eq);
-  if(mes)d=d.filter(r=>r.Mes===mes);
+  if(eq){
+    // El campo Equipo/Programa puede venir en el propio registro o por join con Colaboradores
+    d=d.filter(r=>{
+      const propio = r.Equipo || r['Programa/Proyecto'] || '';
+      if(propio === eq) return true;
+      return getProg(r.Colaborador) === eq;
+    });
+  }
+  if(mes)d=d.filter(r=>(r.Mes||'').trim() === mes.trim());
 
-  const meses=[...new Set(semaforo.map(r=>r.Mes).filter(Boolean))];
+  // Poblar select de meses (solo la primera vez, con value explícito)
   const mSel=document.getElementById('sm-mes');
-  if(mSel && mSel.options.length<=1)meses.forEach(m=>{const o=document.createElement('option');o.textContent=m;mSel.appendChild(o);});
+  if(mSel && mSel.options.length<=1){
+    const meses=[...new Set(semaforo.map(r=>(r.Mes||'').trim()).filter(Boolean))].sort();
+    meses.forEach(m=>{
+      const o=document.createElement('option');
+      o.value=m;
+      o.textContent=m;
+      mSel.appendChild(o);
+    });
+  }
 
   // Cálculo por dimensión: % bien / regular / mal de cada una
   const dims=[
@@ -2366,39 +2421,33 @@ function updateStats(){
   updateInicioSemaforo();
 }
 
-// Resume el semáforo mensual: para cada dimensión, calcula el ánimo predominante
-// y muestra una bolita (🔴 mal / 🟡 regular / 🟢 bien / ⚪ sin datos)
+// Resume el semáforo mensual del MES MÁS RECIENTE — muestra % bien/regular/mal por dimensión
 function updateInicioSemaforo(){
-  const meses=[...new Set((semaforo||[]).map(r=>r.Mes).filter(Boolean))].sort();
+  const meses=[...new Set((semaforo||[]).map(r=>(r.Mes||'').trim()).filter(Boolean))].sort();
   const mesActual=meses.length?meses[meses.length-1]:null;
-  const datos=mesActual?(semaforo||[]).filter(r=>r.Mes===mesActual):[];
+  const datos=mesActual?(semaforo||[]).filter(r=>(r.Mes||'').trim()===mesActual):[];
 
   const dims=[
-    ['is-carga','Carga y ritmo de trabajo'],
-    ['is-clima','Clima y relaciones'],
-    ['is-emo','Estado emocional y energía'],
-    ['is-lid','Liderazgo y apoyo'],
+    {prefix:'is-carga',campo:'Carga y ritmo de trabajo'},
+    {prefix:'is-clima',campo:'Clima y relaciones'},
+    {prefix:'is-emo',  campo:'Estado emocional y energía'},
+    {prefix:'is-lid',  campo:'Liderazgo y apoyo'},
   ];
 
-  dims.forEach(([id,campo])=>{
-    const el=document.getElementById(id);
-    if(!el) return;
-    if(!datos.length){ el.textContent='⚪'; return; }
-    // Contar respuestas por estado usando la función centralizada
-    let r=0,a=0,v=0;
+  dims.forEach(({prefix,campo})=>{
+    let b=0,r=0,m=0;
     datos.forEach(reg=>{
       const e=estadoSemaforo(reg[campo]);
-      if(e==='mal')r++;
-      else if(e==='regular')a++;
-      else if(e==='bien')v++;
+      if(e==='bien')b++;
+      else if(e==='regular')r++;
+      else if(e==='mal')m++;
     });
-    const tot=r+a+v;
-    if(!tot){ el.textContent='⚪'; return; }
-    // Color predominante
-    if(r>=a && r>=v && r>0) el.textContent='🔴';
-    else if(a>=v && a>0) el.textContent='🟡';
-    else if(v>0) el.textContent='🟢';
-    else el.textContent='⚪';
+    const tot=b+r+m;
+    const fmt=v=>tot? Math.round((v/tot)*100)+'%' : '—';
+    const set=(id,val)=>{const el=document.getElementById(id);if(el)el.textContent=val;};
+    set(prefix+'-bien', fmt(b));
+    set(prefix+'-reg',  fmt(r));
+    set(prefix+'-mal',  fmt(m));
   });
 
   const footer=document.getElementById('inicio-sema-footer');
