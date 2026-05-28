@@ -127,7 +127,6 @@
     transition:all 0.18s;
     flex-shrink:0;
     padding:0;
-    overflow:hidden;
   }
   .hdr-circle svg{width:20px;height:20px;stroke-width:2;}
   .hdr-circle:hover{
@@ -1160,39 +1159,27 @@
         <select id="sm-mes"><option value=""></option></select>
         <button id="btn-ver-sema" onclick="openSemaModal()"></button>
       </div>
-      <div class="sum-row" id="sema-resumen">
-        <div class="sum-card sum-dim">
-          <div class="sum-dim-title">Carga y ritmo</div>
-          <div class="sum-dim-stats">
-            <div class="sum-dim-stat"><span>🟢</span><span id="d-carga-bien">—</span></div>
-            <div class="sum-dim-stat"><span>🟡</span><span id="d-carga-reg">—</span></div>
-            <div class="sum-dim-stat"><span>🔴</span><span id="d-carga-mal">—</span></div>
+      <div class="inicio-sema-card" id="sema-resumen" style="border-radius:24px;">
+        <div class="inicio-sema-title">Semáforo Consolidado</div>
+        <div class="inicio-sema-list">
+          <div class="inicio-sema-row">
+            <div class="inicio-sema-label">Carga y ritmo</div>
+            <div class="inicio-sema-bar" id="sb-carga"></div>
+          </div>
+          <div class="inicio-sema-row">
+            <div class="inicio-sema-label">Liderazgo</div>
+            <div class="inicio-sema-bar" id="sb-lid"></div>
+          </div>
+          <div class="inicio-sema-row">
+            <div class="inicio-sema-label">Estado emocional</div>
+            <div class="inicio-sema-bar" id="sb-emo"></div>
+          </div>
+          <div class="inicio-sema-row">
+            <div class="inicio-sema-label">Clima y relaciones</div>
+            <div class="inicio-sema-bar" id="sb-clima"></div>
           </div>
         </div>
-        <div class="sum-card sum-dim">
-          <div class="sum-dim-title">Clima y relaciones</div>
-          <div class="sum-dim-stats">
-            <div class="sum-dim-stat"><span>🟢</span><span id="d-clima-bien">—</span></div>
-            <div class="sum-dim-stat"><span>🟡</span><span id="d-clima-reg">—</span></div>
-            <div class="sum-dim-stat"><span>🔴</span><span id="d-clima-mal">—</span></div>
-          </div>
-        </div>
-        <div class="sum-card sum-dim">
-          <div class="sum-dim-title">Estado emocional</div>
-          <div class="sum-dim-stats">
-            <div class="sum-dim-stat"><span>🟢</span><span id="d-emo-bien">—</span></div>
-            <div class="sum-dim-stat"><span>🟡</span><span id="d-emo-reg">—</span></div>
-            <div class="sum-dim-stat"><span>🔴</span><span id="d-emo-mal">—</span></div>
-          </div>
-        </div>
-        <div class="sum-card sum-dim">
-          <div class="sum-dim-title">Liderazgo</div>
-          <div class="sum-dim-stats">
-            <div class="sum-dim-stat"><span>🟢</span><span id="d-lid-bien">—</span></div>
-            <div class="sum-dim-stat"><span>🟡</span><span id="d-lid-reg">—</span></div>
-            <div class="sum-dim-stat"><span>🔴</span><span id="d-lid-mal">—</span></div>
-          </div>
-        </div>
+        <div class="inicio-sema-footer" id="sema-resumen-footer">Sin datos</div>
       </div>
       <div class="sema-grid" id="sema-grid"><div class="empty-state"><span class="spinner"></span><p>Cargando...</p></div></div>
     </div>
@@ -2291,82 +2278,45 @@ async function saveSeg(){
 function editSeg(rowId){
   const r=seguimientos.find(s=>String(s.RowID)===String(rowId));
   if(!r){toast('Registro no encontrado',true);return;}
-  document.getElementById('ms-colab').value=r.Colaborador||'';
-  document.getElementById('ms-fecha').value=r.Fecha||'';
-  document.getElementById('ms-seguimiento').value=r.Seguimiento||'Primero';
-  document.getElementById('ms-satisfaccion').value=r['Nivel de satisfacción laboral (1–10)']||'';
-  document.getElementById('ms-inicio').value=r['¿Cómo inicias este semestre a nivel personal y laboral?']||'';
-  document.getElementById('ms-asuntos').value=r['Asuntos personales / familiares / salud que debamos considerar']||'';
-  document.getElementById('ms-metas').value=r['Metas laborales']||'';
-  document.getElementById('ms-retos').value=r['Retos laborales']||'';
-  document.getElementById('ms-dificultad').value=r['¿Qué está dificultando más tu desempeño actualmente?']||'';
-  document.getElementById('ms-porque').value=r['¿Qué hace que estés en ese número y no más bajo?']||'';
-  document.getElementById('ms-subir').value=r['¿Qué necesitarías para subir 1 punto?']||'';
-  document.getElementById('ms-clima').value=r['Clima laboral con todo el equipo RCR']||'';
-  document.getElementById('ms-liderazgo').value=r['Relación con liderazgo']||'';
-  document.getElementById('ms-equipo').value=r['Trabajo en equipo con su equipo']||'';
-  document.getElementById('ms-reconocimiento').value=r['Reconocimiento']||'';
-  document.getElementById('ms-desarrollo').value=r['Desarrollo profesional']||'';
-  document.getElementById('ms-carga').value=r['Carga laboral']||'';
-  document.getElementById('ms-autonomia').value=r['Autonomía']||'';
-  document.getElementById('ms-sentido').value=r['Sentido/propósito']||'';
-  document.getElementById('ms-profundizar').value=r['Profundizar solo en la dimensión más baja']||'';
-  document.getElementById('ms-emocional').value=r['Manejo emocional']||'';
-  document.getElementById('ms-escucha').value=r['Escucha']||'';
-  document.getElementById('ms-empatia').value=r['Empatía']||'';
-  document.getElementById('ms-comunicacion').value=r['Comunicación asertiva']||'';
-  document.getElementById('ms-fortalecer').value=r['¿Cuál deberías fortalecer este semestre para mejorar tu impacto?']||'';
-  document.getElementById('ms-claridad').value=r['Claridad de la comunicación interna']||'';
-  document.getElementById('ms-canales').value=r['¿Revisas canales internos regularmente?']||'';
-  document.getElementById('ms-interes').value=r['Nivel de interés en contenidos']||'';
-  document.getElementById('ms-mejorar').value=r['¿Qué deberíamos mejorar como equipo en comunicación?']||'';
+  // Campos fijos con ID
+  const colabSel=document.getElementById('ms-colab');
+  if(colabSel) colabSel.value=r.Colaborador||'';
+  const fechaInp=document.getElementById('ms-fecha');
+  if(fechaInp) fechaInp.value=r.Fecha||'';
+  // Campos dinámicos por data-col
+  document.querySelectorAll('#m-seg [data-col]').forEach(el=>{
+    const col=el.dataset.col;
+    el.value = r[col]!=null ? r[col] : '';
+  });
+  // Cambiar botón Guardar → Actualizar
   const saveBtn=document.querySelector('#m-seg .modal-foot .btn-primary');
   if(saveBtn){saveBtn.textContent='Actualizar';saveBtn.onclick=()=>updateSeg(rowId);}
+  document.getElementById('m-seg-title').textContent='Editar registro de bienestar';
   openModal('m-seg');
 }
 
 async function updateSeg(rowId){
-  const colab=document.getElementById('ms-colab').value,fecha=document.getElementById('ms-fecha').value;
+  const colab=document.getElementById('ms-colab').value;
+  const fecha=document.getElementById('ms-fecha').value;
   if(!colab||!fecha){toast('Colaborador y fecha son obligatorios',true);return;}
-  const data={
-    RowID:rowId,
-    Colaborador:colab,Seguimiento:document.getElementById('ms-seguimiento').value,Fecha:fecha,
-    'Nivel de satisfacción laboral (1–10)':document.getElementById('ms-satisfaccion').value,
-    '¿Cómo inicias este semestre a nivel personal y laboral?':document.getElementById('ms-inicio').value,
-    'Asuntos personales / familiares / salud que debamos considerar':document.getElementById('ms-asuntos').value,
-    'Metas laborales':document.getElementById('ms-metas').value,
-    'Retos laborales':document.getElementById('ms-retos').value,
-    '¿Qué está dificultando más tu desempeño actualmente?':document.getElementById('ms-dificultad').value,
-    '¿Qué hace que estés en ese número y no más bajo?':document.getElementById('ms-porque').value,
-    '¿Qué necesitarías para subir 1 punto?':document.getElementById('ms-subir').value,
-    'Clima laboral con todo el equipo RCR':document.getElementById('ms-clima').value,
-    'Relación con liderazgo':document.getElementById('ms-liderazgo').value,
-    'Trabajo en equipo con su equipo':document.getElementById('ms-equipo').value,
-    'Reconocimiento':document.getElementById('ms-reconocimiento').value,
-    'Desarrollo profesional':document.getElementById('ms-desarrollo').value,
-    'Carga laboral':document.getElementById('ms-carga').value,
-    'Autonomía':document.getElementById('ms-autonomia').value,
-    'Sentido/propósito':document.getElementById('ms-sentido').value,
-    'Profundizar solo en la dimensión más baja':document.getElementById('ms-profundizar').value,
-    'Manejo emocional':document.getElementById('ms-emocional').value,
-    'Escucha':document.getElementById('ms-escucha').value,
-    'Empatía':document.getElementById('ms-empatia').value,
-    'Comunicación asertiva':document.getElementById('ms-comunicacion').value,
-    '¿Cuál deberías fortalecer este semestre para mejorar tu impacto?':document.getElementById('ms-fortalecer').value,
-    'Claridad de la comunicación interna':document.getElementById('ms-claridad').value,
-    '¿Revisas canales internos regularmente?':document.getElementById('ms-canales').value,
-    'Nivel de interés en contenidos':document.getElementById('ms-interes').value,
-    '¿Qué deberíamos mejorar como equipo en comunicación?':document.getElementById('ms-mejorar').value,
-  };
-  const i=seguimientos.findIndex(s=>String(s.RowID)===String(rowId));
-  if(i>=0)seguimientos[i]={...seguimientos[i],...data};
+  // Recolectar todos los data-col del modal
+  const data={RowID:rowId, Colaborador:colab, Fecha:fecha};
+  document.querySelectorAll('#m-seg [data-col]').forEach(el=>{
+    const col=el.dataset.col;
+    data[col]=el.value||'';
+  });
+  // Restaurar botón Guardar para próximas aperturas
   const saveBtn=document.querySelector('#m-seg .modal-foot .btn-primary');
   if(saveBtn){saveBtn.textContent='Guardar';saveBtn.onclick=saveSeg;}
+  document.getElementById('m-seg-title').textContent='Nuevo registro de bienestar';
   closeModal('m-seg');
+  // Actualizar localmente y persistir
+  const idx=seguimientos.findIndex(s=>String(s.RowID)===String(rowId));
+  if(idx>=0) seguimientos[idx]={...seguimientos[idx], ...data};
+  saveCache({colaboradores,seguimientos,semaforo});
   loadPanels();
   toast('Registro actualizado','','ok');
-  saveCache({colaboradores,seguimientos,semaforo});
-  const body={action:'updateRow',sheet:'Seguimiento',data,identifier:rowId};
+  const body={action:'updateRow', sheet:'Seguimiento', data, identifier:rowId};
   apiPost(body).catch(()=>enqueue(body));
 }
 
@@ -2412,14 +2362,16 @@ function renderSema(){
     });
   }
 
-  // Cálculo por dimensión: % bien / regular / mal de cada una
+  // Cálculo por dimensión: barras horizontales con porcentajes (mismo estilo que el Inicio)
   const dims=[
-    {prefix:'d-carga',campo:'Carga y ritmo de trabajo'},
-    {prefix:'d-clima',campo:'Clima y relaciones'},
-    {prefix:'d-emo',  campo:'Estado emocional y energía'},
-    {prefix:'d-lid',  campo:'Liderazgo y apoyo'},
+    {id:'sb-carga',campo:'Carga y ritmo de trabajo'},
+    {id:'sb-lid',  campo:'Liderazgo y apoyo'},
+    {id:'sb-emo',  campo:'Estado emocional y energía'},
+    {id:'sb-clima',campo:'Clima y relaciones'},
   ];
-  dims.forEach(({prefix,campo})=>{
+  dims.forEach(({id,campo})=>{
+    const el=document.getElementById(id);
+    if(!el) return;
     let b=0,r=0,m=0;
     d.forEach(reg=>{
       const e=estadoSemaforo(reg[campo]);
@@ -2428,11 +2380,29 @@ function renderSema(){
       else if(e==='mal')m++;
     });
     const tot=b+r+m;
-    const fmt=v=>tot? Math.round((v/tot)*100)+'%' : '—';
-    document.getElementById(prefix+'-bien').textContent = fmt(b);
-    document.getElementById(prefix+'-reg').textContent  = fmt(r);
-    document.getElementById(prefix+'-mal').textContent  = fmt(m);
+    if(!tot){
+      el.innerHTML='<div class="inicio-bar-empty">Sin datos</div>';
+      return;
+    }
+    const pB=Math.round((b/tot)*100), pR=Math.round((r/tot)*100), pM=100-pB-pR;
+    const segs=[];
+    if(pB>0)segs.push(`<div class="inicio-bar-seg seg-bien" style="flex:${pB};"><span>${pB}%</span></div>`);
+    if(pR>0)segs.push(`<div class="inicio-bar-seg seg-reg" style="flex:${pR};"><span>${pR}%</span></div>`);
+    if(pM>0)segs.push(`<div class="inicio-bar-seg seg-mal" style="flex:${pM};"><span>${pM}%</span></div>`);
+    el.innerHTML=`<div class="inicio-bar-track">${segs.join('')}</div>`;
   });
+
+  // Footer del consolidado
+  const footerSema=document.getElementById('sema-resumen-footer');
+  if(footerSema){
+    if(!d.length){
+      footerSema.innerHTML='Sin respuestas en este filtro';
+    } else if(mes){
+      footerSema.innerHTML=`<strong>${d.length} respuesta${d.length===1?'':'s'}</strong> en ${mes}`;
+    } else {
+      footerSema.innerHTML=`<strong>${d.length} respuesta${d.length===1?'':'s'}</strong> registradas`;
+    }
+  }
 
   // Activos sin respuesta (para mostrar cards huérfanas abajo)
   let activosLista = colaboradores.filter(c=>c.Estado==='Activo');
