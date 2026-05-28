@@ -167,6 +167,126 @@
     .main{padding:20px 16px calc(100px + env(safe-area-inset-bottom));gap:22px;}
   }
 
+  /* ══════════════════════════════════════════════════════════ */
+  /* FILTER DRAWER — panel lateral derecho                       */
+  /* ══════════════════════════════════════════════════════════ */
+  .filter-drawer{
+    position:fixed;
+    top:0;
+    right:-420px;
+    width:380px;
+    max-width:90vw;
+    height:100dvh;
+    background:#fff;
+    box-shadow:-12px 0 32px rgba(0,0,0,0.08);
+    z-index:120;
+    display:flex;flex-direction:column;
+    transition:right 0.32s cubic-bezier(0.4,0,0.2,1);
+  }
+  .filter-drawer.open{right:0;}
+  .filter-drawer-head{
+    padding:24px 24px 18px;
+    display:flex;align-items:flex-start;justify-content:space-between;
+    gap:14px;
+    border-bottom:1px solid var(--border);
+  }
+  .filter-drawer-title{font-size:20px;font-weight:700;color:var(--text);letter-spacing:-0.5px;line-height:1.2;}
+  .filter-drawer-body{
+    flex:1;
+    overflow-y:auto;
+    padding:8px 0;
+  }
+  .filter-section{
+    border-bottom:1px solid var(--border);
+  }
+  .filter-section:last-child{border-bottom:none;}
+  .filter-section-head{
+    width:100%;
+    background:none;
+    border:none;
+    display:flex;align-items:center;justify-content:space-between;
+    padding:18px 24px;
+    cursor:pointer;
+    font-family:'Outfit',sans-serif;
+    font-size:15px;
+    font-weight:500;
+    color:var(--text);
+    text-align:left;
+    transition:background 0.15s;
+  }
+  .filter-section-head:hover{background:#fafbfd;}
+  .filter-section-head .chev{
+    width:20px;height:20px;
+    transition:transform 0.2s;
+    color:var(--text-muted);
+    flex-shrink:0;
+  }
+  .filter-section.open .filter-section-head .chev{transform:rotate(180deg);}
+  .filter-section-body{
+    display:none;
+    padding:0 24px 18px;
+    flex-direction:column;
+    gap:8px;
+  }
+  .filter-section.open .filter-section-body{display:flex;}
+  .filter-search{
+    width:100%;
+    background:var(--surface-hover);
+    border:none;
+    border-radius:12px;
+    padding:11px 16px;
+    color:var(--text);
+    font-family:'Outfit',sans-serif;
+    font-size:14px;
+    outline:none;
+    transition:box-shadow 0.15s;
+  }
+  .filter-search:focus{box-shadow:0 0 0 3px rgba(51,168,222,0.18);}
+  .filter-opt{
+    display:flex;align-items:center;
+    gap:10px;
+    padding:9px 12px;
+    border-radius:10px;
+    cursor:pointer;
+    font-size:14px;
+    color:var(--text);
+    transition:background 0.12s;
+  }
+  .filter-opt:hover{background:var(--surface-hover);}
+  .filter-opt input{
+    margin:0;
+    accent-color:#506CFF;
+    width:16px;height:16px;
+    flex-shrink:0;
+  }
+  .filter-drawer-foot{
+    padding:16px 24px calc(16px + env(safe-area-inset-bottom));
+    border-top:1px solid var(--border);
+    display:flex;
+    gap:10px;
+  }
+  .filter-drawer-foot .btn{flex:1;}
+
+  /* Embudo + badge */
+  .hdr-circle .filter-badge{
+    position:absolute;
+    top:-2px;right:-2px;
+    background:var(--grad-a);
+    color:#fff;
+    font-size:10px;
+    font-weight:700;
+    border-radius:10px;
+    min-width:18px;
+    height:18px;
+    padding:0 5px;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    box-shadow:0 2px 6px rgba(255,55,111,0.4);
+    border:2px solid #fff;
+  }
+  .hdr-circle{position:relative;}
+
   .screen{display:none;flex-direction:column;gap:24px;}
   .screen.active{display:flex;animation:fadeIn 0.22s ease;}
   @keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
@@ -336,13 +456,45 @@
     height:100%;
     min-height:340px;
   }
-  .inicio-sema-title{font-size:28px;font-weight:700;color:var(--text);letter-spacing:-0.8px;line-height:1.1;margin-bottom:24px;}
-  .inicio-sema-list{display:flex;flex-direction:column;gap:14px;flex:1;}
-  .inicio-sema-row{display:flex;align-items:center;justify-content:space-between;gap:14px;font-size:15px;color:var(--text);font-weight:500;}
-  .inicio-sema-label{flex:1;min-width:0;}
-  .inicio-sema-pcts{display:flex;align-items:center;gap:14px;flex-shrink:0;}
-  .inicio-sema-pct{display:inline-flex;align-items:center;gap:5px;font-size:14px;font-weight:700;color:var(--text);}
-  .inicio-sema-pct span:first-child{font-size:13px;line-height:1;}
+  .inicio-sema-title{font-size:28px;font-weight:700;color:var(--text);letter-spacing:-0.8px;line-height:1.1;margin-bottom:24px;text-align:right;}
+  .inicio-sema-list{display:flex;flex-direction:column;gap:18px;flex:1;}
+  .inicio-sema-row{display:grid;grid-template-columns:140px 1fr;align-items:center;gap:18px;font-size:14px;color:var(--text);font-weight:500;}
+  .inicio-sema-label{line-height:1.25;}
+  .inicio-sema-bar{width:100%;}
+  .inicio-bar-track{
+    display:flex;
+    width:100%;
+    height:28px;
+    border-radius:8px;
+    overflow:hidden;
+    background:#eef0f4;
+  }
+  .inicio-bar-seg{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:12px;
+    font-weight:700;
+    color:#fff;
+    min-width:0;
+    overflow:hidden;
+    white-space:nowrap;
+    transition:flex 0.35s ease;
+  }
+  .inicio-bar-seg span{padding:0 6px;text-shadow:0 1px 2px rgba(0,0,0,0.18);}
+  .seg-bien{background:var(--grad-c);}     /* Verde teal-cyan */
+  .seg-reg {background:var(--grad-d);}     /* Amarillo-verde */
+  .seg-mal {background:var(--grad-a);}     /* Coral-magenta */
+  .inicio-bar-empty{
+    width:100%;
+    height:28px;
+    border-radius:8px;
+    background:repeating-linear-gradient(135deg,#eef0f4,#eef0f4 8px,#e5e8ee 8px,#e5e8ee 16px);
+    display:flex;align-items:center;justify-content:center;
+    font-size:12px;font-weight:600;color:var(--text-dim);
+    letter-spacing:0.3px;
+  }
+
   .inicio-sema-footer{
     margin-top:20px;padding-top:16px;
     border-top:2px solid;
@@ -355,13 +507,13 @@
     .inicio-layout{grid-template-columns:1fr;}
     .inicio-stats-col{flex-direction:row;}
     .inicio-stat{flex:1;}
+    .inicio-sema-title{text-align:left;}
   }
   @media(max-width:560px){
     .inicio-stats-col{flex-direction:column;}
     .inicio-stat-value{font-size:52px;}
-    .inicio-sema-row{font-size:14px;gap:8px;}
-    .inicio-sema-pcts{gap:8px;}
-    .inicio-sema-pct{font-size:13px;}
+    .inicio-sema-row{grid-template-columns:110px 1fr;gap:12px;font-size:13px;}
+    .inicio-bar-seg{font-size:11px;}
     .inicio-sema-title{font-size:24px;}
   }
 
@@ -889,12 +1041,6 @@
           <div class="page-sub" id="today-date"></div>
         </div>
         <div class="hdr-actions" id="hdr-inicio">
-          <button class="hdr-circle" id="sync-btn" onclick="syncAll()" title="Sincronizar">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><polyline points="21 3 21 8 16 8"/><polyline points="3 21 3 16 8 16"/></svg>
-          </button>
-          <button class="hdr-circle hdr-circle-avatar" id="user-avatar-btn" title="Mi cuenta">
-            <span id="user-avatar">?</span>
-          </button>
           <button class="hdr-circle hdr-circle-danger" onclick="doLogout()" title="Cerrar sesión">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
           </button>
@@ -910,45 +1056,29 @@
           </div>
           <div class="inicio-stat">
             <div class="inicio-stat-value" id="s-segs">—</div>
-            <div class="inicio-stat-label">Seguimientos registrados</div>
+            <div class="inicio-stat-label">Respuestas registradas del semáforo</div>
             <div class="inicio-stat-bar bar-d"></div>
           </div>
         </div>
 
         <div class="inicio-sema-card">
-          <div class="inicio-sema-title">Semáforo<br>Mensual</div>
+          <div class="inicio-sema-title">Semáforo Mensual</div>
           <div class="inicio-sema-list" id="inicio-sema-list">
             <div class="inicio-sema-row">
-              <span class="inicio-sema-label">Carga y ritmo</span>
-              <span class="inicio-sema-pcts">
-                <span class="inicio-sema-pct"><span>🟢</span><span id="is-carga-bien">—</span></span>
-                <span class="inicio-sema-pct"><span>🟡</span><span id="is-carga-reg">—</span></span>
-                <span class="inicio-sema-pct"><span>🔴</span><span id="is-carga-mal">—</span></span>
-              </span>
+              <div class="inicio-sema-label">Carga y ritmo</div>
+              <div class="inicio-sema-bar" id="ib-carga"></div>
             </div>
             <div class="inicio-sema-row">
-              <span class="inicio-sema-label">Clima y relaciones</span>
-              <span class="inicio-sema-pcts">
-                <span class="inicio-sema-pct"><span>🟢</span><span id="is-clima-bien">—</span></span>
-                <span class="inicio-sema-pct"><span>🟡</span><span id="is-clima-reg">—</span></span>
-                <span class="inicio-sema-pct"><span>🔴</span><span id="is-clima-mal">—</span></span>
-              </span>
+              <div class="inicio-sema-label">Liderazgo</div>
+              <div class="inicio-sema-bar" id="ib-lid"></div>
             </div>
             <div class="inicio-sema-row">
-              <span class="inicio-sema-label">Estado emocional</span>
-              <span class="inicio-sema-pcts">
-                <span class="inicio-sema-pct"><span>🟢</span><span id="is-emo-bien">—</span></span>
-                <span class="inicio-sema-pct"><span>🟡</span><span id="is-emo-reg">—</span></span>
-                <span class="inicio-sema-pct"><span>🔴</span><span id="is-emo-mal">—</span></span>
-              </span>
+              <div class="inicio-sema-label">Estado emocional</div>
+              <div class="inicio-sema-bar" id="ib-emo"></div>
             </div>
             <div class="inicio-sema-row">
-              <span class="inicio-sema-label">Liderazgo</span>
-              <span class="inicio-sema-pcts">
-                <span class="inicio-sema-pct"><span>🟢</span><span id="is-lid-bien">—</span></span>
-                <span class="inicio-sema-pct"><span>🟡</span><span id="is-lid-reg">—</span></span>
-                <span class="inicio-sema-pct"><span>🔴</span><span id="is-lid-mal">—</span></span>
-              </span>
+              <div class="inicio-sema-label">Clima y relaciones</div>
+              <div class="inicio-sema-bar" id="ib-clima"></div>
             </div>
           </div>
           <div class="inicio-sema-footer" id="inicio-sema-footer">Sin datos del mes actual</div>
@@ -961,6 +1091,10 @@
       <div class="page-header">
         <div><div class="page-title">Colaboradores</div><div class="page-sub" id="colab-sub">Cargando...</div></div>
         <div class="hdr-actions">
+          <button class="hdr-circle" id="btn-filtros-colab" onclick="openFilterDrawer('colaboradores')" title="Filtros">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+            <span class="filter-badge" id="badge-colab" style="display:none;">0</span>
+          </button>
           <button class="hdr-circle hdr-circle-primary" onclick="abrirNuevoColab()" title="Agregar colaborador">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
           </button>
@@ -969,25 +1103,12 @@
           </button>
         </div>
       </div>
-      <div class="filters-row">
-        <div class="search-wrap">
-          <input class="search-input" type="text" placeholder="Búsqueda por nombre" id="f-nombre" oninput="clearTimeout(window._dbColabs);window._dbColabs=setTimeout(renderColabs,250)">
-          <span class="search-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span>
-        </div>
-        <select class="filter-sel" id="f-cargo" onchange="renderColabs()">
-          <option value="">Todos los cargos</option>
-          <option>Coordinador</option><option>Gestor de Proyectos</option>
-          <option>Directora/Director</option><option>Socio</option>
-          <option>Profesional de la Salud</option><option>Otros</option>
-        </select>
-        <select class="filter-sel" id="f-programa" onchange="renderColabs()">
-          <option value="">Todos los programas</option>
-          <option>General</option><option>ReCircula</option>
-          <option>Vidrio Mejor Planeta</option><option>Juntos Por La Vida</option><option>Otros</option>
-        </select>
-        <select class="filter-sel" id="f-estado" onchange="renderColabs()">
-          <option value="">Activo / Inactivo</option><option>Activo</option><option>Inactivo</option>
-        </select>
+      <!-- Inputs de filtros ocultos: los lee renderColabs(), los setea el drawer -->
+      <div style="display:none;">
+        <input type="text" id="f-nombre" value="">
+        <select id="f-cargo"><option value=""></option><option>Coordinador</option><option>Gestor de Proyectos</option><option>Directora/Director</option><option>Socio</option><option>Profesional de la Salud</option><option>Otros</option></select>
+        <select id="f-programa"><option value=""></option><option>General</option><option>ReCircula</option><option>Vidrio Mejor Planeta</option><option>Juntos Por La Vida</option><option>Otros</option></select>
+        <select id="f-estado"><option value=""></option><option>Activo</option><option>Inactivo</option></select>
       </div>
       <div class="tbl-wrap">
         <div class="tbl-head"><div>Colaborador</div><div class="th-cargo">Cargo</div><div class="th-prog">Programa</div><div>Estado</div><div></div></div>
@@ -1000,17 +1121,21 @@
       <div class="page-header">
         <div><div class="page-title">Bienestar</div><div class="page-sub">Seguimiento</div></div>
         <div class="hdr-actions">
+          <button class="hdr-circle" id="btn-filtros-bienestar" onclick="openFilterDrawer('bienestar')" title="Filtros">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+            <span class="filter-badge" id="badge-bienestar" style="display:none;">0</span>
+          </button>
           <button class="hdr-circle hdr-circle-primary" onclick="renderSegForm();openModal('m-seg')" title="Nuevo registro">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
           </button>
           <button class="hdr-circle" onclick="generarPDFSeguimiento(document.getElementById('seg-colab').value)" title="Descargar PDF">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
           </button>
-          <select class="filter-sel" id="seg-colab" onchange="loadPanels()" style="min-width:220px;"><option value="">Seleccionar colaborador</option></select>
+          <select id="seg-colab" onchange="loadPanels()" style="display:none;"><option value="">Seleccionar colaborador</option></select>
         </div>
       </div>
       <div class="panels-wrap" id="seg-panels">
-        <div class="empty-state" style="grid-column:span 2;"><div class="e-ico">💬</div><p>Selecciona un colaborador para ver sus registros</p></div>
+        <div class="empty-state" style="grid-column:span 2;"><div class="e-ico">💬</div><p>Abre el filtro para seleccionar un colaborador</p></div>
       </div>
     </div>
 
@@ -1019,19 +1144,21 @@
       <div class="page-header">
         <div><div class="page-title">Semáforo</div><div class="page-sub">Autopercepción mensual</div></div>
         <div class="hdr-actions">
+          <button class="hdr-circle" id="btn-filtros-semaforo" onclick="openFilterDrawer('semaforo')" title="Filtros">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+            <span class="filter-badge" id="badge-semaforo" style="display:none;">0</span>
+          </button>
           <button class="hdr-circle" onclick="window.print && window.print()" title="Imprimir / Exportar" style="display:none;">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
           </button>
         </div>
       </div>
-      <div class="filters-row">
-        <div class="search-wrap">
-          <input class="search-input" type="text" placeholder="Búsqueda por nombre" id="sm-nombre" oninput="renderSema();updateSemaBtnVer()">
-          <span class="search-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span>
-        </div>
-        <button class="btn btn-primary btn-sm" id="btn-ver-sema" style="display:none;" onclick="openSemaModal()">Ver formulario</button>
-        <select class="filter-sel" id="sm-equipo" onchange="renderSema()"><option value="">Todos los equipos</option><option>General</option><option>ReCircula</option><option>Vidrio Mejor Planeta</option><option>Juntos Por La Vida</option><option>Otros</option></select>
-        <select class="filter-sel" id="sm-mes" onchange="renderSema()"><option value="">Todos los meses</option></select>
+      <!-- Inputs ocultos de filtros: los lee renderSema(), los setea el drawer -->
+      <div style="display:none;">
+        <input type="text" id="sm-nombre" value="">
+        <select id="sm-equipo"><option value=""></option><option>General</option><option>ReCircula</option><option>Vidrio Mejor Planeta</option><option>Juntos Por La Vida</option><option>Otros</option></select>
+        <select id="sm-mes"><option value=""></option></select>
+        <button id="btn-ver-sema" onclick="openSemaModal()"></button>
       </div>
       <div class="sum-row" id="sema-resumen">
         <div class="sum-card sum-dim">
@@ -1091,6 +1218,21 @@
     </div>
 
   </main>
+
+  <!-- FILTER DRAWER (dinámico, comparten 3 pantallas) -->
+  <aside class="filter-drawer" id="filter-drawer">
+    <div class="filter-drawer-head">
+      <div class="filter-drawer-title">Filtros de búsqueda</div>
+      <button class="hdr-circle" onclick="closeFilterDrawer()" title="Cerrar" style="width:38px;height:38px;box-shadow:none;background:var(--surface-hover);">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="filter-drawer-body" id="filter-drawer-body"></div>
+    <div class="filter-drawer-foot">
+      <button class="btn btn-glass" onclick="clearFilters()">Limpiar</button>
+      <button class="btn btn-primary" onclick="applyFilters()">Aplicar</button>
+    </div>
+  </aside>
 
   <!-- BOTTOM NAV FLOTANTE -->
   <nav class="bottom-nav" id="bottom-nav">
@@ -1582,21 +1724,9 @@ function enterApp(){
   // Cerrar cualquier modal que haya quedado abierto
   document.querySelectorAll('.modal-overlay.open').forEach(m=>m.classList.remove('open'));
   cancelGooglePrompt();
-  const {nombre,rol,picture} = currentUser;
+  const {nombre,rol} = currentUser;
   const fn = (nombre||'').split(' ')[0] || '—';
   document.getElementById('welcome-name').textContent = fn;
-
-  // Avatar del header (botón circular)
-  const av = document.getElementById('user-avatar');
-  const avBtn = document.getElementById('user-avatar-btn');
-  if(picture){
-    av.outerHTML = `<img id="user-avatar" src="${picture}" alt="${fn}">`;
-    if(avBtn) avBtn.style.background = '#fff';
-  } else {
-    av.textContent = ini(nombre);
-    if(avBtn) avBtn.style.background = gradFromName(nombre);
-  }
-  if(avBtn) avBtn.title = `${nombre} · ${rol}`;
 
   // Permisos por rol
   if(rol==='Admin' || rol==='Editor'){
@@ -1775,14 +1905,14 @@ function renderColabs(){
     const av=foto
       ? `<div class="avatar" style="background:${grad};overflow:hidden;padding:0;"><img src="${foto}" style="width:100%;height:100%;object-fit:cover;" onerror="this.parentElement.textContent='${ini(n)}'"></div>`
       : `<div class="avatar" style="background:${grad};">${ini(n)}</div>`;
-    return `<div class="tbl-row" onclick="openFicha('${x(n)}')">
+    return `<div class="tbl-row" onclick="openFicha('${js(n)}')">
       <div class="col-name">${av}<span>${x(n)}</span></div>
       <div class="col-txt col-cargo">${x(c)}</div>
       <div class="col-txt col-prog" style="font-size:13px;">${x(p)}</div>
       <div><span class="badge ${e==='Activo'?'badge-on':'badge-off'}">${x(e)}</span></div>
       <div class="row-acts">
-        <button class="icon-btn" onclick="event.stopPropagation();editColab('${x(n)}')" title="Editar">${ICONS.edit}</button>
-        <button class="icon-btn del" onclick="event.stopPropagation();confirmDel('Colaboradores','${x(n)}','Colaborador')" title="Eliminar">${ICONS.trash}</button>
+        <button class="icon-btn" onclick="event.stopPropagation();editColab('${js(n)}')" title="Editar">${ICONS.edit}</button>
+        <button class="icon-btn del" onclick="event.stopPropagation();confirmDel('Colaboradores','${js(n)}','Colaborador')" title="Eliminar">${ICONS.trash}</button>
       </div>
     </div>`;
   }).join('');
@@ -1867,24 +1997,6 @@ if(elNombre) elNombre.textContent=r.Colaborador||'—';
   const fbody=document.getElementById('f-body');
   if(fbody) fbody.innerHTML=fields.map(([l,v])=>`<div class="f-block"><div class="f-lbl">${l}</div><div class="f-val">${x(v)}</div></div>`).join('');
   openModal('m-ficha');
-}
-
-function editColab(name){
-  const r=colaboradores.find(z=>z.Colaborador===name)||{};
-  editingColab=name;
-  document.getElementById('m-colab-title').textContent='Editar colaborador';
-
-  // Mostrar foto actual en preview
-  const preview=document.getElementById('c-photo-preview');
-  const fotoUrl=r['Foto']||'';
-  if(fotoUrl){
-    preview.innerHTML=`<img src="${fotoUrl}" style="width:100%;height:100%;object-fit:cover;" onerror="this.parentElement.innerHTML='<span>${ini(r.Colaborador)}</span>'">`;
-  } else {
-    preview.style.background=gradFromName(r.Colaborador);
-    preview.innerHTML=`<span id="c-photo-initials">${ini(r.Colaborador)}</span>`;
-  }
-  renderColabForm(r);
-  openModal('m-colab');
 }
 
 function editCurrentColab(){closeModal('m-ficha');editColab(editingColab);}
@@ -2143,7 +2255,7 @@ function loadPanels(){
     });
     const textFields=[['Inicio del semestre','¿Cómo inicias este semestre a nivel personal y laboral?'],['Asuntos personales','Asuntos personales / familiares / salud que debamos considerar'],['Metas laborales','Metas laborales'],['Retos laborales','Retos laborales']];
     textFields.forEach(([l,k])=>{if(r[k])html+=`<div class="f-block"><div class="f-lbl">${l}</div><div class="f-val">${x(r[k])}</div></div>`;});
-    html+=`<div style="display:flex;gap:8px;margin-top:8px;justify-content:flex-end;"><button class="icon-btn" onclick="openFichaSeg('${name}','${r.RowID}')" title="Ver ficha">${ICONS.view}</button><button class="icon-btn" onclick="editSeg('${r.RowID}')" title="Editar">${ICONS.edit}</button><button class="icon-btn" onclick="generarPDFSeguimiento('${name}')" title="Descargar PDF">${ICONS.download}</button><button class="icon-btn del" onclick="confirmDel('Seguimiento','${r.RowID}','RowID')" title="Eliminar">${ICONS.trash}</button></div>`;
+    html+=`<div style="display:flex;gap:8px;margin-top:8px;justify-content:flex-end;"><button class="icon-btn" onclick="openFichaSeg('${js(name)}','${js(r.RowID)}')" title="Ver ficha">${ICONS.view}</button><button class="icon-btn" onclick="editSeg('${js(r.RowID)}')" title="Editar">${ICONS.edit}</button><button class="icon-btn" onclick="generarPDFSeguimiento('${js(name)}')" title="Descargar PDF">${ICONS.download}</button><button class="icon-btn del" onclick="confirmDel('Seguimiento','${js(r.RowID)}','RowID')" title="Eliminar">${ICONS.trash}</button></div>`;
     return html;
   }
   window._pb=pb;
@@ -2343,8 +2455,8 @@ function renderSema(){
       <div class="sema-head"><div class="avatar" style="background:${grad};">${ini(r.Colaborador)}</div><div><div class="sema-name">${x(r.Colaborador||'—')}</div><div class="sema-meta">${x(r.Mes||'—')}${r.Equipo||r['Programa/Proyecto']?' · '+x(r.Equipo||r['Programa/Proyecto']):''}</div></div></div>
       <div class="sema-items">${flds.map(([l,k])=>{if(!r[k])return'';const e=estadoSemaforo(r[k]);const cd=e==='bien'?'🟢':e==='regular'?'🟡':e==='mal'?'🔴':'—';return`<div class="sema-item"><span class="sema-lbl">${l}</span><span style="font-size:18px;">${cd}</span></div>`;}).join('')}</div>
       <div class="sema-actions">
-        <button class="icon-btn" onclick="abrirFichaSema('${x(r.Colaborador)}')" title="Ver">${ICONS.view}</button>
-        <button class="icon-btn del" onclick="confirmDel('Semáforo','${r.RowID}','RowID')" title="Eliminar">${ICONS.trash}</button>
+        <button class="icon-btn" onclick="abrirFichaSema('${js(r.Colaborador)}')" title="Ver">${ICONS.view}</button>
+        <button class="icon-btn del" onclick="confirmDel('Semáforo','${js(r.RowID)}','RowID')" title="Eliminar">${ICONS.trash}</button>
       </div>
     </div>`;
   }).join('');
@@ -2415,26 +2527,28 @@ async function executeDel(){
 // ── STATS ──────────────────────────────────────
 function updateStats(){
   document.getElementById('s-colabs').textContent=colaboradores.length;
-  document.getElementById('s-segs').textContent=seguimientos.length;
+  document.getElementById('s-segs').textContent=(semaforo||[]).length;
 
   // Calcular semáforo del mes actual para el panel de inicio
   updateInicioSemaforo();
 }
 
-// Resume el semáforo mensual del MES MÁS RECIENTE — muestra % bien/regular/mal por dimensión
+// Resume el semáforo del MES MÁS RECIENTE — barras horizontales segmentadas por dimensión
 function updateInicioSemaforo(){
   const meses=[...new Set((semaforo||[]).map(r=>(r.Mes||'').trim()).filter(Boolean))].sort();
   const mesActual=meses.length?meses[meses.length-1]:null;
   const datos=mesActual?(semaforo||[]).filter(r=>(r.Mes||'').trim()===mesActual):[];
 
   const dims=[
-    {prefix:'is-carga',campo:'Carga y ritmo de trabajo'},
-    {prefix:'is-clima',campo:'Clima y relaciones'},
-    {prefix:'is-emo',  campo:'Estado emocional y energía'},
-    {prefix:'is-lid',  campo:'Liderazgo y apoyo'},
+    {id:'ib-carga',campo:'Carga y ritmo de trabajo'},
+    {id:'ib-lid',  campo:'Liderazgo y apoyo'},
+    {id:'ib-emo',  campo:'Estado emocional y energía'},
+    {id:'ib-clima',campo:'Clima y relaciones'},
   ];
 
-  dims.forEach(({prefix,campo})=>{
+  dims.forEach(({id,campo})=>{
+    const el=document.getElementById(id);
+    if(!el)return;
     let b=0,r=0,m=0;
     datos.forEach(reg=>{
       const e=estadoSemaforo(reg[campo]);
@@ -2443,11 +2557,18 @@ function updateInicioSemaforo(){
       else if(e==='mal')m++;
     });
     const tot=b+r+m;
-    const fmt=v=>tot? Math.round((v/tot)*100)+'%' : '—';
-    const set=(id,val)=>{const el=document.getElementById(id);if(el)el.textContent=val;};
-    set(prefix+'-bien', fmt(b));
-    set(prefix+'-reg',  fmt(r));
-    set(prefix+'-mal',  fmt(m));
+    if(!tot){
+      // Skeleton "Sin datos"
+      el.innerHTML='<div class="inicio-bar-empty">Sin datos</div>';
+      return;
+    }
+    const pB=Math.round((b/tot)*100), pR=Math.round((r/tot)*100), pM=100-pB-pR;
+    const segs=[];
+    // El orden visual: bien (verde) → regular (amarillo) → mal (rojo)
+    if(pB>0)segs.push(`<div class="inicio-bar-seg seg-bien" style="flex:${pB};"><span>${pB}%</span></div>`);
+    if(pR>0)segs.push(`<div class="inicio-bar-seg seg-reg" style="flex:${pR};"><span>${pR}%</span></div>`);
+    if(pM>0)segs.push(`<div class="inicio-bar-seg seg-mal" style="flex:${pM};"><span>${pM}%</span></div>`);
+    el.innerHTML=`<div class="inicio-bar-track">${segs.join('')}</div>`;
   });
 
   const footer=document.getElementById('inicio-sema-footer');
@@ -2562,8 +2683,8 @@ function renderAccesos(){
         <div class="acc-title">${x(a.Nombre||'—')}</div>
         <div class="acc-url">${x(a.URL||'')}</div>
         ${isAdmin?`<div class="acc-acts" onclick="event.stopPropagation()">
-          <button class="icon-btn" onclick="editAcceso('${x(a.ID)}')" title="Editar">${ICONS.edit}</button>
-          <button class="icon-btn del" onclick="confirmDelAcceso('${x(a.ID)}','${x(a.Nombre)}')" title="Eliminar">${ICONS.trash}</button>
+          <button class="icon-btn" onclick="editAcceso('${js(a.ID)}')" title="Editar">${ICONS.edit}</button>
+          <button class="icon-btn del" onclick="confirmDelAcceso('${js(a.ID)}','${js(a.Nombre)}')" title="Eliminar">${ICONS.trash}</button>
         </div>`:''}
       </div>`;
     });
@@ -2635,6 +2756,183 @@ function confirmDelAcceso(id,nombre){
 
 
 // ── NAV / MODAL ────────────────────────────────
+// ═══════════════════════════════════════════════════
+// FILTER DRAWER — drawer lateral compartido por 3 pantallas
+// ═══════════════════════════════════════════════════
+let currentFilterScreen = null;
+// Estado pendiente (lo que el usuario tiene seleccionado en el drawer antes de Aplicar)
+let pendingFilters = {};
+
+const FILTER_CONFIGS = {
+  colaboradores: {
+    badge: 'badge-colab',
+    sections: [
+      {key:'nombre',   title:'Colaboradores', type:'search', inputId:'f-nombre',   placeholder:'Buscar por nombre...'},
+      {key:'cargo',    title:'Cargos',        type:'options', inputId:'f-cargo',    optionsFromSelect:true},
+      {key:'programa', title:'Programas',     type:'options', inputId:'f-programa', optionsFromSelect:true},
+      {key:'estado',   title:'Estado',        type:'options', inputId:'f-estado',   optionsFromSelect:true},
+    ],
+    apply: ()=>renderColabs(),
+  },
+  bienestar: {
+    badge: 'badge-bienestar',
+    sections: [
+      {key:'colab', title:'Colaboradores', type:'select-from-data', inputId:'seg-colab'},
+    ],
+    apply: ()=>{ if(typeof loadPanels==='function') loadPanels(); },
+  },
+  semaforo: {
+    badge: 'badge-semaforo',
+    sections: [
+      {key:'nombre', title:'Colaboradores', type:'search', inputId:'sm-nombre', placeholder:'Buscar por nombre...'},
+      {key:'equipo', title:'Equipos',       type:'options', inputId:'sm-equipo', optionsFromSelect:true},
+      {key:'mes',    title:'Mes',           type:'options', inputId:'sm-mes',    optionsFromSelect:true},
+    ],
+    apply: ()=>{ renderSema(); if(typeof updateSemaBtnVer==='function') updateSemaBtnVer(); },
+  },
+};
+
+function openFilterDrawer(screen){
+  currentFilterScreen = screen;
+  const cfg = FILTER_CONFIGS[screen];
+  if(!cfg) return;
+
+  // Capturar valores actuales como pendientes (para que cancelar = no aplicar nada)
+  pendingFilters = {};
+  cfg.sections.forEach(sec=>{
+    const el = document.getElementById(sec.inputId);
+    pendingFilters[sec.key] = el ? (el.value||'') : '';
+  });
+
+  // Renderizar las secciones
+  const body = document.getElementById('filter-drawer-body');
+  body.innerHTML = cfg.sections.map((sec, i) => {
+    const isOpen = i === 0; // primera sección abierta por defecto
+    return `<div class="filter-section ${isOpen?'open':''}" data-key="${sec.key}">
+      <button class="filter-section-head" onclick="toggleFilterSection(this)">
+        <span>${sec.title}</span>
+        <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="filter-section-body">${renderFilterSection(sec)}</div>
+    </div>`;
+  }).join('');
+
+  document.getElementById('filter-drawer').classList.add('open');
+}
+
+function renderFilterSection(sec){
+  const current = pendingFilters[sec.key] || '';
+  if(sec.type === 'search'){
+    return `<input type="text" class="filter-search" placeholder="${sec.placeholder||''}"
+      value="${x(current)}"
+      oninput="pendingFilters['${sec.key}']=this.value">`;
+  }
+  if(sec.type === 'options'){
+    const sel = document.getElementById(sec.inputId);
+    let opts = [];
+    if(sel && sel.tagName === 'SELECT'){
+      opts = Array.from(sel.options).filter(o => o.value !== '' || o.textContent.trim() !== '').map(o => ({val:o.value, lbl:o.textContent||o.value}));
+    }
+    // Opción "Todos" arriba
+    const all = `<label class="filter-opt">
+      <input type="radio" name="filter-${sec.key}" value="" ${!current?'checked':''}
+        onchange="pendingFilters['${sec.key}']=''">
+      <span>Todos</span>
+    </label>`;
+    const list = opts.map(o => `<label class="filter-opt">
+      <input type="radio" name="filter-${sec.key}" value="${x(o.val)}" ${current===o.val?'checked':''}
+        onchange="pendingFilters['${sec.key}']='${js(o.val)}'">
+      <span>${x(o.lbl)}</span>
+    </label>`).join('');
+    return all + list;
+  }
+  if(sec.type === 'select-from-data'){
+    // Para Bienestar: lista de colaboradores
+    const opts = (colaboradores||[]).filter(c=>c.Estado==='Activo').map(c=>c.Colaborador).filter(Boolean);
+    const all = `<label class="filter-opt">
+      <input type="radio" name="filter-${sec.key}" value="" ${!current?'checked':''}
+        onchange="pendingFilters['${sec.key}']=''">
+      <span>Ninguno</span>
+    </label>`;
+    const list = opts.map(n => `<label class="filter-opt">
+      <input type="radio" name="filter-${sec.key}" value="${x(n)}" ${current===n?'checked':''}
+        onchange="pendingFilters['${sec.key}']='${js(n)}'">
+      <span>${x(n)}</span>
+    </label>`).join('');
+    return all + list;
+  }
+  return '';
+}
+
+function toggleFilterSection(btn){
+  btn.closest('.filter-section').classList.toggle('open');
+}
+
+function closeFilterDrawer(){
+  document.getElementById('filter-drawer').classList.remove('open');
+  currentFilterScreen = null;
+  pendingFilters = {};
+}
+
+function applyFilters(){
+  const cfg = FILTER_CONFIGS[currentFilterScreen];
+  if(!cfg) return;
+  // Volcar pendientes a los inputs reales
+  cfg.sections.forEach(sec=>{
+    const el = document.getElementById(sec.inputId);
+    if(el) el.value = pendingFilters[sec.key] || '';
+  });
+  // Actualizar badge
+  updateFilterBadge(currentFilterScreen);
+  // Disparar render de la pantalla correspondiente
+  cfg.apply();
+  closeFilterDrawer();
+}
+
+function clearFilters(){
+  const cfg = FILTER_CONFIGS[currentFilterScreen];
+  if(!cfg) return;
+  cfg.sections.forEach(sec=>{
+    pendingFilters[sec.key] = '';
+  });
+  // Re-render del drawer con valores vacíos
+  const body = document.getElementById('filter-drawer-body');
+  body.innerHTML = cfg.sections.map((sec, i) => {
+    const isOpen = body.querySelectorAll('.filter-section')[i]?.classList.contains('open') ?? (i===0);
+    return `<div class="filter-section ${isOpen?'open':''}" data-key="${sec.key}">
+      <button class="filter-section-head" onclick="toggleFilterSection(this)">
+        <span>${sec.title}</span>
+        <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="filter-section-body">${renderFilterSection(sec)}</div>
+    </div>`;
+  }).join('');
+}
+
+function updateFilterBadge(screen){
+  const cfg = FILTER_CONFIGS[screen];
+  if(!cfg) return;
+  const badge = document.getElementById(cfg.badge);
+  if(!badge) return;
+  const count = cfg.sections.filter(sec=>{
+    const el = document.getElementById(sec.inputId);
+    return el && (el.value||'').trim() !== '';
+  }).length;
+  if(count > 0){
+    badge.textContent = count;
+    badge.style.display = 'inline-flex';
+  } else {
+    badge.style.display = 'none';
+  }
+}
+
+// Cerrar drawer con ESC
+document.addEventListener('keydown', e=>{
+  if(e.key==='Escape' && document.getElementById('filter-drawer')?.classList.contains('open')){
+    closeFilterDrawer();
+  }
+});
+
 function go(s){
   document.querySelectorAll('.screen').forEach(e=>e.classList.remove('active'));
   document.querySelectorAll('.bn-item').forEach(e=>e.classList.remove('active'));
@@ -2672,7 +2970,10 @@ function toast(msg,isErr=false,type=''){
 }
 
 // ── UTILS ──────────────────────────────────────
-function x(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function x(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
+// Escapa una cadena para ser usada DENTRO de comillas simples en onclick="fn('...')"
+// Maneja apóstrofes, backslashes, saltos de línea y comillas dobles para evitar romper onclick handlers
+function js(s){return String(s==null?'':s).replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/"/g,'&quot;').replace(/\r?\n/g,'\\n');}
 function ini(n){return(n||'?').split(' ').slice(0,2).map(w=>w[0]||'').join('').toUpperCase();}
 function fmtDate(d){
   if(!d||d===''||d==='undefined')return '';
