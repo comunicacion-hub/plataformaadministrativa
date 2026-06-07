@@ -3014,10 +3014,12 @@ function js(s){return String(s==null?'':s).replace(/\\/g,'\\\\').replace(/'/g,"\
 function ini(n){return(n||'?').split(' ').slice(0,2).map(w=>w[0]||'').join('').toUpperCase();}
 function fmtDate(d){
   if(!d||d===''||d==='undefined')return '';
-  // Firestore Timestamp
-  if(d && typeof d.toDate === 'function'){
+  // Firestore Timestamp (clase con .toDate())
+  if(typeof d.toDate === 'function')
     return d.toDate().toLocaleDateString('es-EC',{day:'numeric',month:'short',year:'numeric'});
-  }
+  // Firestore Timestamp como objeto plano {seconds, nanoseconds}
+  if(d.seconds != null)
+    return new Date(d.seconds*1000).toLocaleDateString('es-EC',{day:'numeric',month:'short',year:'numeric'});
   // Si es número (serial de Excel): convertir
   const n=parseFloat(d);
   if(!isNaN(n)&&n>1000){
@@ -3033,8 +3035,12 @@ function fmtDate(d){
 function fmtMes(val){
   if(!val) return '';
   if(typeof val === 'string') return val;
-  if(val && typeof val.toDate === 'function')
+  // Firestore Timestamp (clase con .toDate())
+  if(typeof val.toDate === 'function')
     return val.toDate().toLocaleDateString('es-EC',{month:'long',year:'numeric'});
+  // Firestore Timestamp como objeto plano {seconds, nanoseconds}
+  if(val.seconds != null)
+    return new Date(val.seconds*1000).toLocaleDateString('es-EC',{month:'long',year:'numeric'});
   return String(val);
 }
 // ── GENERADOR DE PDF ──────────────────────────
