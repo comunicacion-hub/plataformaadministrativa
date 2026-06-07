@@ -1076,7 +1076,7 @@
           </div>
           <div class="inicio-stat">
             <div class="inicio-stat-value" id="s-segs">—</div>
-            <div class="inicio-stat-label">Respuestas registradas del semáforo</div>
+            <div class="inicio-stat-label">Fichas de seguimiento</div>
             <div class="inicio-stat-bar bar-d"></div>
           </div>
         </div>
@@ -2029,7 +2029,7 @@ function renderColabs(){
   if(cargo)d=d.filter(r=>r.Cargo===cargo);
   if(prog)d=d.filter(r=>r['Programa/Proyecto']===prog);
   if(est)d=d.filter(r=>r.Estado===est);
-  const activos=colaboradores.filter(r=>r.Estado==='Activo').length;
+  const activos=colaboradores.filter(r=>(r.Estado||'Activo')==='Activo').length;
   document.getElementById('colab-sub').textContent=`${activos} activos · ${colaboradores.length-activos} inactivos`;
   const body=document.getElementById('colab-body');
   if(!d.length){
@@ -2304,6 +2304,7 @@ async function saveColab(){
   const isEdit    = !!editingColab;
   const prevNombre= editingColab;
   const data      = {...formData, Colaborador: nombre};
+  if(!data.Estado || String(data.Estado).trim()==='') data.Estado = 'Activo';
 
   closeModal('m-colab');
   editingColab=null;
@@ -2559,7 +2560,7 @@ function renderSema(){
   }
 
   // Activos sin respuesta (para mostrar cards huérfanas abajo)
-  let activosLista = colaboradores.filter(c=>c.Estado==='Activo');
+  let activosLista = colaboradores.filter(c=>(c.Estado||'Activo')==='Activo');
   if(q) activosLista = activosLista.filter(c=>(c.Colaborador||'').toLowerCase().includes(q));
   if(eq) activosLista = activosLista.filter(c=>c.Equipo===eq||c['Programa/Proyecto']===eq);
   const respondieron = new Set(d.map(r=>r.Colaborador));
@@ -2586,7 +2587,7 @@ function renderSema(){
   }).join('');
 
   if(!q&&!eq&&!mes){
-    colaboradores.filter(c=>c.Estado==='Activo'&&!semaforo.find(s=>s.Colaborador===c.Colaborador)).forEach(c=>{
+    colaboradores.filter(c=>(c.Estado||'Activo')==='Activo'&&!semaforo.find(s=>s.Colaborador===c.Colaborador)).forEach(c=>{
       grid.innerHTML+=`<div class="sema-card" style="background:rgba(220,38,90,0.025);">
         <div class="sema-head"><div class="avatar" style="background:#e8e8f0;color:var(--text-dim);">${ini(c.Colaborador)}</div><div><div class="sema-name" style="color:var(--text-muted);">${x(c.Colaborador)}</div><div class="sema-meta" style="color:#c91a44;">⚠️ Sin respuesta este mes</div></div></div>
         <p style="font-size:13px;color:var(--text-dim);">No ha completado el formulario.</p>
@@ -2651,7 +2652,7 @@ async function executeDel(){
 // ── STATS ──────────────────────────────────────
 function updateStats(){
   document.getElementById('s-colabs').textContent=colaboradores.length;
-  document.getElementById('s-segs').textContent=(semaforo||[]).length;
+  document.getElementById('s-segs').textContent=(seguimientos||[]).length;
 
   // Calcular semáforo del mes actual para el panel de inicio
   updateInicioSemaforo();
@@ -2972,7 +2973,7 @@ function renderFilterSection(sec){
   }
   if(sec.type === 'select-from-data'){
     // Para Bienestar: lista de colaboradores
-    const opts = (colaboradores||[]).filter(c=>c.Estado==='Activo').map(c=>c.Colaborador).filter(Boolean);
+    const opts = (colaboradores||[]).filter(c=>(c.Estado||'Activo')==='Activo').map(c=>c.Colaborador).filter(Boolean);
     const all = `<label class="filter-opt">
       <input type="radio" name="filter-${sec.key}" value="" ${!current?'checked':''}
         onchange="pendingFilters['${sec.key}']=''">
@@ -3513,7 +3514,7 @@ async function generarPDFConsolidado(filtroEquipo=''){
   doc.setFont('helvetica','bold');
   doc.setFontSize(9);
   doc.setTextColor(100,100,100);
-  const activos=colabs.filter(r=>r.Estado==='Activo').length;
+  const activos=colabs.filter(r=>(r.Estado||'Activo')==='Activo').length;
   const stats=[
     ['Total colaboradores',colabs.length],
     ['Activos',activos],
@@ -3591,9 +3592,9 @@ function openSemaModal(nombre){
   document.getElementById('m-sema-nombre').textContent=nombre;
   document.getElementById('m-sema-prog').textContent=colab['Programa/Proyecto']||'';
   // Poblar selector de meses con los que tiene ese colaborador
-  const meses=[...new Set(semaforo.filter(s=>s.Colaborador===nombre).map(s=>s.Mes).filter(Boolean))].sort();
+  const meses=[...new Set(semaforo.filter(s=>s.Colaborador===nombre).map(s=>fmtMes(s.Mes)).filter(Boolean))].sort();
   const sel=document.getElementById('m-sema-mes');
-  sel.innerHTML='<option value="">Todos los meses</option>'+meses.map(m=>`<option>${m}</option>`).join('');
+  sel.innerHTML='<option value="">Todos los meses</option>'+meses.map(m=>`<option>${x(m)}</option>`).join('');
   // Seleccionar el mes más reciente por defecto
   if(meses.length)sel.value=meses[meses.length-1];
   renderSemaModal();
@@ -3604,7 +3605,7 @@ function renderSemaModal(){
   const nombre=document.getElementById('m-sema-nombre').textContent;
   const mes=document.getElementById('m-sema-mes').value;
   let registros=semaforo.filter(s=>s.Colaborador===nombre);
-  if(mes)registros=registros.filter(s=>s.Mes===mes);
+  if(mes)registros=registros.filter(s=>fmtMes(s.Mes)===mes);
   const body=document.getElementById('m-sema-body');
   if(!registros.length){
     body.innerHTML=`<div class="empty-state" style="padding:24px 0;"><div class="e-ico">🚦</div><p>Sin respuestas${mes?' para '+mes:''}</p></div>`;
