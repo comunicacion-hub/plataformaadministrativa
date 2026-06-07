@@ -2419,8 +2419,9 @@ function renderSema(){
 
   // Poblar select de meses (solo la primera vez, con value explícito)
   const mSel=document.getElementById('sm-mes');
-  if(mSel && mSel.options.length<=1){
-    const meses=[...new Set(semaforo.map(r=>fmtMes(r.Mes).trim()).filter(Boolean))].sort();
+if(mSel){
+  while(mSel.options.length > 1) mSel.remove(1);    
+  const meses=[...new Set(semaforo.map(r=>fmtMes(r.Mes).trim()).filter(Boolean))].sort();
     meses.forEach(m=>{
       const o=document.createElement('option');
       o.value=m;
