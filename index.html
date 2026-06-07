@@ -2415,12 +2415,12 @@ function renderSema(){
       return getProg(r.Colaborador) === eq;
     });
   }
-  if(mes)d=d.filter(r=>(r.Mes||'').trim() === mes.trim());
+  if(mes)d=d.filter(r=>fmtMes(r.Mes).trim() === mes.trim());
 
   // Poblar select de meses (solo la primera vez, con value explícito)
   const mSel=document.getElementById('sm-mes');
   if(mSel && mSel.options.length<=1){
-    const meses=[...new Set(semaforo.map(r=>(r.Mes||'').trim()).filter(Boolean))].sort();
+    const meses=[...new Set(semaforo.map(r=>fmtMes(r.Mes).trim()).filter(Boolean))].sort();
     meses.forEach(m=>{
       const o=document.createElement('option');
       o.value=m;
@@ -2489,7 +2489,7 @@ function renderSema(){
   grid.innerHTML=d.map(r=>{
     const grad=gradFromName(r.Colaborador);
     return`<div class="sema-card">
-      <div class="sema-head"><div class="avatar" style="background:${grad};">${ini(r.Colaborador)}</div><div><div class="sema-name">${x(r.Colaborador||'—')}</div><div class="sema-meta">${x(r.Mes||'—')}${r.Equipo||r['Programa/Proyecto']?' · '+x(r.Equipo||r['Programa/Proyecto']):''}</div></div></div>
+      <div class="sema-head"><div class="avatar" style="background:${grad};">${ini(r.Colaborador)}</div><div><div class="sema-name">${x(r.Colaborador||'—')}</div><div class="sema-meta">${x(fmtMes(r.Mes)||'—')}${r.Equipo||r['Programa/Proyecto']?' · '+x(r.Equipo||r['Programa/Proyecto']):''}</div></div></div>
       <div class="sema-items">${flds.map(([l,k])=>{if(!r[k])return'';const e=estadoSemaforo(r[k]);const cd=e==='bien'?'🟢':e==='regular'?'🟡':e==='mal'?'🔴':'—';return`<div class="sema-item"><span class="sema-lbl">${l}</span><span style="font-size:18px;">${cd}</span></div>`;}).join('')}</div>
       <div class="sema-actions">
         <button class="icon-btn" onclick="abrirFichaSema('${js(r.Colaborador)}')" title="Ver">${ICONS.view}</button>
@@ -2572,9 +2572,9 @@ function updateStats(){
 
 // Resume el semáforo del MES MÁS RECIENTE — barras horizontales segmentadas por dimensión
 function updateInicioSemaforo(){
-  const meses=[...new Set((semaforo||[]).map(r=>(r.Mes||'').trim()).filter(Boolean))].sort();
+  const meses=[...new Set((semaforo||[]).map(r=>fmtMes(r.Mes).trim()).filter(Boolean))].sort();
   const mesActual=meses.length?meses[meses.length-1]:null;
-  const datos=mesActual?(semaforo||[]).filter(r=>(r.Mes||'').trim()===mesActual):[];
+  const datos=mesActual?(semaforo||[]).filter(r=>fmtMes(r.Mes).trim()===mesActual):[];
 
   const dims=[
     {id:'ib-carga',campo:'Carga y ritmo de trabajo'},
@@ -3014,6 +3014,10 @@ function js(s){return String(s==null?'':s).replace(/\\/g,'\\\\').replace(/'/g,"\
 function ini(n){return(n||'?').split(' ').slice(0,2).map(w=>w[0]||'').join('').toUpperCase();}
 function fmtDate(d){
   if(!d||d===''||d==='undefined')return '';
+  // Firestore Timestamp
+  if(d && typeof d.toDate === 'function'){
+    return d.toDate().toLocaleDateString('es-EC',{day:'numeric',month:'short',year:'numeric'});
+  }
   // Si es número (serial de Excel): convertir
   const n=parseFloat(d);
   if(!isNaN(n)&&n>1000){
@@ -3025,6 +3029,13 @@ function fmtDate(d){
     if(isNaN(date.getTime()))return d;
     return date.toLocaleDateString('es-EC',{day:'numeric',month:'short',year:'numeric'});
   }catch(e){return d;}
+}
+function fmtMes(val){
+  if(!val) return '';
+  if(typeof val === 'string') return val;
+  if(val && typeof val.toDate === 'function')
+    return val.toDate().toLocaleDateString('es-EC',{month:'long',year:'numeric'});
+  return String(val);
 }
 // ── GENERADOR DE PDF ──────────────────────────
 function downloadPDF(tipo, data){
@@ -3398,7 +3409,7 @@ function renderSemaModal(){
   };
   body.innerHTML=registros.map(r=>`
     <div style="margin-bottom:20px;padding-bottom:20px;border-bottom:1px solid var(--border);">
-      <div style="font-size:12px;font-weight:700;color:var(--text-dim);text-transform:uppercase;letter-spacing:.6px;margin-bottom:12px;">${r.Mes||'—'}</div>
+      <div style="font-size:12px;font-weight:700;color:var(--text-dim);text-transform:uppercase;letter-spacing:.6px;margin-bottom:12px;">${fmtMes(r.Mes)||'—'}</div>
       ${flds.map(([l,k])=>r[k]?`
         <div class="sema-item" style="margin-bottom:8px;">
           <span class="sema-lbl">${l}</span>
