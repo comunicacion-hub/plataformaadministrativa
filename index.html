@@ -6,6 +6,10 @@
 <title>Bienestar360</title>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://accounts.google.com/gsi/client" async defer></script>
+<!-- Firebase SDK (compat) -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 <style>
   :root {
     --primary-s: #33A8DE;
@@ -1506,6 +1510,18 @@
 <div id="toast"></div>
 
 <script>
+// ── FIREBASE ───────────────────────────────────
+const firebaseConfig = {
+  apiKey:            "AIzaSyB4-Agk4jG2HFMnvLQyB1q4vapZQ01Bh4o",
+  authDomain:        "redes-con-rostro.firebaseapp.com",
+  projectId:         "redes-con-rostro",
+  storageBucket:     "redes-con-rostro.firebasestorage.app",
+  messagingSenderId: "138746747295",
+  appId:             "1:138746747295:web:1ceb9c60d4a4073e6885aa"
+};
+firebase.initializeApp(firebaseConfig);
+const fdb   = firebase.firestore();
+const fauth = firebase.auth();
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz95ASB2boSxom3iPq0Ek-nJHxC0uBmyU3Hcs9dLw9Sza_9VoJj5fJHr3tGdGeqNEr69Q/exec';
 const G_CLIENT    = '783730193199-d7nhahv3ou4rmps7nrpoop5cpor079ej.apps.googleusercontent.com';
 const DOMAIN      = 'redesconrostro.org';
