@@ -1863,8 +1863,12 @@ const ID_FIELD = {
 };
 
 async function findDocRef(sheet, b){
+  const value = (b.rowId != null) ? b.rowId : b.identifier;
+  // Identidad real de Firestore: si viene field '_docId', el value es el ID del documento
+  if(b.field === '_docId'){
+    return (value!=null && value!=='') ? fdb.collection(sheet).doc(String(value)) : null;
+  }
   const field = b.field || ID_FIELD[sheet] || 'RowID';
-  let value = (b.rowId != null) ? b.rowId : b.identifier;
   if(value == null) return null;
   let snap = await fdb.collection(sheet).where(field,'==',value).limit(1).get();
   if(snap.empty && !isNaN(value))
@@ -2396,7 +2400,7 @@ function loadPanels(){
     });
     const textFields=[['Inicio del semestre','¿Cómo inicias este semestre a nivel personal y laboral?'],['Asuntos personales','Asuntos personales / familiares / salud que debamos considerar'],['Metas laborales','Metas laborales'],['Retos laborales','Retos laborales']];
     textFields.forEach(([l,k])=>{if(r[k])html+=`<div class="f-block"><div class="f-lbl">${l}</div><div class="f-val">${x(r[k])}</div></div>`;});
-    html+=`<div style="display:flex;gap:8px;margin-top:8px;justify-content:flex-end;"><button class="icon-btn" onclick="openFichaSeg('${js(name)}','${js(r.RowID)}')" title="Ver ficha">${ICONS.view}</button><button class="icon-btn" onclick="editSeg('${js(r.RowID)}')" title="Editar">${ICONS.edit}</button><button class="icon-btn" onclick="generarPDFSeguimiento('${js(name)}')" title="Descargar PDF">${ICONS.download}</button><button class="icon-btn del" onclick="confirmDel('Seguimiento','${js(r.RowID)}','RowID')" title="Eliminar">${ICONS.trash}</button></div>`;
+    html+=`<div style="display:flex;gap:8px;margin-top:8px;justify-content:flex-end;"><button class="icon-btn" onclick="openFichaSeg('${js(name)}','${js(r._docId||r.RowID||'')}')" title="Ver ficha">${ICONS.view}</button><button class="icon-btn" onclick="editSeg('${js(r._docId||r.RowID||'')}')" title="Editar">${ICONS.edit}</button><button class="icon-btn" onclick="generarPDFSeguimiento('${js(name)}')" title="Descargar PDF">${ICONS.download}</button><button class="icon-btn del" onclick="confirmDel('Seguimiento','${js(r._docId||r.RowID||'')}','_docId')" title="Eliminar">${ICONS.trash}</button></div>`;
     return html;
   }
   window._pb=pb;
@@ -2426,17 +2430,30 @@ async function saveSeg(){
   loadPanels();
   toast('Registro guardado','','ok');
   saveCache({colaboradores,seguimientos,semaforo});
-  apiPost({action:'createRow',sheet:'Seguimiento',data}).catch(()=>enqueue({action:'createRow',sheet:'Seguimiento',data}));
+  try{
+    const res=await apiPost({action:'createRow',sheet:'Seguimiento',data});
+    if(res && res.success){
+      await loadSegs();                 // recargar para obtener el _docId real de Firestore
+      document.getElementById('seg-colab').value=colab;
+      loadPanels();
+      saveCache({colaboradores,seguimientos,semaforo});
+    } else {
+      enqueue({action:'createRow',sheet:'Seguimiento',data});
+    }
+  }catch(e){
+    enqueue({action:'createRow',sheet:'Seguimiento',data});
+  }
 }
 
-function editSeg(rowId){
-  const r=seguimientos.find(s=>String(s.RowID)===String(rowId));
+function editSeg(docId){
+  const r=seguimientos.find(s=>String(s._docId)===String(docId)) || seguimientos.find(s=>String(s.RowID)===String(docId));
   if(!r){toast('Registro no encontrado',true);return;}
+  const ref=r._docId||r.RowID||docId;
   // Campos fijos con ID
   const colabSel=document.getElementById('ms-colab');
   if(colabSel) colabSel.value=r.Colaborador||'';
   const fechaInp=document.getElementById('ms-fecha');
-  if(fechaInp) fechaInp.value=r.Fecha||'';
+  if(fechaInp) fechaInp.value=fechaParaInput(r.Fecha);
   // Campos dinámicos por data-col
   document.querySelectorAll('#m-seg [data-col]').forEach(el=>{
     const col=el.dataset.col;
@@ -2444,17 +2461,17 @@ function editSeg(rowId){
   });
   // Cambiar botón Guardar → Actualizar
   const saveBtn=document.querySelector('#m-seg .modal-foot .btn-primary');
-  if(saveBtn){saveBtn.textContent='Actualizar';saveBtn.onclick=()=>updateSeg(rowId);}
+  if(saveBtn){saveBtn.textContent='Actualizar';saveBtn.onclick=()=>updateSeg(ref);}
   document.getElementById('m-seg-title').textContent='Editar registro de bienestar';
   openModal('m-seg');
 }
 
-async function updateSeg(rowId){
+async function updateSeg(docId){
   const colab=document.getElementById('ms-colab').value;
   const fecha=document.getElementById('ms-fecha').value;
   if(!colab||!fecha){toast('Colaborador y fecha son obligatorios',true);return;}
   // Recolectar todos los data-col del modal
-  const data={RowID:rowId, Colaborador:colab, Fecha:fecha};
+  const data={Colaborador:colab, Fecha:fecha};
   document.querySelectorAll('#m-seg [data-col]').forEach(el=>{
     const col=el.dataset.col;
     data[col]=el.value||'';
@@ -2465,12 +2482,12 @@ async function updateSeg(rowId){
   document.getElementById('m-seg-title').textContent='Nuevo registro de bienestar';
   closeModal('m-seg');
   // Actualizar localmente y persistir
-  const idx=seguimientos.findIndex(s=>String(s.RowID)===String(rowId));
+  const idx=seguimientos.findIndex(s=>String(s._docId)===String(docId)) ;
   if(idx>=0) seguimientos[idx]={...seguimientos[idx], ...data};
   saveCache({colaboradores,seguimientos,semaforo});
   loadPanels();
   toast('Registro actualizado','','ok');
-  const body={action:'updateRow', sheet:'Seguimiento', data, identifier:rowId};
+  const body={action:'updateRow', sheet:'Seguimiento', data, rowId:docId, field:'_docId'};
   apiPost(body).catch(()=>enqueue(body));
 }
 
@@ -2581,7 +2598,7 @@ function renderSema(){
       <div class="sema-items">${flds.map(([l,k])=>{if(!r[k])return'';const e=estadoSemaforo(r[k]);const cd=e==='bien'?'🟢':e==='regular'?'🟡':e==='mal'?'🔴':'—';return`<div class="sema-item"><span class="sema-lbl">${l}</span><span style="font-size:18px;">${cd}</span></div>`;}).join('')}</div>
       <div class="sema-actions">
         <button class="icon-btn" onclick="abrirFichaSema('${js(r.Colaborador)}')" title="Ver">${ICONS.view}</button>
-        <button class="icon-btn del" onclick="confirmDel('Semáforo','${js(r.RowID)}','RowID')" title="Eliminar">${ICONS.trash}</button>
+        <button class="icon-btn del" onclick="confirmDel('Semáforo','${js(r._docId||r.RowID||'')}','_docId')" title="Eliminar">${ICONS.trash}</button>
       </div>
     </div>`;
   }).join('');
@@ -2623,17 +2640,17 @@ async function executeDel(){
     if(!res.success){toast(res.message||'No se pudo eliminar',true);return;}
 
     if(sheet==='Colaboradores'){
-      colaboradores=colaboradores.filter(r=>String(r.Colaborador)!==String(id)&&String(r.RowID||'')!==String(id));
+      colaboradores=colaboradores.filter(r=>String(r.Colaborador)!==String(id)&&String(r._docId||'')!==String(id)&&String(r.RowID||'')!==String(id));
       renderColabs();
     }
     if(sheet==='Seguimiento'){
-      seguimientos=seguimientos.filter(r=>String(r.RowID)!==String(id));
+      seguimientos=seguimientos.filter(r=>String(r._docId||'')!==String(id)&&String(r.RowID||'')!==String(id));
       loadPanels();
     }
     if(sheet==='Semáforo'){
-      semaforo=semaforo.filter(r=>String(r.RowID)!==String(id));
+      semaforo=semaforo.filter(r=>String(r._docId||'')!==String(id)&&String(r.RowID||'')!==String(id));
       renderSema();
-      // Re-sincroniza en segundo plano para quedar igual que Google Sheets.
+      // Re-sincroniza en segundo plano.
       setTimeout(()=>{try{loadSema();}catch(e){}},300);
     }
 
@@ -3242,6 +3259,25 @@ function fmtDate(d){
     return date.toLocaleDateString('es-EC',{day:'numeric',month:'short',year:'numeric'});
   }catch(e){return d;}
 }
+function fechaParaInput(val){
+  // Devuelve YYYY-MM-DD para inputs type=date, desde Timestamp, objeto plano, serial o string
+  if(!val) return '';
+  let d=null;
+  if(typeof val.toDate === 'function') d=val.toDate();
+  else if(val.seconds != null) d=new Date(val.seconds*1000);
+  else if(typeof val === 'number' || /^\d+(\.\d+)?$/.test(String(val).trim())){
+    const n=parseFloat(val); if(!isNaN(n)&&n>1000) d=new Date(Math.round((n-25569)*86400*1000));
+  } else {
+    // string: si ya viene YYYY-MM-DD, úsalo directo
+    const s=String(val).trim();
+    if(/^\d{4}-\d{2}-\d{2}/.test(s)) return s.slice(0,10);
+    const parsed=new Date(s); if(!isNaN(parsed.getTime())) d=parsed;
+  }
+  if(!d || isNaN(d.getTime())) return '';
+  // Formato local YYYY-MM-DD
+  const y=d.getFullYear(), m=String(d.getMonth()+1).padStart(2,'0'), day=String(d.getDate()).padStart(2,'0');
+  return `${y}-${m}-${day}`;
+}
 function fmtMes(val){
   if(!val) return '';
   if(typeof val === 'string') return val;
@@ -3643,8 +3679,8 @@ function renderSemaModal(){
 
 
 // ── FICHA DE SEGUIMIENTO ───────────────────────
-function openFichaSeg(nombre, rowId){
-  const r = seguimientos.find(s => s.RowID === rowId);
+function openFichaSeg(nombre, docId){
+  const r = seguimientos.find(s => String(s._docId) === String(docId)) || seguimientos.find(s => String(s.RowID) === String(docId));
   if(!r) return;
   const colab = colaboradores.find(c => c.Colaborador === nombre) || {};
 
