@@ -1784,32 +1784,67 @@ window.addEventListener('load',()=>{
   },300);
 });
 
-// ── API ────────────────────────────────────────
-async function api(p){
-  try {
-    const params={...(p||{})};
-    const correo=(currentUser?.correo||currentUser?.email||currentUser?.mail||'').toLowerCase().trim();
-    if(correo&&!params.correo)params.correo=correo;
-    const u=new URL(SCRIPT_URL);
-    Object.entries(params).forEach(([k,v])=>{if(v!==undefined&&v!==null&&v!=='')u.searchParams.set(k,v);});
-    const r=await fetch(u.toString(),{method:'GET',cache:'no-store'});
-    if(!r.ok)throw new Error('HTTP '+r.status);
-    const json=await r.json();
-    if(!json.success)console.warn(`API warning: ${json.message||'Sin detalles'}`,params);
-    return json;
-  } catch(e){console.error('Error en api():',e,'Parámetros:',p);throw e;}
+// ── API → FIRESTORE ────────────────────────────
+const ID_FIELD = {
+  Colaboradores: 'Colaborador',
+  Accesos:       'ID',
+  Seguimiento:   'RowID',
+  'Semáforo':    'RowID',
+  Usuarios:      'Correo',
+};
+
+async function findDocRef(sheet, b){
+  const field = b.field || ID_FIELD[sheet] || 'RowID';
+  let value = (b.rowId != null) ? b.rowId : b.identifier;
+  if(value == null) return null;
+  let snap = await fdb.collection(sheet).where(field,'==',value).limit(1).get();
+  if(snap.empty && !isNaN(value))
+    snap = await fdb.collection(sheet).where(field,'==',Number(value)).limit(1).get();
+  if(snap.empty)
+    snap = await fdb.collection(sheet).where(field,'==',String(value)).limit(1).get();
+  return snap.empty ? null : snap.docs[0].ref;
 }
+
+async function api(p){
+  const params = p || {};
+  try{
+    if(params.action === 'getAll'){
+      const snap = await fdb.collection(params.sheet).get();
+      const data = snap.docs.map(d => ({ ...d.data(), _docId: d.id }));
+      return { success:true, data };
+    }
+    return { success:false, message:'Acción no soportada: '+params.action };
+  }catch(e){
+    console.error('Error en api():', e, p);
+    return { success:false, message:e.message };
+  }
+}
+
 async function apiPost(body){
-  try {
-    const payload={...(body||{})};
-    const correo=(currentUser?.correo||currentUser?.email||currentUser?.mail||'').toLowerCase().trim();
-    if(correo){if(!payload.correo)payload.correo=correo;if(!payload.email)payload.email=correo;}
-    const r=await fetch(SCRIPT_URL,{method:'POST',body:JSON.stringify(payload),cache:'no-store'});
-    if(!r.ok)throw new Error('HTTP '+r.status);
-    const json=await r.json();
-    if(!json.success)console.warn(`POST warning: ${json.message||'Sin detalles'}`,payload);
-    return json;
-  } catch(e){console.error('Error en apiPost():',e,'Body:',body);throw e;}
+  const b = body || {};
+  const sheet = b.sheet;
+  try{
+    if(b.action === 'createRow'){
+      await fdb.collection(sheet).add(b.data || {});
+      return { success:true };
+    }
+    if(b.action === 'updateRow'){
+      const ref = await findDocRef(sheet, b);
+      if(!ref) return { success:false, message:'Registro no encontrado' };
+      await ref.update(b.data || {});
+      return { success:true };
+    }
+    if(b.action === 'deleteRow'){
+      const ref = await findDocRef(sheet, b);
+      if(!ref) return { success:false, message:'Registro no encontrado' };
+      await ref.delete();
+      return { success:true };
+    }
+    return { success:false, message:'Acción no soportada: '+b.action };
+  }catch(e){
+    console.error('Error en apiPost():', e, body);
+    return { success:false, message:e.message };
+  }
 }
 
 // ── OFFLINE + SYNC ─────────────────────────────
