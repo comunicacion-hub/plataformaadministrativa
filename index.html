@@ -1690,32 +1690,48 @@ async function handleCredential(resp){
       return;
     }
 
-    if(email===ADMIN_EMAIL){
-      currentUser={email,nombre:name,rol:'Admin',picture:pic};
-      saveSession(currentUser);
-      enterApp();
-      return;
-    }
-
-    let rol='Visualizador';
+   // 1) Iniciar sesión en Firebase Auth
     try{
-      const controller=new AbortController();
-      const timeout=setTimeout(()=>controller.abort(),4000);
-      const u=new URL(SCRIPT_URL);
-      u.searchParams.set('action','login');
-      u.searchParams.set('correo',email);
-      u.searchParams.set('googleToken','true');
-      const r=await fetch(u.toString(),{signal:controller.signal});
-      clearTimeout(timeout);
-      const res=await r.json();
-      if(res.success){rol=res.rol||'Visualizador';}
-      else{toast('Tu cuenta no está autorizada. Pide acceso al administrador.',true);return;}
+      const cred = firebase.auth.GoogleAuthProvider.credential(resp.credential);
+      await fauth.signInWithCredential(cred);
     }catch(e){
-      toast('No se pudo verificar tu cuenta. Intenta de nuevo.',true);
+      console.error('Firebase Auth:', e);
+      toast('No se pudo iniciar sesión en Firebase. Recarga e intenta de nuevo.', true);
       return;
     }
 
-    currentUser={email,nombre:name,rol,picture:pic};
+    // 2) Determinar rol y secciones
+    let rol = 'Visualizador';
+    let secciones = [];
+
+    if(email === ADMIN_EMAIL){
+      rol = 'Admin';
+    } else {
+      try{
+        const snap = await fdb.collection('Usuarios')
+                              .where('Correo', '==', email)
+                              .limit(1).get();
+        if(snap.empty){
+          toast('Tu cuenta no está autorizada. Pide acceso al administrador.', true);
+          await fauth.signOut();
+          return;
+        }
+        const u = snap.docs[0].data();
+        if(u.Activo === false){
+          toast('Tu cuenta está desactivada. Contacta al administrador.', true);
+          await fauth.signOut();
+          return;
+        }
+        rol = u.Rol || 'Visualizador';
+        secciones = u.Secciones || [];
+      }catch(e){
+        console.error('Lookup Usuarios:', e);
+        toast('No se pudo verificar tu cuenta.', true);
+        return;
+      }
+    }
+
+    currentUser={email,nombre:name,rol,secciones,picture:pic};
     saveSession(currentUser);
     enterApp();
   }catch(e){
